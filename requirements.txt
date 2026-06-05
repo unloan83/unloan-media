@@ -8,6 +8,7 @@ feedparser
 pytrends
 python-telegram-bot==21.4
 langchain
+langchain-core
 langchain-community
 python-dotenv
 apscheduler
