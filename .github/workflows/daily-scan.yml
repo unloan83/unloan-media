@@ -53,11 +53,11 @@ async def main():
     for ticker in watchlist:
         try:
             info = collector.get_stock_info(ticker)
-            if not info: 
+            if not info:
               continue
               
             analysis = analyzer.analyze(ticker, news)
-            if "error" in analysis: 
+            if "error" in analysis:
               continue
               
             analysis["final_score"] = calculate_final_score(analysis)
@@ -84,4 +84,4 @@ async def main():
     print(f"Scan completed. {count} signals sent.")
 
 asyncio.run(main())
-          '
+        '
