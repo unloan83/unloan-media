@@ -1,5 +1,5 @@
 import yfinance as yf
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain_community.llms import Grok  # or use ChatGroq, Claude, etc.
 import pandas as pd
