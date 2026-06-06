@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub Purpose-Driven Portal</title>
+    <title>GitHub Repository Portal</title>
     <style>
         * {
             margin: 0;
@@ -20,7 +20,7 @@
         }
 
         .container {
-            max-width: 1600px;
+            max-width: 1800px;
             margin: 0 auto;
         }
 
@@ -38,70 +38,30 @@
         header p {
             font-size: 1.1em;
             opacity: 0.9;
+            margin-bottom: 20px;
         }
 
-        /* Configuration Section */
-        .config-section {
+        .controls {
             background: white;
-            padding: 25px;
+            padding: 20px;
             border-radius: 12px;
             margin-bottom: 30px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .config-section h2 {
-            margin-bottom: 20px;
-            color: #333;
-            font-size: 1.3em;
-        }
-
-        .token-input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-        }
-
-        .token-input-group input {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 1em;
-        }
-
-        .token-input-group button {
-            padding: 12px 24px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-
-        .token-input-group button:hover {
-            background: #764ba2;
-        }
-
-        .repo-config-group {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr 120px;
-            gap: 12px;
-            margin-bottom: 15px;
+            grid-template-columns: 1fr 1fr auto auto;
+            gap: 15px;
             align-items: end;
         }
 
-        .repo-config-group input,
-        .repo-config-group select {
+        .controls input {
             padding: 12px;
             border: 1px solid #ddd;
             border-radius: 6px;
             font-size: 1em;
         }
 
-        .repo-config-group button {
-            padding: 12px 20px;
+        .controls button {
+            padding: 12px 24px;
             background: #28a745;
             color: white;
             border: none;
@@ -111,189 +71,134 @@
             transition: background 0.3s;
         }
 
-        .repo-config-group button:hover {
+        .controls button:hover {
             background: #218838;
         }
 
-        .repo-list-container {
-            margin-top: 20px;
+        .refresh-btn {
+            background: #667eea !important;
         }
 
-        .repo-item {
+        .refresh-btn:hover {
+            background: #764ba2 !important;
+        }
+
+        .dashboard {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr 100px;
-            gap: 12px;
-            align-items: center;
-            padding: 12px;
-            background: #f9f9f9;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            border-left: 4px solid #667eea;
-        }
-
-        .repo-item-field {
-            font-size: 0.9em;
-        }
-
-        .repo-item-label {
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 2px;
-            font-size: 0.75em;
-            text-transform: uppercase;
-        }
-
-        .repo-item button {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: background 0.3s;
-        }
-
-        .repo-item button:hover {
-            background: #c82333;
-        }
-
-        /* Purpose Sections */
-        .purpose-sections {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
             margin-bottom: 40px;
         }
 
-        .purpose-section {
+        .repo-section {
             background: white;
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .purpose-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px 25px;
-            border-bottom: 4px solid #ffc107;
-        }
-
-        .purpose-title {
-            font-size: 1.5em;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .purpose-description {
-            font-size: 0.95em;
-            opacity: 0.9;
-        }
-
-        .repos-in-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 20px;
-            padding: 25px;
-        }
-
-        /* Repo Cards */
-        .repo-card {
-            background: #f8f9fa;
-            border-radius: 10px;
-            border: 2px solid #e9ecef;
-            overflow: hidden;
             transition: all 0.3s ease;
         }
 
-        .repo-card:hover {
-            border-color: #667eea;
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.2);
+        .repo-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
         }
 
-        .repo-card-header {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
-            padding: 15px;
-            border-bottom: 1px solid #e9ecef;
+        .repo-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-bottom: 4px solid #ffc107;
         }
 
-        .repo-card-name {
-            font-size: 1.1em;
+        .repo-name {
+            font-size: 1.3em;
             font-weight: bold;
-            color: #333;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
         }
 
-        .repo-card-name a {
-            color: #667eea;
+        .repo-name a {
+            color: white;
             text-decoration: none;
-            transition: color 0.3s;
+            transition: opacity 0.3s;
         }
 
-        .repo-card-name a:hover {
-            color: #764ba2;
+        .repo-name a:hover {
+            opacity: 0.8;
             text-decoration: underline;
         }
 
-        .repo-card-purpose {
-            font-size: 0.85em;
-            color: #666;
-            margin-bottom: 8px;
-            font-style: italic;
+        .repo-description {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+            line-height: 1.4;
         }
 
-        .repo-card-stats {
+        .repo-stats {
             display: flex;
-            gap: 12px;
-            font-size: 0.8em;
-            color: #999;
+            gap: 15px;
+            font-size: 0.85em;
+            opacity: 0.8;
         }
 
-        .repo-card-content {
-            padding: 15px;
+        .repo-content {
+            padding: 20px;
         }
 
-        .repo-output {
-            margin-bottom: 15px;
+        .output-section {
+            margin-bottom: 20px;
+        }
+
+        .output-section:last-child {
+            margin-bottom: 0;
         }
 
         .output-title {
-            font-size: 0.95em;
+            font-size: 1em;
             font-weight: bold;
             color: #333;
-            margin-bottom: 10px;
-            padding-bottom: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 10px;
             border-bottom: 2px solid #667eea;
         }
 
         .output-count {
             background: #667eea;
             color: white;
-            padding: 2px 8px;
+            padding: 2px 10px;
             border-radius: 12px;
-            font-size: 0.75em;
-            margin-left: 5px;
+            font-size: 0.85em;
         }
 
         .items-list {
             list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
         .item {
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
-            font-size: 0.9em;
+            padding: 10px;
+            background: #f8f9fa;
+            border-left: 3px solid #667eea;
+            border-radius: 4px;
+            transition: all 0.3s ease;
         }
 
-        .item:last-child {
-            border-bottom: none;
+        .item:hover {
+            background: #eff1f7;
+            border-left-color: #764ba2;
         }
 
         .item-title {
             color: #667eea;
             text-decoration: none;
             font-weight: 500;
+            display: block;
+            margin-bottom: 4px;
             transition: color 0.3s;
         }
 
@@ -305,7 +210,15 @@
         .item-meta {
             font-size: 0.8em;
             color: #999;
-            margin-top: 3px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .item-author {
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
         .label {
@@ -313,37 +226,28 @@
             padding: 2px 8px;
             border-radius: 4px;
             font-size: 0.7em;
-            margin-right: 5px;
-            margin-top: 3px;
+            color: white;
         }
 
         .empty-state {
             color: #999;
             font-style: italic;
-            padding: 10px 0;
+            padding: 15px;
+            text-align: center;
         }
 
         .loading {
             text-align: center;
-            padding: 40px 20px;
+            padding: 60px 20px;
             color: white;
-            font-size: 1.2em;
-        }
-
-        .error {
-            background: #ff6b6b;
-            color: white;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
         }
 
         .spinner {
             border: 4px solid rgba(255, 255, 255, 0.3);
             border-top: 4px solid white;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             animation: spin 1s linear infinite;
             margin: 20px auto;
         }
@@ -353,32 +257,88 @@
             100% { transform: rotate(360deg); }
         }
 
-        .purpose-color-0 { border-left-color: #667eea; }
-        .purpose-color-1 { border-left-color: #764ba2; }
-        .purpose-color-2 { border-left-color: #f093fb; }
-        .purpose-color-3 { border-left-color: #4facfe; }
-        .purpose-color-4 { border-left-color: #43e97b; }
-        .purpose-color-5 { border-left-color: #fa709a; }
+        .error {
+            background: #ff6b6b;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
 
-        .purpose-header-0 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .purpose-header-1 { background: linear-gradient(135deg, #764ba2 0%, #f093fb 100%); }
-        .purpose-header-2 { background: linear-gradient(135deg, #f093fb 0%, #4facfe 100%); }
-        .purpose-header-3 { background: linear-gradient(135deg, #4facfe 0%, #43e97b 100%); }
-        .purpose-header-4 { background: linear-gradient(135deg, #43e97b 0%, #fa709a 100%); }
-        .purpose-header-5 { background: linear-gradient(135deg, #fa709a 0%, #667eea 100%); }
+        .success {
+            background: #51cf66;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .config-list {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .config-list h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .config-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 10px;
+        }
+
+        .config-item {
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .config-item-name {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .config-item-purpose {
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .remove-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: background 0.3s;
+        }
+
+        .remove-btn:hover {
+            background: #c82333;
+        }
 
         @media (max-width: 768px) {
-            .repo-config-group {
+            .controls {
                 grid-template-columns: 1fr;
             }
 
-            .repo-item {
+            .dashboard {
                 grid-template-columns: 1fr;
-                gap: 8px;
             }
 
-            .repos-in-section {
-                grid-template-columns: 1fr;
+            header h1 {
+                font-size: 1.8em;
             }
         }
     </style>
@@ -386,411 +346,312 @@
 <body>
     <div class="container">
         <header>
-            <h1>📊 GitHub Purpose-Driven Portal</h1>
-            <p>Monitor repositories organized by their purpose and objective</p>
+            <h1>📊 GitHub Repository Portal</h1>
+            <p>Monitor multiple repositories in a single dashboard</p>
         </header>
 
-        <div class="config-section">
-            <h2>⚙️ Configuration</h2>
-            
+        <div class="controls">
             <div>
-                <h3 style="margin-bottom: 10px; font-size: 1.1em;">GitHub Token</h3>
-                <div class="token-input-group">
-                    <input 
-                        type="password" 
-                        id="tokenInput" 
-                        placeholder="Enter GitHub Personal Access Token (optional for public repos)"
-                    >
-                    <button onclick="saveToken()">Save Token</button>
-                </div>
+                <label style="display: block; font-size: 0.85em; color: #666; margin-bottom: 5px;">Repository (owner/name)</label>
+                <input type="text" id="repoInput" placeholder="e.g., facebook/react">
             </div>
-
             <div>
-                <h3 style="margin-bottom: 10px; font-size: 1.1em;">Add Repository with Purpose</h3>
-                <div class="repo-config-group">
-                    <div>
-                        <label style="display: block; font-size: 0.85em; color: #666; margin-bottom: 5px;">Repository (owner/name)</label>
-                        <input 
-                            type="text" 
-                            id="repoInput" 
-                            placeholder="e.g., facebook/react"
-                        >
-                    </div>
-                    <div>
-                        <label style="display: block; font-size: 0.85em; color: #666; margin-bottom: 5px;">Purpose Category</label>
-                        <input 
-                            type="text" 
-                            id="purposeInput" 
-                            placeholder="e.g., Frontend Framework, API Server, etc."
-                        >
-                    </div>
-                    <div>
-                        <label style="display: block; font-size: 0.85em; color: #666; margin-bottom: 5px;">Purpose Description</label>
-                        <input 
-                            type="text" 
-                            id="descriptionInput" 
-                            placeholder="What does this repo do?"
-                        >
-                    </div>
-                    <div>
-                        <label style="display: block; font-size: 0.85em; color: #666; margin-bottom: 5px;">Output Type</label>
-                        <select id="outputTypeSelect">
-                            <option value="all">Issues & PRs</option>
-                            <option value="issues">Issues Only</option>
-                            <option value="prs">PRs Only</option>
-                            <option value="releases">Releases</option>
-                        </select>
-                    </div>
-                    <button onclick="addRepo()">Add Repo</button>
-                </div>
+                <label style="display: block; font-size: 0.85em; color: #666; margin-bottom: 5px;">Purpose/Category</label>
+                <input type="text" id="purposeInput" placeholder="e.g., Frontend, Backend, etc.">
             </div>
-
-            <div class="repo-list-container" id="repoListContainer" style="display: none;">
-                <h3 style="margin-bottom: 15px; font-size: 1.1em;">Added Repositories</h3>
-                <div id="repoList"></div>
-            </div>
+            <button onclick="addRepository()">Add Repository</button>
+            <button class="refresh-btn" onclick="refreshData()">🔄 Refresh All</button>
         </div>
 
-        <div id="content">
-            <div class="loading">
-                <p>✨ Add repositories above to get started</p>
-            </div>
-        </div>
+        <div id="configList"></div>
+        <div id="statusMessage"></div>
+        <div id="dashboard"></div>
     </div>
 
     <script>
-        let repos = [];
-        let token = localStorage.getItem('gh_token') || '';
+        let repositories = [];
 
-        // Purpose color mapping
-        const purposeColors = [
-            { name: 'Frontend', color: '#667eea' },
-            { name: 'Backend', color: '#764ba2' },
-            { name: 'Infrastructure', color: '#f093fb' },
-            { name: 'API', color: '#4facfe' },
-            { name: 'Database', color: '#43e97b' },
-            { name: 'DevOps', color: '#fa709a' }
-        ];
-
-        // Save token
-        function saveToken() {
-            const input = document.getElementById('tokenInput');
-            token = input.value;
-            if (token) {
-                localStorage.setItem('gh_token', token);
-                alert('Token saved!');
-                input.value = '';
+        // Load repositories from localStorage
+        function loadRepositories() {
+            const saved = localStorage.getItem('portal_repos');
+            if (saved) {
+                repositories = JSON.parse(saved);
+                displayConfigList();
+                loadAllData();
             }
+        }
+
+        // Save repositories to localStorage
+        function saveRepositories() {
+            localStorage.setItem('portal_repos', JSON.stringify(repositories));
         }
 
         // Add repository
-        function addRepo() {
+        function addRepository() {
             const repoInput = document.getElementById('repoInput');
             const purposeInput = document.getElementById('purposeInput');
-            const descriptionInput = document.getElementById('descriptionInput');
-            const outputTypeSelect = document.getElementById('outputTypeSelect');
-
+            
             const repo = repoInput.value.trim();
-            const purpose = purposeInput.value.trim();
-            const description = descriptionInput.value.trim();
-            const outputType = outputTypeSelect.value;
+            const purpose = purposeInput.value.trim() || 'Uncategorized';
 
             if (!repo || !repo.includes('/')) {
-                alert('Please enter repo in format: owner/name');
+                showStatus('❌ Please enter repository in format: owner/name', 'error');
                 return;
             }
 
-            if (!purpose) {
-                alert('Please enter a purpose category');
+            if (repositories.some(r => r.repo === repo)) {
+                showStatus('⚠️ Repository already added!', 'error');
                 return;
             }
 
-            const repoObj = {
+            repositories.push({
                 repo,
                 purpose,
-                description,
-                outputType,
                 id: Date.now()
-            };
+            });
 
-            repos.push(repoObj);
-            localStorage.setItem('gh_repos', JSON.stringify(repos));
-            
+            saveRepositories();
             repoInput.value = '';
             purposeInput.value = '';
-            descriptionInput.value = '';
-            outputTypeSelect.value = 'all';
-
-            updateRepoList();
-            loadPortalData();
+            
+            displayConfigList();
+            loadAllData();
+            showStatus('✅ Repository added successfully!', 'success');
         }
 
         // Remove repository
-        function removeRepo(id) {
-            repos = repos.filter(r => r.id !== id);
-            localStorage.setItem('gh_repos', JSON.stringify(repos));
-            updateRepoList();
-            loadPortalData();
+        function removeRepository(id) {
+            repositories = repositories.filter(r => r.id !== id);
+            saveRepositories();
+            displayConfigList();
+            loadAllData();
+            showStatus('✅ Repository removed!', 'success');
         }
 
-        // Update repo list display
-        function updateRepoList() {
-            const list = document.getElementById('repoList');
-            const container = document.getElementById('repoListContainer');
-
-            if (repos.length === 0) {
-                container.style.display = 'none';
+        // Display config list
+        function displayConfigList() {
+            const configList = document.getElementById('configList');
+            
+            if (repositories.length === 0) {
+                configList.innerHTML = '';
                 return;
             }
 
-            container.style.display = 'block';
-            list.innerHTML = repos.map(r => `
-                <div class="repo-item">
-                    <div class="repo-item-field">
-                        <div class="repo-item-label">Repository</div>
-                        <div>${r.repo}</div>
-                    </div>
-                    <div class="repo-item-field">
-                        <div class="repo-item-label">Purpose</div>
-                        <div>${r.purpose}</div>
-                    </div>
-                    <div class="repo-item-field">
-                        <div class="repo-item-label">Description</div>
-                        <div style="color: #666; font-size: 0.85em;">${r.description || 'N/A'}</div>
-                    </div>
-                    <div class="repo-item-field">
-                        <div class="repo-item-label">Output Type</div>
-                        <div>${r.outputType}</div>
-                    </div>
-                    <button onclick="removeRepo(${r.id})">Remove</button>
-                </div>
-            `).join('');
+            const grouped = {};
+            repositories.forEach(r => {
+                if (!grouped[r.purpose]) grouped[r.purpose] = [];
+                grouped[r.purpose].push(r);
+            });
+
+            let html = '<div class="config-list"><h3>📋 Configured Repositories</h3><div class="config-items">';
+            
+            Object.entries(grouped).forEach(([purpose, repos]) => {
+                repos.forEach(r => {
+                    html += `
+                        <div class="config-item">
+                            <div>
+                                <div class="config-item-name">${r.repo}</div>
+                                <div class="config-item-purpose">${purpose}</div>
+                            </div>
+                            <button class="remove-btn" onclick="removeRepository(${r.id})">×</button>
+                        </div>
+                    `;
+                });
+            });
+
+            html += '</div></div>';
+            configList.innerHTML = html;
         }
 
-        // Fetch data from GitHub API
-        async function fetchRepoData(owner, name, outputType) {
-            const headers = {
-                'Accept': 'application/vnd.github.v3+json',
-            };
+        // Show status message
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.innerHTML = `<div class="${type}">${message}</div>`;
+            setTimeout(() => {
+                statusDiv.innerHTML = '';
+            }, 3000);
+        }
 
-            if (token) {
-                headers['Authorization'] = `token ${token}`;
-            }
-
+        // Fetch repository data
+        async function fetchRepoData(repo) {
             try {
-                const repoRes = await fetch(`https://api.github.com/repos/${owner}/${name}`, { headers });
+                const [owner, name] = repo.split('/');
+                
+                // Fetch repo info
+                const repoRes = await fetch(`https://api.github.com/repos/${owner}/${name}`);
                 const repoData = await repoRes.json();
 
-                let issues = [];
-                let prs = [];
-                let releases = [];
-
-                if (outputType === 'all' || outputType === 'issues') {
-                    const issuesRes = await fetch(
-                        `https://api.github.com/repos/${owner}/${name}/issues?state=open&per_page=10`,
-                        { headers }
-                    );
-                    issues = await issuesRes.json();
-                    issues = issues.filter(i => !i.pull_request);
+                if (repoData.message === 'Not Found') {
+                    return null;
                 }
 
-                if (outputType === 'all' || outputType === 'prs') {
-                    const prsRes = await fetch(
-                        `https://api.github.com/repos/${owner}/${name}/pulls?state=open&per_page=10`,
-                        { headers }
-                    );
-                    prs = await prsRes.json();
-                }
+                // Fetch open issues
+                const issuesRes = await fetch(
+                    `https://api.github.com/repos/${owner}/${name}/issues?state=open&per_page=8`
+                );
+                const issues = await issuesRes.json();
 
-                if (outputType === 'releases') {
-                    const releasesRes = await fetch(
-                        `https://api.github.com/repos/${owner}/${name}/releases?per_page=10`,
-                        { headers }
-                    );
-                    releases = await releasesRes.json();
-                }
+                // Fetch open PRs
+                const prsRes = await fetch(
+                    `https://api.github.com/repos/${owner}/${name}/pulls?state=open&per_page=8`
+                );
+                const prs = await prsRes.json();
+
+                // Fetch releases
+                const releasesRes = await fetch(
+                    `https://api.github.com/repos/${owner}/${name}/releases?per_page=5`
+                );
+                const releases = await releasesRes.json();
 
                 return {
                     repo: repoData,
-                    issues,
-                    prs,
-                    releases
+                    issues: issues.filter(i => !i.pull_request),
+                    prs: prs,
+                    releases: releases || []
                 };
             } catch (error) {
-                console.error(`Error fetching ${owner}/${name}:`, error);
+                console.error(`Error fetching ${repo}:`, error);
                 return null;
             }
         }
 
-        // Load all repo data
-        async function loadPortalData() {
-            if (repos.length === 0) {
-                document.getElementById('content').innerHTML = `
-                    <div class="loading">
-                        <p>✨ Add repositories above to get started</p>
+        // Load all data
+        async function loadAllData() {
+            if (repositories.length === 0) {
+                document.getElementById('dashboard').innerHTML = `
+                    <div style="grid-column: 1/-1;">
+                        <div class="loading">
+                            <p style="font-size: 1.2em;">👆 Add repositories above to get started</p>
+                        </div>
                     </div>
                 `;
                 return;
             }
 
-            document.getElementById('content').innerHTML = `
-                <div class="loading">
-                    <div class="spinner"></div>
-                    <p>Loading data from ${repos.length} repository(ies)...</p>
+            document.getElementById('dashboard').innerHTML = `
+                <div style="grid-column: 1/-1;">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Loading data from ${repositories.length} repository(ies)...</p>
+                    </div>
                 </div>
             `;
 
             const allData = await Promise.all(
-                repos.map(async (repoObj) => {
-                    const [owner, name] = repoObj.repo.split('/');
-                    const data = await fetchRepoData(owner, name, repoObj.outputType);
-                    return data ? { ...repoObj, data } : null;
+                repositories.map(async (repoObj) => {
+                    const data = await fetchRepoData(repoObj.repo);
+                    return data ? { ...repoObj, ...data } : null;
                 })
             );
 
-            renderPortal(allData.filter(d => d !== null));
+            renderDashboard(allData.filter(d => d !== null));
         }
 
-        // Group repos by purpose
-        function groupByPurpose(repos) {
-            const grouped = {};
-            repos.forEach(r => {
-                if (!grouped[r.purpose]) {
-                    grouped[r.purpose] = [];
-                }
-                grouped[r.purpose].push(r);
-            });
-            return grouped;
-        }
-
-        // Render portal
-        function renderPortal(data) {
-            const content = document.getElementById('content');
+        // Render dashboard
+        function renderDashboard(data) {
+            const dashboard = document.getElementById('dashboard');
 
             if (data.length === 0) {
-                content.innerHTML = '<div class="error">Error loading repository data. Check token and repo names.</div>';
+                dashboard.innerHTML = '<div style="grid-column: 1/-1;"><div class="error">❌ Error loading repository data. Check repo names and try again.</div></div>';
                 return;
             }
 
-            const grouped = groupByPurpose(data);
-            const purposes = Object.keys(grouped);
-
-            content.innerHTML = `
-                <div class="purpose-sections">
-                    ${purposes.map((purpose, idx) => createPurposeSection(purpose, grouped[purpose], idx)).join('')}
-                </div>
-            `;
-        }
-
-        // Create purpose section
-        function createPurposeSection(purpose, repos, index) {
-            return `
-                <div class="purpose-section">
-                    <div class="purpose-header purpose-header-${index % 6}">
-                        <div class="purpose-title">🎯 ${purpose}</div>
-                        <div class="purpose-description">${repos[0].description || 'Repository collection for this purpose'}</div>
-                    </div>
-                    <div class="repos-in-section">
-                        ${repos.map((r, idx) => createRepoCard(r, idx)).join('')}
-                    </div>
+            dashboard.innerHTML = `
+                <div style="grid-column: 1/-1; display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px;">
+                    ${data.map(repoData => createRepoCard(repoData)).join('')}
                 </div>
             `;
         }
 
         // Create repo card
-        function createRepoCard(repoObj, index) {
-            const { data, outputType } = repoObj;
-            const { repo, issues, prs, releases } = data;
-
-            let outputHtml = '';
-
-            if (outputType === 'all' || outputType === 'issues') {
-                outputHtml += `
-                    <div class="repo-output">
-                        <div class="output-title">📋 Issues <span class="output-count">${issues.length}</span></div>
-                        ${issues.length > 0 ? `
-                            <ul class="items-list">
-                                ${issues.slice(0, 5).map(issue => `
-                                    <li class="item">
-                                        <a href="${issue.html_url}" target="_blank" class="item-title">#${issue.number}: ${issue.title}</a>
-                                        <div class="item-meta">
-                                            by ${issue.user.login}
-                                            ${issue.labels.map(l => `<span class="label" style="background: #${l.color}; color: ${getContrastColor(l.color)}">${l.name}</span>`).join('')}
-                                        </div>
-                                    </li>
-                                `).join('')}
-                                ${issues.length > 5 ? `<li class="item"><em>+${issues.length - 5} more issues</em></li>` : ''}
-                            </ul>
-                        ` : '<p class="empty-state">No open issues</p>'}
-                    </div>
-                `;
-            }
-
-            if (outputType === 'all' || outputType === 'prs') {
-                outputHtml += `
-                    <div class="repo-output">
-                        <div class="output-title">🔄 Pull Requests <span class="output-count">${prs.length}</span></div>
-                        ${prs.length > 0 ? `
-                            <ul class="items-list">
-                                ${prs.slice(0, 5).map(pr => `
-                                    <li class="item">
-                                        <a href="${pr.html_url}" target="_blank" class="item-title">#${pr.number}: ${pr.title}</a>
-                                        <div class="item-meta">
-                                            by ${pr.user.login}
-                                        </div>
-                                    </li>
-                                `).join('')}
-                                ${prs.length > 5 ? `<li class="item"><em>+${prs.length - 5} more PRs</em></li>` : ''}
-                            </ul>
-                        ` : '<p class="empty-state">No open pull requests</p>'}
-                    </div>
-                `;
-            }
-
-            if (outputType === 'releases') {
-                outputHtml += `
-                    <div class="repo-output">
-                        <div class="output-title">🚀 Releases <span class="output-count">${releases.length}</span></div>
-                        ${releases.length > 0 ? `
-                            <ul class="items-list">
-                                ${releases.slice(0, 5).map(release => `
-                                    <li class="item">
-                                        <a href="${release.html_url}" target="_blank" class="item-title">${release.tag_name}</a>
-                                        <div class="item-meta">
-                                            Released: ${new Date(release.published_at).toLocaleDateString()}
-                                            ${release.prerelease ? '<span class="label" style="background: #ffc107; color: #333;">Pre-release</span>' : ''}
-                                        </div>
-                                    </li>
-                                `).join('')}
-                                ${releases.length > 5 ? `<li class="item"><em>+${releases.length - 5} more releases</em></li>` : ''}
-                            </ul>
-                        ` : '<p class="empty-state">No releases</p>'}
-                    </div>
-                `;
-            }
+        function createRepoCard(repoData) {
+            const { repo, issues, prs, releases, purpose } = repoData;
 
             return `
-                <div class="repo-card purpose-color-${index % 6}">
-                    <div class="repo-card-header">
-                        <div class="repo-card-name">
-                            <a href="${repo.html_url}" target="_blank">${repo.full_name}</a>
+                <div class="repo-section">
+                    <div class="repo-header">
+                        <div class="repo-name">
+                            <a href="${repo.html_url}" target="_blank">📦 ${repo.full_name}</a>
                         </div>
-                        <div class="repo-card-purpose">${repoObj.purpose}</div>
-                        <div class="repo-card-stats">
-                            <span>⭐ ${repo.stargazers_count}</span>
-                            <span>🔀 ${repo.forks_count}</span>
-                            <span>👁️ ${repo.watchers_count}</span>
+                        <div class="repo-description">${repo.description || 'No description'}</div>
+                        <div class="repo-stats">
+                            <span>⭐ ${repo.stargazers_count.toLocaleString()}</span>
+                            <span>🔀 ${repo.forks_count.toLocaleString()}</span>
+                            <span>👁️ ${repo.watchers_count.toLocaleString()}</span>
+                            <span>🏷️ ${purpose}</span>
                         </div>
                     </div>
-                    <div class="repo-card-content">
-                        ${outputHtml}
+                    <div class="repo-content">
+                        ${createOutputSection('📋 Issues', issues, 'issue')}
+                        ${createOutputSection('🔄 Pull Requests', prs, 'pr')}
+                        ${createOutputSection('🚀 Releases', releases, 'release')}
                     </div>
                 </div>
             `;
         }
 
-        // Helper function for label contrast
-        function getContrastColor(hexColor) {
+        // Create output section
+        function createOutputSection(title, items, type) {
+            if (items.length === 0) {
+                return `
+                    <div class="output-section">
+                        <div class="output-title">
+                            ${title}
+                            <span class="output-count">0</span>
+                        </div>
+                        <div class="empty-state">No ${title.toLowerCase()}</div>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="output-section">
+                    <div class="output-title">
+                        ${title}
+                        <span class="output-count">${items.length}</span>
+                    </div>
+                    <ul class="items-list">
+                        ${items.map(item => createItemElement(item, type)).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+
+        // Create item element
+        function createItemElement(item, type) {
+            let title, url, author, date, labels = [];
+
+            if (type === 'issue' || type === 'pr') {
+                title = `#${item.number}: ${item.title}`;
+                url = item.html_url;
+                author = item.user.login;
+                date = new Date(item.created_at).toLocaleDateString();
+                if (item.labels) labels = item.labels;
+            } else if (type === 'release') {
+                title = item.tag_name;
+                url = item.html_url;
+                author = item.author.login;
+                date = new Date(item.published_at).toLocaleDateString();
+            }
+
+            const labelsHtml = labels.map(l => 
+                `<span class="label" style="background: #${l.color}; color: ${getTextColor(l.color)}">${l.name}</span>`
+            ).join('');
+
+            return `
+                <li class="item">
+                    <a href="${url}" target="_blank" class="item-title">${title}</a>
+                    <div class="item-meta">
+                        <span class="item-author">👤 ${author}</span>
+                        <span>📅 ${date}</span>
+                        ${labelsHtml}
+                    </div>
+                </li>
+            `;
+        }
+
+        // Get readable text color
+        function getTextColor(hexColor) {
             const r = parseInt(hexColor.substr(0, 2), 16);
             const g = parseInt(hexColor.substr(2, 2), 16);
             const b = parseInt(hexColor.substr(4, 2), 16);
@@ -798,17 +659,17 @@
             return brightness > 128 ? '#000' : '#fff';
         }
 
-        // Load saved repos on page load
-        window.addEventListener('DOMContentLoaded', () => {
-            const saved = localStorage.getItem('gh_repos');
-            if (saved) {
-                repos = JSON.parse(saved);
-                updateRepoList();
-                if (repos.length > 0) {
-                    loadPortalData();
-                }
+        // Refresh data
+        function refreshData() {
+            if (repositories.length === 0) {
+                showStatus('⚠️ No repositories configured', 'error');
+                return;
             }
-        });
+            loadAllData();
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', loadRepositories);
     </script>
 </body>
 </html>
