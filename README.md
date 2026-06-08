@@ -5,7 +5,7 @@ A Vercel-ready portfolio dashboard built with Next.js 15, TypeScript, Tailwind C
 ## Features
 
 - Upload a simple current portfolio and watchlist CSV in the browser.
-- Fetch CMP, previous close, sector, and valuation details after upload.
+- Fetch CMP, previous close, volume, headline signals, sector, and valuation details after upload.
 - Portfolio summary cards for value, daily movement, watchlist count, and top sector.
 - Portfolio growth chart.
 - Holdings table with value, return, and allocation weight.
@@ -33,7 +33,7 @@ Optional column:
 
 - `quantity` - required for `current` rows, optional for `watchlist` rows.
 
-After upload, the app resolves the stock name or symbol and fetches CMP and previous close using a Next.js API route.
+After upload, the app resolves the stock name or symbol and fetches CMP, previous close, volume, and available headline signals using a Next.js API route.
 
 ## Local Development
 

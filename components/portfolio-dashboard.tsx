@@ -2,18 +2,20 @@
 
 import Papa from "papaparse";
 import {
-  Area,
-  AreaChart,
-  CartesianGrid,
   Cell,
   Pie,
   PieChart,
   ResponsiveContainer,
   Tooltip,
-  XAxis,
-  YAxis,
 } from "recharts";
-import { BarChart3, FileUp, PieChart as PieChartIcon, TrendingUp } from "lucide-react";
+import {
+  Download,
+  FileUp,
+  Plus,
+  RefreshCw,
+  Sparkles,
+  Trash2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -31,16 +33,19 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  ManagedPortfolio,
   PortfolioInputRow,
   PortfolioPosition,
+  Recommendation,
+  RecommendationStatus,
   calculatePortfolioMetrics,
-  formatCompactInr,
   formatCurrency,
   formatPercent,
-  samplePositions,
+  generateRecommendations,
+  samplePortfolio,
 } from "@/lib/portfolio";
 import { cn } from "@/lib/utils";
-import { useMemo, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
 
 const sectorColors = [
   "#0f8b8d",
@@ -53,6 +58,9 @@ const sectorColors = [
   "#e76f51",
 ];
 
+const portfoliosStorageKey = "multibagger-portfolios";
+const historyStorageKey = "multibagger-recommendation-history";
+
 type CsvRow = {
   list?: string;
   type?: string;
@@ -63,23 +71,67 @@ type CsvRow = {
 };
 
 export function PortfolioDashboard() {
-  const [positions, setPositions] = useState<PortfolioPosition[]>(samplePositions);
-  const [fileName, setFileName] = useState("sample data");
-  const [refreshedAt, setRefreshedAt] = useState<string | null>(null);
+  const [portfolios, setPortfolios] = useState<ManagedPortfolio[]>([
+    samplePortfolio,
+  ]);
+  const [history, setHistory] = useState<Recommendation[]>([]);
+  const [isAddOpen, setIsAddOpen] = useState(false);
+  const [portfolioName, setPortfolioName] = useState("");
+  const [draftRows, setDraftRows] = useState<PortfolioInputRow[]>([
+    { list: "current", stock: "", quantity: 0 },
+  ]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const metrics = useMemo(() => calculatePortfolioMetrics(positions), [positions]);
-  const watchlist = useMemo(
-    () => positions.filter((position) => position.list === "watchlist"),
-    [positions],
+  const [hydrated, setHydrated] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const savedPortfolios = window.localStorage.getItem(portfoliosStorageKey);
+    const savedHistory = window.localStorage.getItem(historyStorageKey);
+
+    if (savedPortfolios) {
+      setPortfolios(JSON.parse(savedPortfolios) as ManagedPortfolio[]);
+    }
+
+    if (savedHistory) {
+      setHistory(JSON.parse(savedHistory) as Recommendation[]);
+    }
+
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) {
+      return;
+    }
+
+    window.localStorage.setItem(portfoliosStorageKey, JSON.stringify(portfolios));
+    window.localStorage.setItem(historyStorageKey, JSON.stringify(history));
+  }, [hydrated, portfolios, history]);
+
+  const totalValue = useMemo(
+    () =>
+      portfolios.reduce(
+        (sum, portfolio) =>
+          sum + calculatePortfolioMetrics(portfolio.positions).totalValue,
+        0,
+      ),
+    [portfolios],
   );
 
-  function handleCsvUpload(file: File) {
+  function updateDraftRow(index: number, nextRow: Partial<PortfolioInputRow>) {
+    setDraftRows((rows) =>
+      rows.map((row, rowIndex) =>
+        rowIndex === index ? { ...row, ...nextRow } : row,
+      ),
+    );
+  }
+
+  function parseCsvRows(file: File) {
     Papa.parse<CsvRow>(file, {
       header: true,
       skipEmptyLines: true,
-      complete: async (result) => {
+      complete: (result) => {
         const parsed = result.data
           .map((row) => {
             const listValue = (row.list ?? row.type ?? "current")
@@ -88,13 +140,12 @@ export function PortfolioDashboard() {
             const list: PortfolioInputRow["list"] = listValue.includes("watch")
               ? "watchlist"
               : "current";
-            const stock = (row.stock ?? row.name ?? "").trim();
-            const quantity = list === "watchlist" ? 0 : Number(row.quantity ?? row.qty);
 
             return {
               list,
-              stock,
-              quantity,
+              stock: (row.stock ?? row.name ?? "").trim(),
+              quantity:
+                list === "watchlist" ? 0 : Number(row.quantity ?? row.qty ?? 0),
             };
           })
           .filter(
@@ -105,53 +156,57 @@ export function PortfolioDashboard() {
           );
 
         if (parsed.length === 0) {
-          setError(
-            "No valid rows found. Use columns: list, stock, quantity. Watchlist rows can leave quantity blank.",
-          );
+          setError("CSV needs list, stock, quantity columns.");
           return;
         }
 
-        await fetchQuotes(parsed, file.name);
+        setDraftRows(parsed);
+        setError(null);
       },
-      error: (parseError) => {
-        setError(parseError.message);
-      },
+      error: (parseError) => setError(parseError.message),
     });
   }
 
-  async function fetchQuotes(rows: PortfolioInputRow[], nextFileName = fileName) {
+  async function addPortfolio() {
+    const cleanName = portfolioName.trim();
+    const cleanRows = draftRows.filter(
+      (row) =>
+        row.stock.trim() &&
+        (row.list === "watchlist" ||
+          (Number.isFinite(row.quantity) && row.quantity > 0)),
+    );
+
+    if (!cleanName) {
+      setError("Add a portfolio name.");
+      return;
+    }
+
+    if (cleanRows.length === 0) {
+      setError("Add at least one current holding or watchlist stock.");
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 
     try {
-      const response = await fetch("/api/quotes", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ rows }),
-      });
-
-      const payload = (await response.json()) as {
-        positions?: PortfolioPosition[];
-        refreshedAt?: string;
-        unresolved?: string[];
-        error?: string;
+      const positions = await fetchQuotePositions(cleanRows);
+      const portfolio: ManagedPortfolio = {
+        id: `${Date.now()}-${cleanName.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`,
+        name: cleanName,
+        inputs: cleanRows,
+        positions,
+        refreshedAt: new Date().toISOString(),
       };
 
-      if (!response.ok || !payload.positions) {
-        throw new Error(payload.error ?? "Unable to fetch quote details.");
-      }
-
-      setPositions(payload.positions);
-      setFileName(nextFileName);
-      setRefreshedAt(payload.refreshedAt ?? null);
-
-      if (payload.unresolved?.length) {
-        setError(
-          `Some quote details could not be fetched: ${payload.unresolved.join(", ")}.`,
-        );
-      }
+      setPortfolios((items) => [...items, portfolio]);
+      setHistory((items) => [
+        ...generateRecommendationList(portfolio, items),
+        ...items,
+      ]);
+      setPortfolioName("");
+      setDraftRows([{ list: "current", stock: "", quantity: 0 }]);
+      setIsAddOpen(false);
     } catch (fetchError) {
       setError(
         fetchError instanceof Error
@@ -163,158 +218,582 @@ export function PortfolioDashboard() {
     }
   }
 
+  async function refreshPortfolio(portfolio: ManagedPortfolio) {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const positions = await fetchQuotePositions(portfolio.inputs);
+      const refreshed = {
+        ...portfolio,
+        positions,
+        refreshedAt: new Date().toISOString(),
+      };
+
+      setPortfolios((items) =>
+        items.map((item) => (item.id === portfolio.id ? refreshed : item)),
+      );
+      setHistory((items) => [
+        ...generateRecommendationList(refreshed, items),
+        ...items,
+      ]);
+    } catch (fetchError) {
+      setError(
+        fetchError instanceof Error
+          ? fetchError.message
+          : "Unable to refresh quote details.",
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function fetchQuotePositions(rows: PortfolioInputRow[]) {
+    const response = await fetch("/api/quotes", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ rows }),
+    });
+    const payload = (await response.json()) as {
+      positions?: PortfolioPosition[];
+      error?: string;
+    };
+
+    if (!response.ok || !payload.positions) {
+      throw new Error(payload.error ?? "Unable to fetch quote details.");
+    }
+
+    return payload.positions;
+  }
+
+  function updateHistoryStatus(id: string, status: RecommendationStatus) {
+    setHistory((items) =>
+      items.map((item) => (item.id === id ? { ...item, status } : item)),
+    );
+  }
+
+  function removePortfolio(id: string) {
+    setPortfolios((items) => items.filter((item) => item.id !== id));
+  }
+
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#f6fafb_0%,#eef3f3_46%,#f7f8f5_100%)]">
-      <section className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-4 border-b border-border pb-5 lg:flex-row lg:items-end lg:justify-between">
+      <section className="mx-auto flex w-full max-w-[1600px] flex-col gap-5 px-4 py-6 sm:px-6 lg:px-8">
+        <header className="flex flex-col gap-4 border-b border-border pb-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-2">
-            <p className="text-sm font-semibold text-primary">OpenStock-style dashboard</p>
+            <p className="text-sm font-semibold text-primary">
+              Multi-portfolio strategy dashboard
+            </p>
             <h1 className="text-3xl font-semibold tracking-normal text-foreground sm:text-4xl">
               Portfolio Command Center
             </h1>
-            <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
-              Upload a simple CSV and the app fetches CMP, previous close, sector, and valuation details.
+            <p className="max-w-3xl text-sm leading-6 text-muted-foreground">
+              Add portfolios, fetch CMP and previous close, compare allocation,
+              and track recommendation hit rate over time.
             </p>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-            <input
-              ref={inputRef}
-              type="file"
-              accept=".csv,text/csv"
-              className="hidden"
-              onChange={(event) => {
-                const file = event.target.files?.[0];
-                if (file) {
-                  handleCsvUpload(file);
-                }
-              }}
-            />
-            <Button
-              type="button"
-              onClick={() => inputRef.current?.click()}
-              disabled={isLoading}
-              className="w-full sm:w-auto"
-            >
-              <FileUp className="h-4 w-4" aria-hidden="true" />
-              {isLoading ? "Fetching quotes" : "Upload CSV"}
+            <Button type="button" variant="outline" onClick={downloadHistoryCsv}>
+              <Download className="h-4 w-4" aria-hidden="true" />
+              Download History
             </Button>
-            <Button variant="outline" asChild className="w-full sm:w-auto">
-              <a href="/portfolio.csv" download>
-                Sample CSV
-              </a>
+            <Button type="button" onClick={() => setIsAddOpen((value) => !value)}>
+              <Plus className="h-4 w-4" aria-hidden="true" />
+              Add Portfolio
             </Button>
           </div>
+        </header>
+
+        <div className="grid dashboard-grid gap-4">
+          <SummaryCard
+            title="Total Portfolio Value"
+            value={formatCurrency(totalValue)}
+            detail={`${portfolios.length} portfolios tracked`}
+          />
+          <SummaryCard
+            title="Recommendation History"
+            value={`${history.length} records`}
+            detail="Hit/Miss/NA feedback improves future scoring"
+          />
+          <SummaryCard
+            title="Live Quote Source"
+            value="CMP + Prev Close"
+            detail="Fetched on upload and refresh"
+          />
         </div>
 
+        {isAddOpen ? (
+          <AddPortfolioPanel
+            draftRows={draftRows}
+            error={error}
+            fileInputRef={fileInputRef}
+            isLoading={isLoading}
+            portfolioName={portfolioName}
+            setPortfolioName={setPortfolioName}
+            parseCsvRows={parseCsvRows}
+            updateDraftRow={updateDraftRow}
+            addDraftRow={() =>
+              setDraftRows((rows) => [
+                ...rows,
+                { list: "current", stock: "", quantity: 0 },
+              ])
+            }
+            removeDraftRow={(index) =>
+              setDraftRows((rows) => rows.filter((_, rowIndex) => rowIndex !== index))
+            }
+            addPortfolio={addPortfolio}
+          />
+        ) : null}
+
+        {error && !isAddOpen ? (
+          <div className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+            {error}
+          </div>
+        ) : null}
+
+        <section className="grid gap-4 xl:grid-cols-2 2xl:grid-cols-3">
+          {portfolios.map((portfolio) => (
+            <PortfolioColumn
+              key={portfolio.id}
+              history={history}
+              portfolio={portfolio}
+              isLoading={isLoading}
+              onRefresh={() => refreshPortfolio(portfolio)}
+              onRemove={() => removePortfolio(portfolio.id)}
+              onStatusChange={updateHistoryStatus}
+            />
+          ))}
+        </section>
+      </section>
+    </main>
+  );
+
+  function downloadHistoryCsv() {
+    const rows = [
+      [
+        "date",
+        "portfolio",
+        "section",
+        "symbol",
+        "company",
+        "action",
+        "horizon",
+        "confidence",
+        "status",
+        "rationale",
+      ],
+      ...history.map((item) => [
+        item.createdAt,
+        item.portfolioName,
+        item.section,
+        item.symbol,
+        item.company,
+        item.action,
+        item.horizon,
+        String(item.confidence),
+        item.status,
+        item.rationale,
+      ]),
+    ];
+    const csv = rows.map((row) => row.map(csvEscape).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "recommendation-history.csv";
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+}
+
+function AddPortfolioPanel({
+  draftRows,
+  error,
+  fileInputRef,
+  isLoading,
+  portfolioName,
+  setPortfolioName,
+  parseCsvRows,
+  updateDraftRow,
+  addDraftRow,
+  removeDraftRow,
+  addPortfolio,
+}: {
+  draftRows: PortfolioInputRow[];
+  error: string | null;
+  fileInputRef: RefObject<HTMLInputElement | null>;
+  isLoading: boolean;
+  portfolioName: string;
+  setPortfolioName: (value: string) => void;
+  parseCsvRows: (file: File) => void;
+  updateDraftRow: (index: number, row: Partial<PortfolioInputRow>) => void;
+  addDraftRow: () => void;
+  removeDraftRow: (index: number) => void;
+  addPortfolio: () => void;
+}) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Add Portfolio</CardTitle>
+        <CardDescription>
+          Enter stocks manually or upload CSV with columns: list, stock, quantity.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
         {error ? (
           <div className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
             {error}
           </div>
         ) : null}
 
-        <div className="grid dashboard-grid gap-4">
-          <SummaryCard
-            title="Portfolio Value"
-            value={formatCurrency(metrics.totalValue)}
-            detail={`${metrics.holdings.length} holdings from ${fileName}`}
-            icon={<BarChart3 className="h-5 w-5" aria-hidden="true" />}
-          />
-          <SummaryCard
-            title="Day Change"
-            value={formatCurrency(metrics.dayChange)}
-            detail={formatPercent(metrics.dayChangePercent)}
-            positive={metrics.dayChange >= 0}
-            icon={<TrendingUp className="h-5 w-5" aria-hidden="true" />}
-          />
-          <SummaryCard
-            title="Watchlist"
-            value={`${watchlist.length} stocks`}
-            detail={refreshedAt ? `Refreshed ${new Date(refreshedAt).toLocaleTimeString()}` : "Ready to track"}
-            icon={<TrendingUp className="h-5 w-5" aria-hidden="true" />}
-          />
-          <SummaryCard
-            title="Top Sector"
-            value={metrics.sectorAllocations[0]?.sector ?? "N/A"}
-            detail={`${metrics.sectorAllocations[0]?.percentage.toFixed(1) ?? "0.0"}% allocation`}
-            icon={<PieChartIcon className="h-5 w-5" aria-hidden="true" />}
-          />
+        <input
+          value={portfolioName}
+          onChange={(event) => setPortfolioName(event.target.value)}
+          placeholder="Portfolio name"
+          className="h-10 w-full rounded-md border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+        />
+
+        <div className="space-y-2">
+          {draftRows.map((row, index) => (
+            <div key={`${row.stock}-${index}`} className="grid gap-2 md:grid-cols-[140px_1fr_120px_40px]">
+              <select
+                value={row.list}
+                onChange={(event) =>
+                  updateDraftRow(index, {
+                    list: event.target.value as PortfolioInputRow["list"],
+                    quantity:
+                      event.target.value === "watchlist" ? 0 : row.quantity,
+                  })
+                }
+                className="h-10 rounded-md border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+              >
+                <option value="current">Current</option>
+                <option value="watchlist">Watchlist</option>
+              </select>
+              <input
+                value={row.stock}
+                onChange={(event) =>
+                  updateDraftRow(index, { stock: event.target.value })
+                }
+                placeholder="Stock name or NSE symbol"
+                className="h-10 rounded-md border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+              />
+              <input
+                value={row.quantity || ""}
+                disabled={row.list === "watchlist"}
+                onChange={(event) =>
+                  updateDraftRow(index, { quantity: Number(event.target.value) })
+                }
+                placeholder="Qty"
+                type="number"
+                className="h-10 rounded-md border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring disabled:bg-muted"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => removeDraftRow(index)}
+                disabled={draftRows.length === 1}
+                aria-label="Remove row"
+              >
+                <Trash2 className="h-4 w-4" aria-hidden="true" />
+              </Button>
+            </div>
+          ))}
         </div>
 
-        <div className="grid gap-4 lg:grid-cols-[1.35fr_0.9fr]">
-          <Card>
-            <CardHeader>
-              <CardTitle>Portfolio Growth</CardTitle>
-              <CardDescription>Estimated trend from recent market movement</CardDescription>
-            </CardHeader>
-            <CardContent className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={metrics.growth}>
-                  <defs>
-                    <linearGradient id="growthFill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#0f8b8d" stopOpacity={0.35} />
-                      <stop offset="95%" stopColor="#0f8b8d" stopOpacity={0.02} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#d8e1e2" />
-                  <XAxis dataKey="month" tickLine={false} axisLine={false} />
-                  <YAxis tickLine={false} axisLine={false} tickFormatter={formatCompactInr} />
-                  <Tooltip formatter={(value) => formatCurrency(Number(value))} />
-                  <Area
-                    type="monotone"
-                    dataKey="value"
-                    stroke="#0f8b8d"
-                    strokeWidth={3}
-                    fill="url(#growthFill)"
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".csv,text/csv"
+          className="hidden"
+          onChange={(event) => {
+            const file = event.target.files?.[0];
+            if (file) {
+              parseCsvRows(file);
+            }
+          }}
+        />
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Sector Allocation</CardTitle>
-              <CardDescription>Market value grouped by sector</CardDescription>
-            </CardHeader>
-            <CardContent className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={metrics.sectorAllocations}
-                    dataKey="value"
-                    nameKey="sector"
-                    innerRadius={58}
-                    outerRadius={105}
-                    paddingAngle={3}
-                  >
-                    {metrics.sectorAllocations.map((entry, index) => (
-                      <Cell
-                        key={entry.sector}
-                        fill={sectorColors[index % sectorColors.length]}
-                      />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    formatter={(value, _name, item) => [
-                      formatCurrency(Number(value)),
-                      item.payload.sector,
-                    ]}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <Button type="button" variant="outline" onClick={addDraftRow}>
+            <Plus className="h-4 w-4" aria-hidden="true" />
+            Add Row
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <FileUp className="h-4 w-4" aria-hidden="true" />
+            Upload CSV
+          </Button>
+          <Button type="button" onClick={addPortfolio} disabled={isLoading}>
+            <Sparkles className="h-4 w-4" aria-hidden="true" />
+            {isLoading ? "Fetching quotes" : "Create Portfolio"}
+          </Button>
         </div>
+      </CardContent>
+    </Card>
+  );
+}
 
-        <div className="grid gap-4 lg:grid-cols-[1fr_0.8fr]">
-          <HoldingsTable metrics={metrics} />
-          <div className="grid gap-4">
-            <WatchlistTable watchlist={watchlist} />
-            <Heatmap metrics={metrics} />
+function PortfolioColumn({
+  portfolio,
+  history,
+  isLoading,
+  onRefresh,
+  onRemove,
+  onStatusChange,
+}: {
+  portfolio: ManagedPortfolio;
+  history: Recommendation[];
+  isLoading: boolean;
+  onRefresh: () => void;
+  onRemove: () => void;
+  onStatusChange: (id: string, status: RecommendationStatus) => void;
+}) {
+  const metrics = calculatePortfolioMetrics(portfolio.positions);
+  const recommendations = generateRecommendations(portfolio, history);
+  const portfolioHistory = history.filter(
+    (item) => item.portfolioId === portfolio.id,
+  );
+
+  return (
+    <Card className="overflow-hidden">
+      <CardHeader className="border-b">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <CardTitle>{portfolio.name}</CardTitle>
+            <CardDescription>
+              {metrics.holdings.length} holdings | {formatCurrency(metrics.totalValue)}
+            </CardDescription>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={onRefresh}
+              disabled={isLoading}
+              aria-label="Refresh quotes and recommendations"
+            >
+              <RefreshCw className="h-4 w-4" aria-hidden="true" />
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={onRemove}
+              aria-label="Remove portfolio"
+            >
+              <Trash2 className="h-4 w-4" aria-hidden="true" />
+            </Button>
           </div>
         </div>
-      </section>
-    </main>
+      </CardHeader>
+      <CardContent className="space-y-5 pt-5">
+        <PortfolioMiniSummary metrics={metrics} />
+
+        <RecommendationBlock
+          title="1. Intraday Recommendations"
+          items={recommendations.intraday}
+        />
+        <RecommendationBlock
+          title="2. 1-3 Yr Portfolio Growth Plan"
+          items={recommendations.longTermPlan}
+        />
+        <RecommendationBlock
+          title="3. Potential Multibagger Stocks"
+          items={recommendations.multibaggerCandidates}
+        />
+        <RecommendationBlock
+          title="4. ETF Recommendations"
+          items={recommendations.etfs}
+        />
+        <SectorAllocationBlock metrics={metrics} />
+        <HistoryBlock
+          history={portfolioHistory}
+          onStatusChange={onStatusChange}
+        />
+      </CardContent>
+    </Card>
+  );
+}
+
+function PortfolioMiniSummary({
+  metrics,
+}: {
+  metrics: ReturnType<typeof calculatePortfolioMetrics>;
+}) {
+  return (
+    <div className="grid grid-cols-2 gap-2 text-sm">
+      <div className="rounded-md border bg-muted/40 p-3">
+        <div className="text-muted-foreground">Day Change</div>
+        <div
+          className={cn(
+            "font-semibold",
+            metrics.dayChange >= 0 ? "text-emerald-700" : "text-destructive",
+          )}
+        >
+          {formatCurrency(metrics.dayChange)}
+        </div>
+      </div>
+      <div className="rounded-md border bg-muted/40 p-3">
+        <div className="text-muted-foreground">Move</div>
+        <div
+          className={cn(
+            "font-semibold",
+            metrics.dayChange >= 0 ? "text-emerald-700" : "text-destructive",
+          )}
+        >
+          {formatPercent(metrics.dayChangePercent)}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function RecommendationBlock({
+  title,
+  items,
+}: {
+  title: string;
+  items: Recommendation[];
+}) {
+  return (
+    <section className="space-y-2">
+      <h2 className="text-sm font-semibold">{title}</h2>
+      <div className="space-y-2">
+        {items.map((item) => (
+          <div key={item.id} className="rounded-md border bg-background p-3">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <div className="text-sm font-semibold">
+                  {item.symbol} · {item.action}
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  {item.company} | {item.horizon}
+                </div>
+              </div>
+              <div className="rounded-md bg-accent px-2 py-1 text-xs font-semibold text-accent-foreground">
+                {item.confidence}%
+              </div>
+            </div>
+            <p className="mt-2 text-xs leading-5 text-muted-foreground">
+              {item.rationale}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function SectorAllocationBlock({
+  metrics,
+}: {
+  metrics: ReturnType<typeof calculatePortfolioMetrics>;
+}) {
+  return (
+    <section className="space-y-2">
+      <h2 className="text-sm font-semibold">5. Sector Allocation</h2>
+      <div className="grid gap-3 md:grid-cols-[130px_1fr]">
+        <div className="h-32">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={metrics.sectorAllocations}
+                dataKey="value"
+                nameKey="sector"
+                innerRadius={30}
+                outerRadius={58}
+                paddingAngle={2}
+              >
+                {metrics.sectorAllocations.map((entry, index) => (
+                  <Cell
+                    key={entry.sector}
+                    fill={sectorColors[index % sectorColors.length]}
+                  />
+                ))}
+              </Pie>
+              <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="space-y-1">
+          {metrics.sectorAllocations.map((sector) => (
+            <div
+              key={sector.sector}
+              className="flex justify-between gap-3 text-xs"
+            >
+              <span className="truncate text-muted-foreground">{sector.sector}</span>
+              <span className="font-semibold">{sector.percentage.toFixed(1)}%</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function HistoryBlock({
+  history,
+  onStatusChange,
+}: {
+  history: Recommendation[];
+  onStatusChange: (id: string, status: RecommendationStatus) => void;
+}) {
+  return (
+    <section className="space-y-2">
+      <h2 className="text-sm font-semibold">6. Recommendation Performance</h2>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Date</TableHead>
+            <TableHead>Section</TableHead>
+            <TableHead>Stock</TableHead>
+            <TableHead>Status</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {history.slice(0, 8).map((item) => (
+            <TableRow key={item.id}>
+              <TableCell className="text-xs">
+                {new Date(item.createdAt).toLocaleDateString()}
+              </TableCell>
+              <TableCell className="text-xs">{item.section}</TableCell>
+              <TableCell className="font-medium">{item.symbol}</TableCell>
+              <TableCell>
+                <select
+                  value={item.status}
+                  onChange={(event) =>
+                    onStatusChange(
+                      item.id,
+                      event.target.value as RecommendationStatus,
+                    )
+                  }
+                  className="h-8 rounded-md border bg-background px-2 text-xs"
+                >
+                  <option value="NA">NA</option>
+                  <option value="Hit">Hit</option>
+                  <option value="Miss">Miss</option>
+                </select>
+              </TableCell>
+            </TableRow>
+          ))}
+          {history.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={4} className="text-sm text-muted-foreground">
+                Refresh recommendations to start tracking performance.
+              </TableCell>
+            </TableRow>
+          ) : null}
+        </TableBody>
+      </Table>
+    </section>
   );
 }
 
@@ -322,206 +801,38 @@ function SummaryCard({
   title,
   value,
   detail,
-  positive,
-  icon,
 }: {
   title: string;
   value: string;
   detail: string;
-  positive?: boolean;
-  icon: ReactNode;
 }) {
   return (
     <Card>
-      <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-3">
+      <CardHeader className="pb-3">
         <CardDescription>{title}</CardDescription>
-        <div className="rounded-md bg-accent p-2 text-accent-foreground">{icon}</div>
       </CardHeader>
       <CardContent>
         <div className="truncate text-2xl font-semibold">{value}</div>
-        <p
-          className={cn(
-            "mt-1 text-sm text-muted-foreground",
-            positive === true && "text-emerald-700",
-            positive === false && "text-destructive",
-          )}
-        >
-          {detail}
-        </p>
+        <p className="mt-1 text-sm text-muted-foreground">{detail}</p>
       </CardContent>
     </Card>
   );
 }
 
-function HoldingsTable({
-  metrics,
-}: {
-  metrics: ReturnType<typeof calculatePortfolioMetrics>;
-}) {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Holdings</CardTitle>
-        <CardDescription>Position-level return, weight, and daily movement</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Ticker</TableHead>
-              <TableHead>Sector</TableHead>
-              <TableHead className="text-right">CMP</TableHead>
-              <TableHead className="text-right">Prev Close</TableHead>
-              <TableHead className="text-right">Value</TableHead>
-              <TableHead className="text-right">Day</TableHead>
-              <TableHead className="text-right">Weight</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {metrics.holdings.map((holding) => (
-              <TableRow key={holding.symbol}>
-                <TableCell>
-                  <div className="font-semibold">{holding.symbol}</div>
-                  <div className="max-w-44 truncate text-xs text-muted-foreground">
-                    {holding.company}
-                  </div>
-                </TableCell>
-                <TableCell>{holding.sector}</TableCell>
-                <TableCell className="text-right font-medium">
-                  {formatCurrency(holding.currentPrice)}
-                </TableCell>
-                <TableCell className="text-right">
-                  {formatCurrency(holding.previousClose)}
-                </TableCell>
-                <TableCell className="text-right font-medium">
-                  {formatCurrency(holding.marketValue)}
-                </TableCell>
-                <TableCell
-                  className={cn(
-                    "text-right font-medium",
-                    holding.dayChange >= 0 ? "text-emerald-700" : "text-destructive",
-                  )}
-                >
-                  {formatPercent(holding.dayChangePercent)}
-                </TableCell>
-                <TableCell className="text-right">
-                  {holding.portfolioWeight.toFixed(1)}%
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
-  );
+function generateRecommendationList(
+  portfolio: ManagedPortfolio,
+  history: Recommendation[],
+) {
+  const recommendations = generateRecommendations(portfolio, history);
+
+  return [
+    ...recommendations.intraday,
+    ...recommendations.longTermPlan,
+    ...recommendations.multibaggerCandidates,
+    ...recommendations.etfs,
+  ];
 }
 
-function WatchlistTable({ watchlist }: { watchlist: PortfolioPosition[] }) {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Watchlist</CardTitle>
-        <CardDescription>Tracked stocks enriched with live market details</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Ticker</TableHead>
-              <TableHead>Sector</TableHead>
-              <TableHead className="text-right">CMP</TableHead>
-              <TableHead className="text-right">Day</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {watchlist.map((stock) => {
-              const dayChangePercent =
-                stock.previousClose === 0
-                  ? 0
-                  : ((stock.currentPrice - stock.previousClose) /
-                      stock.previousClose) *
-                    100;
-
-              return (
-                <TableRow key={stock.symbol}>
-                  <TableCell>
-                    <div className="font-semibold">{stock.symbol}</div>
-                    <div className="max-w-44 truncate text-xs text-muted-foreground">
-                      {stock.company}
-                    </div>
-                  </TableCell>
-                  <TableCell>{stock.sector}</TableCell>
-                  <TableCell className="text-right font-medium">
-                    {formatCurrency(stock.currentPrice)}
-                  </TableCell>
-                  <TableCell
-                    className={cn(
-                      "text-right font-medium",
-                      stock.currentPrice >= stock.previousClose
-                        ? "text-emerald-700"
-                        : "text-destructive",
-                    )}
-                  >
-                    {formatPercent(dayChangePercent)}
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
-  );
-}
-
-function Heatmap({
-  metrics,
-}: {
-  metrics: ReturnType<typeof calculatePortfolioMetrics>;
-}) {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Portfolio Heatmap</CardTitle>
-        <CardDescription>Tile size follows portfolio weight, color follows return</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-          {metrics.holdings.map((holding) => {
-            const intensity = Math.min(Math.abs(holding.dayChangePercent) / 8, 1);
-            const background =
-              holding.dayChange >= 0
-                ? `rgba(15, 139, 141, ${0.18 + intensity * 0.55})`
-                : `rgba(209, 73, 91, ${0.18 + intensity * 0.55})`;
-
-            return (
-              <div
-                key={holding.symbol}
-                className="flex min-h-28 flex-col justify-between rounded-md border p-3"
-                style={{
-                  background,
-                  gridRow: holding.portfolioWeight > 14 ? "span 2" : undefined,
-                }}
-              >
-                <div>
-                  <div className="text-base font-semibold">{holding.symbol}</div>
-                  <div className="text-xs text-muted-foreground">
-                    {holding.portfolioWeight.toFixed(1)}% weight
-                  </div>
-                </div>
-                <div
-                  className={cn(
-                    "text-sm font-semibold",
-                    holding.dayChange >= 0 ? "text-teal-950" : "text-red-950",
-                  )}
-                >
-                  {formatPercent(holding.dayChangePercent)}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </CardContent>
-    </Card>
-  );
+function csvEscape(value: string) {
+  return `"${value.replace(/"/g, '""')}"`;
 }

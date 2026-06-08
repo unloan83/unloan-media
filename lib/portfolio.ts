@@ -15,6 +15,8 @@ export type PortfolioPosition = {
   quantity: number;
   currentPrice: number;
   previousClose: number;
+  volume?: number;
+  newsHeadlines?: string[];
   currency: "INR";
 };
 
@@ -49,6 +51,38 @@ export type StockProfile = {
   symbol: string;
   company: string;
   sector: string;
+};
+
+export type ManagedPortfolio = {
+  id: string;
+  name: string;
+  inputs: PortfolioInputRow[];
+  positions: PortfolioPosition[];
+  refreshedAt?: string;
+};
+
+export type RecommendationSection =
+  | "Intraday"
+  | "1-3 Yr Plan"
+  | "Multibagger"
+  | "ETF"
+  | "Sector Allocation";
+
+export type RecommendationStatus = "Hit" | "Miss" | "NA";
+
+export type Recommendation = {
+  id: string;
+  portfolioId: string;
+  portfolioName: string;
+  section: RecommendationSection;
+  symbol: string;
+  company: string;
+  action: "Buy" | "Sell" | "Hold" | "Watch" | "Accumulate" | "Trim";
+  horizon: string;
+  rationale: string;
+  confidence: number;
+  createdAt: string;
+  status: RecommendationStatus;
 };
 
 const numberFormatter = new Intl.NumberFormat("en-IN", {
@@ -406,6 +440,7 @@ export const samplePositions: PortfolioPosition[] = [
     quantity: 42,
     currentPrice: 2864,
     previousClose: 2838,
+    volume: 5100000,
     currency: "INR",
   },
   {
@@ -417,6 +452,7 @@ export const samplePositions: PortfolioPosition[] = [
     quantity: 28,
     currentPrice: 3925,
     previousClose: 3898,
+    volume: 1800000,
     currency: "INR",
   },
   {
@@ -428,6 +464,7 @@ export const samplePositions: PortfolioPosition[] = [
     quantity: 68,
     currentPrice: 1668,
     previousClose: 1656,
+    volume: 7400000,
     currency: "INR",
   },
   {
@@ -439,6 +476,7 @@ export const samplePositions: PortfolioPosition[] = [
     quantity: 54,
     currentPrice: 1516,
     previousClose: 1502,
+    volume: 4200000,
     currency: "INR",
   },
   {
@@ -450,6 +488,7 @@ export const samplePositions: PortfolioPosition[] = [
     quantity: 82,
     currentPrice: 1118,
     previousClose: 1106,
+    volume: 9800000,
     currency: "INR",
   },
   {
@@ -461,6 +500,7 @@ export const samplePositions: PortfolioPosition[] = [
     quantity: 0,
     currentPrice: 12680,
     previousClose: 12592,
+    volume: 640000,
     currency: "INR",
   },
   {
@@ -472,6 +512,7 @@ export const samplePositions: PortfolioPosition[] = [
     quantity: 0,
     currentPrice: 1512,
     previousClose: 1496,
+    volume: 2100000,
     currency: "INR",
   },
   {
@@ -483,6 +524,247 @@ export const samplePositions: PortfolioPosition[] = [
     quantity: 0,
     currentPrice: 3538,
     previousClose: 3508,
+    volume: 890000,
     currency: "INR",
   },
 ];
+
+export const samplePortfolio: ManagedPortfolio = {
+  id: "core-sample",
+  name: "Core Portfolio",
+  inputs: sampleInputs,
+  positions: samplePositions,
+  refreshedAt: new Date("2026-06-08T06:00:00.000Z").toISOString(),
+};
+
+export function generateRecommendations(
+  portfolio: ManagedPortfolio,
+  history: Recommendation[] = [],
+) {
+  const createdAt = new Date().toISOString();
+  const metrics = calculatePortfolioMetrics(portfolio.positions);
+  const current = metrics.holdings;
+  const watchlist = portfolio.positions.filter(
+    (position) => position.list === "watchlist",
+  );
+  const universe = [...current, ...watchlist].filter(
+    (position) => position.currentPrice > 0,
+  );
+  const historyScores = buildHistoryScores(history);
+
+  const intraday = universe
+    .map((position) => ({
+      position,
+      score:
+        getDayChangePercent(position) * 4 +
+        Math.log10((position.volume ?? 1) + 1) +
+        (position.newsHeadlines?.length ?? 0) * 0.5 +
+        (historyScores[position.symbol] ?? 0),
+    }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 5)
+    .map(({ position, score }) =>
+      buildRecommendation({
+        portfolio,
+        createdAt,
+        section: "Intraday",
+        position,
+        action: score >= 0 ? "Watch" : "Trim",
+        horizon: "Today",
+        confidence: confidenceFromScore(score, 4),
+        rationale: `${formatPercent(getDayChangePercent(position))} day move with ${formatVolume(position.volume)} volume signal. ${formatNewsSignal(position.newsHeadlines)}`,
+      }),
+    );
+
+  const longTermPlan = current
+    .map((position) => {
+      const sectorWeight =
+        metrics.sectorAllocations.find((sector) => sector.sector === position.sector)
+          ?.percentage ?? 0;
+      const score =
+        getDayChangePercent(position) +
+        (sectorWeight > 35 ? -2 : 1) +
+        (historyScores[position.symbol] ?? 0);
+
+      return {
+        position,
+        score,
+        sectorWeight,
+      };
+    })
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 5)
+    .map(({ position, score, sectorWeight }) =>
+      buildRecommendation({
+        portfolio,
+        createdAt,
+        section: "1-3 Yr Plan",
+        position,
+        action: score > 2 ? "Accumulate" : sectorWeight > 35 ? "Trim" : "Hold",
+        horizon: "1-3 years",
+        confidence: confidenceFromScore(score, 3),
+        rationale: `${position.sector} is ${sectorWeight.toFixed(1)}% of portfolio; use staged allocation discipline.`,
+      }),
+    );
+
+  const multibaggerCandidates = universe
+    .filter((position) =>
+      [
+        "Information Technology",
+        "Healthcare",
+        "Automobile and Auto Components",
+        "Power",
+        "Consumer Durables",
+      ].includes(position.sector),
+    )
+    .map((position) => ({
+      position,
+      score:
+        Math.max(getDayChangePercent(position), 0) * 2 +
+        (position.list === "watchlist" ? 1.5 : 0.5) +
+        (position.newsHeadlines?.length ?? 0) * 0.5 +
+        (historyScores[position.symbol] ?? 0),
+    }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3)
+    .map(({ position, score }) =>
+      buildRecommendation({
+        portfolio,
+        createdAt,
+        section: "Multibagger",
+        position,
+        action: "Watch",
+        horizon: "6-12 months",
+        confidence: confidenceFromScore(score, 4),
+        rationale: `${position.sector} exposure with momentum; validate earnings growth, debt, and valuation before entry.`,
+      }),
+    );
+
+  const etfs = [
+    {
+      symbol: "NIFTYBEES",
+      company: "Nippon India ETF Nifty 50 BeES",
+      sector: "Broad Market ETF",
+      rationale: "Core large-cap diversification for portfolio ballast.",
+    },
+    {
+      symbol: "JUNIORBEES",
+      company: "Nippon India ETF Junior BeES",
+      sector: "Mid/Large ETF",
+      rationale: "Adds next-50 exposure for 6-12 month growth participation.",
+    },
+    {
+      symbol: "BANKBEES",
+      company: "Nippon India ETF Bank BeES",
+      sector: "Banking ETF",
+      rationale: "Balances stock-specific bank exposure with basket exposure.",
+    },
+  ].map((etf, index) =>
+    buildRecommendation({
+      portfolio,
+      createdAt,
+      section: "ETF",
+      position: {
+        symbol: etf.symbol,
+        company: etf.company,
+      },
+      action: "Buy",
+      horizon: "6-12 months",
+      confidence: 68 - index * 4,
+      rationale: etf.rationale,
+    }),
+  );
+
+  return {
+    intraday,
+    longTermPlan,
+    multibaggerCandidates,
+    etfs,
+  };
+}
+
+function buildRecommendation({
+  portfolio,
+  createdAt,
+  section,
+  position,
+  action,
+  horizon,
+  confidence,
+  rationale,
+}: {
+  portfolio: ManagedPortfolio;
+  createdAt: string;
+  section: RecommendationSection;
+  position: Pick<PortfolioPosition, "symbol" | "company">;
+  action: Recommendation["action"];
+  horizon: string;
+  confidence: number;
+  rationale: string;
+}): Recommendation {
+  return {
+    id: `${portfolio.id}-${section}-${position.symbol}-${createdAt}`,
+    portfolioId: portfolio.id,
+    portfolioName: portfolio.name,
+    section,
+    symbol: position.symbol,
+    company: position.company,
+    action,
+    horizon,
+    rationale,
+    confidence,
+    createdAt,
+    status: "NA",
+  };
+}
+
+function buildHistoryScores(history: Recommendation[]) {
+  return history.reduce<Record<string, number>>((acc, item) => {
+    const current = acc[item.symbol] ?? 0;
+    if (item.status === "Hit") {
+      acc[item.symbol] = current + 1.25;
+    } else if (item.status === "Miss") {
+      acc[item.symbol] = current - 1.25;
+    } else {
+      acc[item.symbol] = current;
+    }
+
+    return acc;
+  }, {});
+}
+
+function getDayChangePercent(position: PortfolioPosition) {
+  if (position.previousClose === 0) {
+    return 0;
+  }
+
+  return ((position.currentPrice - position.previousClose) / position.previousClose) * 100;
+}
+
+function confidenceFromScore(score: number, divisor: number) {
+  return Math.max(45, Math.min(88, Math.round(60 + score / divisor)));
+}
+
+function formatVolume(volume?: number) {
+  if (!volume) {
+    return "limited";
+  }
+
+  if (volume >= 10000000) {
+    return `${(volume / 10000000).toFixed(1)}Cr`;
+  }
+
+  if (volume >= 100000) {
+    return `${(volume / 100000).toFixed(1)}L`;
+  }
+
+  return volume.toLocaleString("en-IN");
+}
+
+function formatNewsSignal(headlines?: string[]) {
+  if (!headlines?.length) {
+    return "No fresh headline signal available.";
+  }
+
+  return `Headline signal: ${headlines[0]}`;
+}
