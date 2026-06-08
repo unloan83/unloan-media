@@ -1,0 +1,33 @@
+name: Daily Recommendation CSV
+
+on:
+  schedule:
+    - cron: "15 4 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  recommendation-csv:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Capture expert and portfolio recommendations
+        run: node scripts/update_daily_recommendations.mjs --slot morning
+
+      - name: Commit CSV update
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update daily recommendation CSV"
+          file_pattern: data/daily_recommendations.csv

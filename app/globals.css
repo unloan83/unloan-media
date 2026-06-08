@@ -4,23 +4,23 @@
 
 @layer base {
   :root {
-    --background: 210 25% 97%;
-    --foreground: 225 25% 12%;
+    --background: 196 42% 96%;
+    --foreground: 222 34% 12%;
     --card: 0 0% 100%;
     --card-foreground: 225 25% 12%;
-    --primary: 194 84% 32%;
+    --primary: 187 86% 28%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 42 94% 92%;
-    --secondary-foreground: 31 35% 18%;
-    --muted: 210 28% 93%;
-    --muted-foreground: 218 12% 43%;
-    --accent: 152 46% 90%;
-    --accent-foreground: 166 45% 17%;
+    --secondary: 38 95% 89%;
+    --secondary-foreground: 34 44% 19%;
+    --muted: 190 28% 91%;
+    --muted-foreground: 216 16% 39%;
+    --accent: 151 55% 88%;
+    --accent-foreground: 166 52% 16%;
     --destructive: 0 74% 46%;
     --destructive-foreground: 0 0% 100%;
-    --border: 214 22% 86%;
-    --input: 214 22% 86%;
-    --ring: 194 84% 32%;
+    --border: 191 24% 82%;
+    --input: 191 24% 82%;
+    --ring: 187 86% 28%;
     --radius: 0.5rem;
   }
 
@@ -30,6 +30,10 @@
 
   body {
     @apply bg-background text-foreground antialiased;
+    background:
+      radial-gradient(circle at 12% 0%, rgba(20, 184, 166, 0.18), transparent 28rem),
+      radial-gradient(circle at 88% 4%, rgba(245, 158, 11, 0.16), transparent 24rem),
+      linear-gradient(180deg, #effafa 0%, #f5f1e8 48%, #eef7f3 100%);
     font-family:
       Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
       sans-serif;
@@ -39,5 +43,16 @@
 @layer utilities {
   .dashboard-grid {
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+
+  .market-panel {
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(236, 253, 245, 0.88)),
+      linear-gradient(90deg, rgba(15, 139, 141, 0.14), rgba(244, 162, 97, 0.12));
+  }
+
+  .portfolio-shell {
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.92));
   }
 }

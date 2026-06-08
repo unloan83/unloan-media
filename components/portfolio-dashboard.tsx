@@ -467,9 +467,9 @@ export function PortfolioDashboard() {
   }
 
   return (
-    <main className="min-h-screen bg-[linear-gradient(180deg,#f6fafb_0%,#eef3f3_46%,#f7f8f5_100%)]">
+    <main className="min-h-screen">
       <section className="mx-auto flex w-full max-w-[1600px] flex-col gap-5 px-4 py-6 sm:px-6 lg:px-8">
-        <header className="flex flex-col gap-4 border-b border-border pb-5 lg:flex-row lg:items-end lg:justify-between">
+        <header className="market-panel flex flex-col gap-4 rounded-lg border border-white/70 px-5 py-5 shadow-[0_18px_54px_rgba(17,94,89,0.14)] lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-2">
             <p className="text-sm font-semibold text-primary">
               unloan stock portfolio dashboard
@@ -629,7 +629,7 @@ function AddPortfolioPanel({
   addPortfolio: () => void;
 }) {
   return (
-    <Card>
+    <Card className="border-emerald-100/80 bg-[linear-gradient(135deg,rgba(255,255,255,0.96),rgba(236,253,245,0.82))]">
       <CardHeader>
         <CardTitle>Add Portfolio</CardTitle>
         <CardDescription>
@@ -767,7 +767,7 @@ function MarketOverviewSection({
         : "text-muted-foreground";
 
   return (
-    <Card>
+    <Card className="market-panel">
       <CardHeader className="flex flex-row items-start justify-between gap-3">
         <div>
           <CardTitle>Market Overview Today</CardTitle>
@@ -788,7 +788,7 @@ function MarketOverviewSection({
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid gap-3 lg:grid-cols-[220px_1fr]">
-          <div className="rounded-md border bg-muted/30 p-3">
+          <div className="rounded-md border border-teal-100 bg-white/70 p-3 shadow-sm">
             <div className="text-xs uppercase text-muted-foreground">
               Market Sentiment
             </div>
@@ -824,7 +824,7 @@ function MarketOverviewSection({
 
 function MarketTicker({ quote }: { quote: MarketQuote }) {
   return (
-    <div className="rounded-md border bg-background p-3">
+    <div className="rounded-md border border-white/70 bg-white/78 p-3 shadow-sm">
       <div className="text-sm font-semibold">{quote.name}</div>
       <div className="mt-1 text-xl font-semibold">{quote.price.toLocaleString("en-IN")}</div>
       <div
@@ -852,7 +852,7 @@ function TickerSkeleton() {
 
 function MoverTable({ title, quotes }: { title: string; quotes: MarketQuote[] }) {
   return (
-    <section className="space-y-2 rounded-md border bg-background p-2">
+    <section className="space-y-2 rounded-md border border-white/70 bg-white/78 p-2 shadow-sm">
       <h2 className="px-1 text-xs font-semibold uppercase tracking-normal text-muted-foreground">
         {title}
       </h2>
@@ -909,7 +909,7 @@ function ExpertActionMatrixSection({
   onRefresh: () => void;
 }) {
   return (
-    <Card>
+    <Card className="border-amber-100/90 bg-[linear-gradient(135deg,rgba(255,255,255,0.96),rgba(255,247,237,0.88))]">
       <CardHeader className="pb-3">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
@@ -1054,7 +1054,7 @@ function PortfolioColumn({
   const quoteScore = getQuoteScore(portfolio.positions);
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="portfolio-shell overflow-hidden">
       <CardHeader className="border-b">
         <div className="flex items-start justify-between gap-3">
           <div>
