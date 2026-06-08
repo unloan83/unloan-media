@@ -21,11 +21,18 @@ type YahooChartResponse = {
 type MarketQuote = {
   symbol: string;
   name: string;
+  segment: string;
   price: number;
   previousClose: number;
   change: number;
   changePercent: number;
   volume: number;
+};
+
+type MarketMoverGroup = {
+  segment: string;
+  gainers: MarketQuote[];
+  losers: MarketQuote[];
 };
 
 const indices = [
@@ -34,57 +41,88 @@ const indices = [
   { symbol: "^NSEBANK", name: "BANK NIFTY" },
 ];
 
-const indianStockUniverse = [
-  "RELIANCE",
-  "TCS",
-  "HDFCBANK",
-  "ICICIBANK",
-  "INFY",
-  "ITC",
-  "LT",
-  "SBIN",
-  "BHARTIARTL",
-  "AXISBANK",
-  "KOTAKBANK",
-  "MARUTI",
-  "SUNPHARMA",
-  "TITAN",
-  "BAJFINANCE",
-  "TATAMOTORS",
-  "TATASTEEL",
-  "WIPRO",
-  "HCLTECH",
-  "NTPC",
-  "ULTRACEMCO",
-  "ASIANPAINT",
-  "HINDUNILVR",
-  "NESTLEIND",
-  "POWERGRID",
-  "ONGC",
-  "COALINDIA",
-  "ADANIENT",
-  "ADANIPORTS",
-  "M&M",
-  "BAJAJFINSV",
-  "TECHM",
-  "GRASIM",
-  "JSWSTEEL",
-  "CIPLA",
-  "DRREDDY",
-  "EICHERMOT",
-  "HEROMOTOCO",
-  "HINDALCO",
-  "TATA_CONSUM",
-].filter((symbol) => symbol !== "TATA_CONSUM");
+const marketMoverUniverse = {
+  "Large Cap": [
+    "RELIANCE",
+    "TCS",
+    "HDFCBANK",
+    "ICICIBANK",
+    "INFY",
+    "ITC",
+    "LT",
+    "SBIN",
+    "BHARTIARTL",
+    "AXISBANK",
+    "KOTAKBANK",
+    "MARUTI",
+    "SUNPHARMA",
+    "TITAN",
+    "BAJFINANCE",
+    "NTPC",
+  ],
+  "Mid Cap": [
+    "MAXHEALTH",
+    "POLYCAB",
+    "DIXON",
+    "PERSISTENT",
+    "CUMMINSIND",
+    "RECLTD",
+    "VBL",
+    "AUBANK",
+    "FEDERALBNK",
+    "INDHOTEL",
+    "ASHOKLEY",
+    "MPHASIS",
+    "COFORGE",
+    "BALKRISIND",
+    "LUPIN",
+    "IDEA",
+  ],
+  "Small Cap": [
+    "GIPCL",
+    "NUCLEUS",
+    "TEXRAIL",
+    "RAMASTEEL",
+    "DWARKESH",
+    "MOREPENLAB",
+    "SUZLON",
+    "IREDA",
+    "RVNL",
+    "BEML",
+    "MTARTECH",
+    "GRAVITA",
+    "KPEL",
+    "JWL",
+    "SENCO",
+    "HBLPOWER",
+  ],
+};
 
 export async function GET() {
   const [indexQuotes, stockQuotes] = await Promise.all([
     Promise.all(indices.map((index) => fetchYahooQuote(index.symbol, index.name))),
     Promise.all(
-      indianStockUniverse.map((symbol) => fetchYahooQuote(`${symbol}.NS`, symbol)),
+      Object.entries(marketMoverUniverse).flatMap(([segment, symbols]) =>
+        symbols.map((symbol) => fetchYahooQuote(`${symbol}.NS`, symbol, segment)),
+      ),
     ),
   ]);
   const validStocks = stockQuotes.filter((quote) => quote.price > 0);
+  const moverGroups: MarketMoverGroup[] = Object.keys(marketMoverUniverse).map(
+    (segment) => {
+      const segmentQuotes = validStocks.filter((quote) => quote.segment === segment);
+
+      return {
+        segment,
+        gainers: [...segmentQuotes]
+          .sort((a, b) => b.changePercent - a.changePercent)
+          .slice(0, 4),
+        losers: [...segmentQuotes]
+          .sort((a, b) => a.changePercent - b.changePercent)
+          .slice(0, 4),
+      };
+    },
+  );
   const averageMove =
     indexQuotes.reduce((sum, quote) => sum + quote.changePercent, 0) /
     Math.max(indexQuotes.length, 1);
@@ -95,22 +133,22 @@ export async function GET() {
     sentiment,
     averageMove,
     indices: indexQuotes,
-    gainers: [...validStocks]
-      .filter((quote) => quote.changePercent > 0)
-      .sort((a, b) => b.changePercent - a.changePercent)
-      .slice(0, 10),
-    losers: [...validStocks]
-      .filter((quote) => quote.changePercent < 0)
-      .sort((a, b) => a.changePercent - b.changePercent)
-      .slice(0, 10),
+    moverGroups,
+    gainers: moverGroups.flatMap((group) => group.gainers),
+    losers: moverGroups.flatMap((group) => group.losers),
     refreshedAt: new Date().toISOString(),
   });
 }
 
-async function fetchYahooQuote(symbol: string, fallbackName: string): Promise<MarketQuote> {
+async function fetchYahooQuote(
+  symbol: string,
+  fallbackName: string,
+  segment = "Index",
+): Promise<MarketQuote> {
   const fallback = {
     symbol: symbol.replace(".NS", ""),
     name: fallbackName,
+    segment,
     price: 0,
     previousClose: 0,
     change: 0,
@@ -143,6 +181,7 @@ async function fetchYahooQuote(symbol: string, fallbackName: string): Promise<Ma
     return {
       symbol: symbol.replace(".NS", ""),
       name: meta?.shortName ?? meta?.longName ?? fallbackName,
+      segment,
       price,
       previousClose,
       change,

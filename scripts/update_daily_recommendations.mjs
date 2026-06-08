@@ -26,47 +26,62 @@ const headers = [
   "notes",
 ];
 
-const marketUniverse = [
-  "RELIANCE",
-  "TCS",
-  "HDFCBANK",
-  "ICICIBANK",
-  "INFY",
-  "ITC",
-  "LT",
-  "SBIN",
-  "BHARTIARTL",
-  "AXISBANK",
-  "KOTAKBANK",
-  "MARUTI",
-  "SUNPHARMA",
-  "TITAN",
-  "BAJFINANCE",
-  "TATAMOTORS",
-  "TATASTEEL",
-  "WIPRO",
-  "HCLTECH",
-  "NTPC",
-  "ULTRACEMCO",
-  "ASIANPAINT",
-  "HINDUNILVR",
-  "NESTLEIND",
-  "POWERGRID",
-  "ONGC",
-  "COALINDIA",
-  "ADANIENT",
-  "ADANIPORTS",
-  "M&M",
-  "BAJAJFINSV",
-  "TECHM",
-  "GRASIM",
-  "JSWSTEEL",
-  "CIPLA",
-  "DRREDDY",
-  "EICHERMOT",
-  "HEROMOTOCO",
-  "HINDALCO",
-];
+const marketMoverGroups = {
+  "Large Cap": [
+    "RELIANCE",
+    "TCS",
+    "HDFCBANK",
+    "ICICIBANK",
+    "INFY",
+    "ITC",
+    "LT",
+    "SBIN",
+    "BHARTIARTL",
+    "AXISBANK",
+    "KOTAKBANK",
+    "MARUTI",
+    "SUNPHARMA",
+    "TITAN",
+    "BAJFINANCE",
+    "NTPC",
+  ],
+  "Mid Cap": [
+    "MAXHEALTH",
+    "POLYCAB",
+    "DIXON",
+    "PERSISTENT",
+    "CUMMINSIND",
+    "RECLTD",
+    "VBL",
+    "AUBANK",
+    "FEDERALBNK",
+    "INDHOTEL",
+    "ASHOKLEY",
+    "MPHASIS",
+    "COFORGE",
+    "BALKRISIND",
+    "LUPIN",
+    "IDEA",
+  ],
+  "Small Cap": [
+    "GIPCL",
+    "NUCLEUS",
+    "TEXRAIL",
+    "RAMASTEEL",
+    "DWARKESH",
+    "MOREPENLAB",
+    "SUZLON",
+    "IREDA",
+    "RVNL",
+    "BEML",
+    "MTARTECH",
+    "GRAVITA",
+    "KPEL",
+    "JWL",
+    "SENCO",
+    "HBLPOWER",
+  ],
+};
 
 const expertGroups = {
   "Large-Cap Bluechips": [
@@ -132,40 +147,44 @@ await writeRows(rows);
 console.log(`Wrote ${rows.length} ${slot} rows to ${path.relative(repoRoot, outputPath)}`);
 
 async function buildMarketRows() {
-  const quotes = (await Promise.all(marketUniverse.map(fetchQuote))).filter(
-    (quote) => quote.price > 0,
-  );
-  const gainers = [...quotes]
-    .filter((quote) => quote.changePercent > 0)
-    .sort((a, b) => b.changePercent - a.changePercent)
-    .slice(0, 10);
-  const losers = [...quotes]
-    .filter((quote) => quote.changePercent < 0)
-    .sort((a, b) => a.changePercent - b.changePercent)
-    .slice(0, 10);
+  const rows = [];
 
-  return [
-    ...gainers.map((quote) =>
-      toCsvRow(quote, {
-        runSlot: "market-close",
-        category: "gainer",
-        source: "market-movers",
-        segment: "Top 10 Gainers",
-        action: "Track",
-        notes: "Post-close top gainer by daily change percent",
-      }),
-    ),
-    ...losers.map((quote) =>
-      toCsvRow(quote, {
-        runSlot: "market-close",
-        category: "loser",
-        source: "market-movers",
-        segment: "Top 10 Losers",
-        action: "Review Risk",
-        notes: "Post-close top loser by daily change percent",
-      }),
-    ),
-  ];
+  for (const [segment, symbols] of Object.entries(marketMoverGroups)) {
+    const quotes = (await Promise.all(symbols.map(fetchQuote))).filter(
+      (quote) => quote.price > 0,
+    );
+    const gainers = [...quotes]
+      .sort((a, b) => b.changePercent - a.changePercent)
+      .slice(0, 4);
+    const losers = [...quotes]
+      .sort((a, b) => a.changePercent - b.changePercent)
+      .slice(0, 4);
+
+    rows.push(
+      ...gainers.map((quote) =>
+        toCsvRow(quote, {
+          runSlot: "market-close",
+          category: "gainer",
+          source: "market-movers",
+          segment: `${segment} Top Gainers`,
+          action: "Track",
+          notes: "Post-close segmented top gainer by daily change percent",
+        }),
+      ),
+      ...losers.map((quote) =>
+        toCsvRow(quote, {
+          runSlot: "market-close",
+          category: "loser",
+          source: "market-movers",
+          segment: `${segment} Top Losers`,
+          action: "Review Risk",
+          notes: "Post-close segmented top loser by daily change percent",
+        }),
+      ),
+    );
+  }
+
+  return rows;
 }
 
 async function buildExpertRows() {

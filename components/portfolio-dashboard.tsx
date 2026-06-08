@@ -81,6 +81,7 @@ type CsvRow = {
 type MarketQuote = {
   symbol: string;
   name: string;
+  segment?: string;
   price: number;
   change: number;
   changePercent: number;
@@ -91,9 +92,16 @@ type MarketOverview = {
   sentiment: "Positive" | "Negative" | "Neutral";
   averageMove: number;
   indices: MarketQuote[];
+  moverGroups?: MarketMoverGroup[];
   gainers: MarketQuote[];
   losers: MarketQuote[];
   refreshedAt: string;
+};
+
+type MarketMoverGroup = {
+  segment: string;
+  gainers: MarketQuote[];
+  losers: MarketQuote[];
 };
 
 type ExpertMatrixQuote = {
@@ -772,7 +780,7 @@ function MarketOverviewSection({
         <div>
           <CardTitle>Market Overview Today</CardTitle>
           <CardDescription>
-            Live market sentiment, index tickers, and daily movers from a broad Indian-stock universe.
+            Segmented large, mid, and small-cap movers with live timestamp.
           </CardDescription>
         </div>
         <Button
@@ -787,7 +795,7 @@ function MarketOverviewSection({
         </Button>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid gap-3 lg:grid-cols-[220px_1fr]">
+        <div className="grid gap-3 lg:grid-cols-[200px_1fr]">
           <div className="rounded-md border border-teal-100 bg-white/70 p-3 shadow-sm">
             <div className="text-xs uppercase text-muted-foreground">
               Market Sentiment
@@ -797,6 +805,9 @@ function MarketOverviewSection({
             </div>
             <div className="mt-1 text-sm text-muted-foreground">
               Index average: {formatPercent(market?.averageMove ?? 0)}
+            </div>
+            <div className="mt-2 text-[11px] leading-4 text-muted-foreground">
+              Updated: {market?.refreshedAt ? formatTimestamp(market.refreshedAt) : "Fetching"}
             </div>
           </div>
           <div className="grid gap-2 md:grid-cols-3">
@@ -813,9 +824,25 @@ function MarketOverviewSection({
           </div>
         </div>
 
-        <div className="grid gap-3 lg:grid-cols-2">
-          <MoverTable title="Top 10 Gainers" quotes={market?.gainers ?? []} />
-          <MoverTable title="Top 10 Losers" quotes={market?.losers ?? []} />
+        <div className="space-y-2">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+            <h2 className="text-sm font-semibold">Daily Movers by Market Cap</h2>
+            <span className="text-xs text-muted-foreground">
+              4 gainers + 4 losers each from large, mid, and small-cap groups
+            </span>
+          </div>
+          <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-3">
+            {(market?.moverGroups ?? []).map((group) => (
+              <MoverSegmentCard key={group.segment} group={group} />
+            ))}
+            {!market ? (
+              <>
+                <MoverSegmentSkeleton />
+                <MoverSegmentSkeleton />
+                <MoverSegmentSkeleton />
+              </>
+            ) : null}
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -850,51 +877,80 @@ function TickerSkeleton() {
   );
 }
 
-function MoverTable({ title, quotes }: { title: string; quotes: MarketQuote[] }) {
+function MoverSegmentCard({ group }: { group: MarketMoverGroup }) {
   return (
-    <section className="space-y-2 rounded-md border border-white/70 bg-white/78 p-2 shadow-sm">
-      <h2 className="px-1 text-xs font-semibold uppercase tracking-normal text-muted-foreground">
+    <section className="rounded-md border border-white/70 bg-white/80 p-2 shadow-sm">
+      <div className="mb-2 flex items-center justify-between">
+        <h2 className="text-xs font-semibold uppercase tracking-normal text-muted-foreground">
+          {group.segment}
+        </h2>
+        <span className="rounded bg-teal-50 px-1.5 py-0.5 text-[10px] font-semibold text-teal-800">
+          8 stocks
+        </span>
+      </div>
+      <div className="grid gap-2 sm:grid-cols-2">
+        <MoverMiniList title="Gainers" quotes={group.gainers} tone="up" />
+        <MoverMiniList title="Losers" quotes={group.losers} tone="down" />
+      </div>
+    </section>
+  );
+}
+
+function MoverMiniList({
+  title,
+  quotes,
+  tone,
+}: {
+  title: string;
+  quotes: MarketQuote[];
+  tone: "up" | "down";
+}) {
+  return (
+    <div className="space-y-1">
+      <div
+        className={cn(
+          "text-[11px] font-semibold",
+          tone === "up" ? "text-emerald-700" : "text-destructive",
+        )}
+      >
         {title}
-      </h2>
-      <Table className="text-xs">
-        <TableHeader>
-          <TableRow>
-            <TableHead className="h-7 px-2">Stock</TableHead>
-            <TableHead className="h-7 px-2 text-right">Price</TableHead>
-            <TableHead className="h-7 px-2 text-right">Move</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {quotes.map((quote) => (
-            <TableRow key={`${title}-${quote.symbol}`}>
-              <TableCell className="px-2 py-1.5">
-                <div className="font-medium">{quote.symbol}</div>
-                <div className="max-w-36 truncate text-[11px] text-muted-foreground">
-                  {quote.name}
-                </div>
-              </TableCell>
-              <TableCell className="px-2 py-1.5 text-right">
-                {quote.price.toLocaleString("en-IN")}
-              </TableCell>
-              <TableCell
-                className={cn(
-                  "px-2 py-1.5 text-right font-medium",
-                  quote.change >= 0 ? "text-emerald-700" : "text-destructive",
-                )}
-              >
-                {formatPercent(quote.changePercent)}
-              </TableCell>
-            </TableRow>
-          ))}
-          {quotes.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan={3} className="px-2 py-2 text-xs text-muted-foreground">
-                Loading market movers.
-              </TableCell>
-            </TableRow>
-          ) : null}
-        </TableBody>
-      </Table>
+      </div>
+      {quotes.map((quote) => (
+        <div
+          key={`${title}-${quote.symbol}`}
+          className="grid grid-cols-[1fr_auto] gap-2 rounded bg-muted/30 px-2 py-1 text-[11px]"
+        >
+          <span className="truncate font-semibold">{quote.symbol}</span>
+          <span
+            className={cn(
+              "font-semibold",
+              quote.change >= 0 ? "text-emerald-700" : "text-destructive",
+            )}
+          >
+            {formatPercent(quote.changePercent)}
+          </span>
+          <span className="col-span-2 truncate text-[10px] text-muted-foreground">
+            {quote.name} | {quote.price.toLocaleString("en-IN")}
+          </span>
+        </div>
+      ))}
+      {quotes.length === 0 ? (
+        <div className="rounded bg-muted/30 px-2 py-2 text-[11px] text-muted-foreground">
+          No names yet.
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function MoverSegmentSkeleton() {
+  return (
+    <section className="rounded-md border border-white/70 bg-white/80 p-2 shadow-sm">
+      <div className="h-4 w-20 rounded bg-muted" />
+      <div className="mt-2 grid gap-2 sm:grid-cols-2">
+        <div className="h-28 rounded bg-muted" />
+        <div className="h-28 rounded bg-muted" />
+      </div>
     </section>
   );
 }
@@ -910,15 +966,18 @@ function ExpertActionMatrixSection({
 }) {
   return (
     <Card className="border-amber-100/90 bg-[linear-gradient(135deg,rgba(255,255,255,0.96),rgba(255,247,237,0.88))]">
-      <CardHeader className="pb-3">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <CardTitle>Expert Action Matrix</CardTitle>
-            <CardDescription>
-              Daily recommendation feed adapted from the Expert Insight matrix format.
-            </CardDescription>
-          </div>
-          <Button
+        <CardHeader className="pb-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <CardTitle>Expert Action Matrix</CardTitle>
+              <CardDescription>
+                Compact daily expert-style picks with long-term targets and breakout signals.
+              </CardDescription>
+              <div className="mt-1 text-xs font-medium text-amber-800">
+                Generated: {matrix?.asOf ? formatTimestamp(matrix.asOf) : "Fetching live feed"}
+              </div>
+            </div>
+            <Button
             type="button"
             variant="outline"
             size="sm"
@@ -930,16 +989,16 @@ function ExpertActionMatrixSection({
           </Button>
         </div>
       </CardHeader>
-      <CardContent className="space-y-3">
-        <div className="flex flex-col gap-1 rounded-md border bg-muted/30 px-3 py-2 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <span>{matrix?.verified ?? "Fetching live NSE recommendation matrix."}</span>
-          <span>
-            {matrix?.asOf
-              ? `As of ${new Date(matrix.asOf).toLocaleString("en-IN")}`
-              : "Live feed pending"}
-          </span>
-        </div>
-        <div className="grid gap-3 lg:grid-cols-2 2xl:grid-cols-4">
+        <CardContent className="space-y-2">
+          <div className="flex flex-col gap-1 rounded-md border border-amber-100 bg-white/60 px-3 py-2 text-[11px] text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+            <span>{matrix?.verified ?? "Fetching live NSE recommendation matrix."}</span>
+            <span>
+              {matrix?.asOf
+                ? `Timestamp: ${formatTimestamp(matrix.asOf)}`
+                : "Live feed pending"}
+            </span>
+          </div>
+          <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-4">
           {(matrix?.categories ?? []).map((category) => (
             <ExpertCategoryCard key={category.key} category={category} />
           ))}
@@ -959,15 +1018,17 @@ function ExpertActionMatrixSection({
 
 function ExpertCategoryCard({ category }: { category: ExpertMatrixCategory }) {
   return (
-    <section className="rounded-md border bg-background p-3">
-      <h2 className="text-sm font-semibold">{category.title}</h2>
+    <section className="rounded-md border border-amber-100/80 bg-white/78 p-2 shadow-sm">
+      <h2 className="text-xs font-semibold uppercase tracking-normal text-amber-900">
+        {category.title}
+      </h2>
       <ExpertPickList
-        title="Long-Term Upsides"
+        title="Targets"
         items={category.longTermUpsides}
         mode="target"
       />
       <ExpertPickList
-        title="Intraday Breakouts"
+        title="Breakouts"
         items={category.intradayBreakouts}
         mode="volume"
       />
@@ -985,18 +1046,18 @@ function ExpertPickList({
   mode: "target" | "volume";
 }) {
   return (
-    <div className="mt-3 space-y-1.5">
-      <h3 className="text-xs font-semibold text-muted-foreground">{title}</h3>
+    <div className="mt-2 space-y-1">
+      <h3 className="text-[11px] font-semibold text-muted-foreground">{title}</h3>
       {items.map((item) => (
         <div
           key={`${title}-${item.symbol}`}
-          className="rounded-md bg-muted/35 px-2 py-1.5 text-xs"
+          className="rounded bg-muted/35 px-2 py-1 text-[11px]"
         >
           <div className="flex items-center justify-between gap-2">
             <span className="font-semibold">{item.symbol}</span>
             <span className="text-muted-foreground">{formatCurrency(item.price)}</span>
           </div>
-          <div className="mt-0.5 text-[11px] leading-4 text-muted-foreground">
+          <div className="mt-0.5 text-[10px] leading-4 text-muted-foreground">
             {mode === "target"
               ? `Target ${formatCurrency(item.target)} (${formatPercent(item.upside)})`
               : `Volume shock ${item.volumeShock.toFixed(2)}x`}
@@ -1542,6 +1603,13 @@ function getQuoteScore(positions: PortfolioPosition[]) {
   }, 0);
 
   return Math.round((availableSignals / totalSignals) * 100);
+}
+
+function formatTimestamp(value: string) {
+  return new Date(value).toLocaleString("en-IN", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
 }
 
 function getCsvValue(row: CsvRow, keys: string[]) {
