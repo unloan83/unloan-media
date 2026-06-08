@@ -31,12 +31,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  PortfolioHolding,
+  PortfolioInputRow,
+  PortfolioPosition,
   calculatePortfolioMetrics,
+  formatCompactInr,
   formatCurrency,
   formatPercent,
-  identifySector,
-  sampleHoldings,
+  samplePositions,
 } from "@/lib/portfolio";
 import { cn } from "@/lib/utils";
 import { useMemo, useRef, useState, type ReactNode } from "react";
@@ -53,68 +54,113 @@ const sectorColors = [
 ];
 
 type CsvRow = {
-  symbol?: string;
-  company?: string;
-  sector?: string;
+  list?: string;
+  type?: string;
+  stock?: string;
+  name?: string;
   quantity?: string;
-  averagePrice?: string;
-  currentPrice?: string;
-  previousClose?: string;
+  qty?: string;
 };
 
 export function PortfolioDashboard() {
-  const [holdings, setHoldings] = useState<PortfolioHolding[]>(sampleHoldings);
+  const [positions, setPositions] = useState<PortfolioPosition[]>(samplePositions);
   const [fileName, setFileName] = useState("sample data");
+  const [refreshedAt, setRefreshedAt] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const metrics = useMemo(() => calculatePortfolioMetrics(holdings), [holdings]);
+  const metrics = useMemo(() => calculatePortfolioMetrics(positions), [positions]);
+  const watchlist = useMemo(
+    () => positions.filter((position) => position.list === "watchlist"),
+    [positions],
+  );
 
   function handleCsvUpload(file: File) {
     Papa.parse<CsvRow>(file, {
       header: true,
       skipEmptyLines: true,
-      complete: (result) => {
+      complete: async (result) => {
         const parsed = result.data
           .map((row) => {
-            const symbol = row.symbol?.trim().toUpperCase() ?? "";
-            const company = row.company?.trim() ?? "";
-            const suppliedSector = row.sector?.trim();
+            const listValue = (row.list ?? row.type ?? "current")
+              .trim()
+              .toLowerCase();
+            const list: PortfolioInputRow["list"] = listValue.includes("watch")
+              ? "watchlist"
+              : "current";
+            const stock = (row.stock ?? row.name ?? "").trim();
+            const quantity = list === "watchlist" ? 0 : Number(row.quantity ?? row.qty);
 
             return {
-              symbol,
-              company,
-              sector: suppliedSector || identifySector(symbol, company),
-              quantity: Number(row.quantity),
-              averagePrice: Number(row.averagePrice),
-              currentPrice: Number(row.currentPrice),
-              previousClose: Number(row.previousClose),
+              list,
+              stock,
+              quantity,
             };
           })
           .filter(
             (row) =>
-              row.symbol &&
-              row.company &&
-              Number.isFinite(row.quantity) &&
-              Number.isFinite(row.averagePrice) &&
-              Number.isFinite(row.currentPrice) &&
-              Number.isFinite(row.previousClose),
+              row.stock &&
+              (row.list === "watchlist" ||
+                (Number.isFinite(row.quantity) && row.quantity > 0)),
           );
 
         if (parsed.length === 0) {
           setError(
-            "No valid rows found. Use columns: symbol, company, quantity, averagePrice, currentPrice, previousClose. Sector is optional.",
+            "No valid rows found. Use columns: list, stock, quantity. Watchlist rows can leave quantity blank.",
           );
           return;
         }
 
-        setHoldings(parsed);
-        setFileName(file.name);
-        setError(null);
+        await fetchQuotes(parsed, file.name);
       },
       error: (parseError) => {
         setError(parseError.message);
       },
     });
+  }
+
+  async function fetchQuotes(rows: PortfolioInputRow[], nextFileName = fileName) {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/quotes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ rows }),
+      });
+
+      const payload = (await response.json()) as {
+        positions?: PortfolioPosition[];
+        refreshedAt?: string;
+        unresolved?: string[];
+        error?: string;
+      };
+
+      if (!response.ok || !payload.positions) {
+        throw new Error(payload.error ?? "Unable to fetch quote details.");
+      }
+
+      setPositions(payload.positions);
+      setFileName(nextFileName);
+      setRefreshedAt(payload.refreshedAt ?? null);
+
+      if (payload.unresolved?.length) {
+        setError(
+          `Some quote details could not be fetched: ${payload.unresolved.join(", ")}.`,
+        );
+      }
+    } catch (fetchError) {
+      setError(
+        fetchError instanceof Error
+          ? fetchError.message
+          : "Unable to fetch quote details.",
+      );
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -127,7 +173,7 @@ export function PortfolioDashboard() {
               Portfolio Command Center
             </h1>
             <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
-              Upload a holdings CSV to refresh INR valuation, sector allocation, growth, and concentration analytics.
+              Upload a simple CSV and the app fetches CMP, previous close, sector, and valuation details.
             </p>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
@@ -146,10 +192,11 @@ export function PortfolioDashboard() {
             <Button
               type="button"
               onClick={() => inputRef.current?.click()}
+              disabled={isLoading}
               className="w-full sm:w-auto"
             >
               <FileUp className="h-4 w-4" aria-hidden="true" />
-              Upload CSV
+              {isLoading ? "Fetching quotes" : "Upload CSV"}
             </Button>
             <Button variant="outline" asChild className="w-full sm:w-auto">
               <a href="/portfolio.csv" download>
@@ -169,21 +216,20 @@ export function PortfolioDashboard() {
           <SummaryCard
             title="Portfolio Value"
             value={formatCurrency(metrics.totalValue)}
-            detail={`${holdings.length} holdings from ${fileName}`}
+            detail={`${metrics.holdings.length} holdings from ${fileName}`}
             icon={<BarChart3 className="h-5 w-5" aria-hidden="true" />}
-          />
-          <SummaryCard
-            title="Total Return"
-            value={formatCurrency(metrics.totalGainLoss)}
-            detail={formatPercent(metrics.totalGainLossPercent)}
-            positive={metrics.totalGainLoss >= 0}
-            icon={<TrendingUp className="h-5 w-5" aria-hidden="true" />}
           />
           <SummaryCard
             title="Day Change"
             value={formatCurrency(metrics.dayChange)}
             detail={formatPercent(metrics.dayChangePercent)}
             positive={metrics.dayChange >= 0}
+            icon={<TrendingUp className="h-5 w-5" aria-hidden="true" />}
+          />
+          <SummaryCard
+            title="Watchlist"
+            value={`${watchlist.length} stocks`}
+            detail={refreshedAt ? `Refreshed ${new Date(refreshedAt).toLocaleTimeString()}` : "Ready to track"}
             icon={<TrendingUp className="h-5 w-5" aria-hidden="true" />}
           />
           <SummaryCard
@@ -198,7 +244,7 @@ export function PortfolioDashboard() {
           <Card>
             <CardHeader>
               <CardTitle>Portfolio Growth</CardTitle>
-              <CardDescription>Estimated trend from cost basis to current value</CardDescription>
+              <CardDescription>Estimated trend from recent market movement</CardDescription>
             </CardHeader>
             <CardContent className="h-80">
               <ResponsiveContainer width="100%" height="100%">
@@ -211,7 +257,7 @@ export function PortfolioDashboard() {
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="#d8e1e2" />
                   <XAxis dataKey="month" tickLine={false} axisLine={false} />
-                  <YAxis tickLine={false} axisLine={false} tickFormatter={formatAxisInr} />
+                  <YAxis tickLine={false} axisLine={false} tickFormatter={formatCompactInr} />
                   <Tooltip formatter={(value) => formatCurrency(Number(value))} />
                   <Area
                     type="monotone"
@@ -262,23 +308,14 @@ export function PortfolioDashboard() {
 
         <div className="grid gap-4 lg:grid-cols-[1fr_0.8fr]">
           <HoldingsTable metrics={metrics} />
-          <Heatmap metrics={metrics} />
+          <div className="grid gap-4">
+            <WatchlistTable watchlist={watchlist} />
+            <Heatmap metrics={metrics} />
+          </div>
         </div>
       </section>
     </main>
   );
-}
-
-function formatAxisInr(value: number) {
-  if (Math.abs(value) >= 10000000) {
-    return `₹${(value / 10000000).toFixed(1)}Cr`;
-  }
-
-  if (Math.abs(value) >= 100000) {
-    return `₹${(value / 100000).toFixed(1)}L`;
-  }
-
-  return `₹${Math.round(value / 1000)}k`;
 }
 
 function SummaryCard({
@@ -333,8 +370,10 @@ function HoldingsTable({
             <TableRow>
               <TableHead>Ticker</TableHead>
               <TableHead>Sector</TableHead>
+              <TableHead className="text-right">CMP</TableHead>
+              <TableHead className="text-right">Prev Close</TableHead>
               <TableHead className="text-right">Value</TableHead>
-              <TableHead className="text-right">Return</TableHead>
+              <TableHead className="text-right">Day</TableHead>
               <TableHead className="text-right">Weight</TableHead>
             </TableRow>
           </TableHeader>
@@ -349,21 +388,85 @@ function HoldingsTable({
                 </TableCell>
                 <TableCell>{holding.sector}</TableCell>
                 <TableCell className="text-right font-medium">
+                  {formatCurrency(holding.currentPrice)}
+                </TableCell>
+                <TableCell className="text-right">
+                  {formatCurrency(holding.previousClose)}
+                </TableCell>
+                <TableCell className="text-right font-medium">
                   {formatCurrency(holding.marketValue)}
                 </TableCell>
                 <TableCell
                   className={cn(
                     "text-right font-medium",
-                    holding.gainLoss >= 0 ? "text-emerald-700" : "text-destructive",
+                    holding.dayChange >= 0 ? "text-emerald-700" : "text-destructive",
                   )}
                 >
-                  {formatPercent(holding.gainLossPercent)}
+                  {formatPercent(holding.dayChangePercent)}
                 </TableCell>
                 <TableCell className="text-right">
                   {holding.portfolioWeight.toFixed(1)}%
                 </TableCell>
               </TableRow>
             ))}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
+  );
+}
+
+function WatchlistTable({ watchlist }: { watchlist: PortfolioPosition[] }) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Watchlist</CardTitle>
+        <CardDescription>Tracked stocks enriched with live market details</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Ticker</TableHead>
+              <TableHead>Sector</TableHead>
+              <TableHead className="text-right">CMP</TableHead>
+              <TableHead className="text-right">Day</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {watchlist.map((stock) => {
+              const dayChangePercent =
+                stock.previousClose === 0
+                  ? 0
+                  : ((stock.currentPrice - stock.previousClose) /
+                      stock.previousClose) *
+                    100;
+
+              return (
+                <TableRow key={stock.symbol}>
+                  <TableCell>
+                    <div className="font-semibold">{stock.symbol}</div>
+                    <div className="max-w-44 truncate text-xs text-muted-foreground">
+                      {stock.company}
+                    </div>
+                  </TableCell>
+                  <TableCell>{stock.sector}</TableCell>
+                  <TableCell className="text-right font-medium">
+                    {formatCurrency(stock.currentPrice)}
+                  </TableCell>
+                  <TableCell
+                    className={cn(
+                      "text-right font-medium",
+                      stock.currentPrice >= stock.previousClose
+                        ? "text-emerald-700"
+                        : "text-destructive",
+                    )}
+                  >
+                    {formatPercent(dayChangePercent)}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </CardContent>
@@ -385,9 +488,9 @@ function Heatmap({
       <CardContent>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           {metrics.holdings.map((holding) => {
-            const intensity = Math.min(Math.abs(holding.gainLossPercent) / 40, 1);
+            const intensity = Math.min(Math.abs(holding.dayChangePercent) / 8, 1);
             const background =
-              holding.gainLoss >= 0
+              holding.dayChange >= 0
                 ? `rgba(15, 139, 141, ${0.18 + intensity * 0.55})`
                 : `rgba(209, 73, 91, ${0.18 + intensity * 0.55})`;
 
@@ -409,10 +512,10 @@ function Heatmap({
                 <div
                   className={cn(
                     "text-sm font-semibold",
-                    holding.gainLoss >= 0 ? "text-teal-950" : "text-red-950",
+                    holding.dayChange >= 0 ? "text-teal-950" : "text-red-950",
                   )}
                 >
-                  {formatPercent(holding.gainLossPercent)}
+                  {formatPercent(holding.dayChangePercent)}
                 </div>
               </div>
             );

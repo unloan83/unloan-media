@@ -4,35 +4,36 @@ A Vercel-ready portfolio dashboard built with Next.js 15, TypeScript, Tailwind C
 
 ## Features
 
-- Upload INR-denominated holdings from CSV in the browser.
-- Portfolio summary cards for value, return, daily movement, and top sector.
+- Upload a simple current portfolio and watchlist CSV in the browser.
+- Fetch CMP, previous close, sector, and valuation details after upload.
+- Portfolio summary cards for value, daily movement, watchlist count, and top sector.
 - Portfolio growth chart.
 - Holdings table with value, return, and allocation weight.
 - Sector allocation pie chart.
 - Portfolio heatmap sized by portfolio weight and colored by return.
-- Automatic sector identification for known Indian stock symbols when `sector` is blank.
+- Automatic symbol and sector identification for common Indian stocks.
 
 ## CSV Format
 
 Use the included sample at `public/portfolio.csv`.
 
 ```csv
-symbol,company,sector,quantity,averagePrice,currentPrice,previousClose
-RELIANCE,Reliance Industries,,42,2380,2864,2838
+list,stock,quantity
+current,Reliance Industries,42
+current,TCS,28
+watchlist,Maruti Suzuki India,
 ```
 
 Required columns:
 
-- `symbol`
-- `company`
-- `quantity`
-- `averagePrice`
-- `currentPrice`
-- `previousClose`
+- `list` - use `current` or `watchlist`
+- `stock` - stock name or NSE symbol, such as `Reliance Industries`, `TCS`, or `HDFCBANK`
 
 Optional column:
 
-- `sector` - if blank, the app identifies sectors for common Indian stocks by symbol and then falls back to company-name keywords.
+- `quantity` - required for `current` rows, optional for `watchlist` rows.
+
+After upload, the app resolves the stock name or symbol and fetches CMP and previous close using a Next.js API route.
 
 ## Local Development
 

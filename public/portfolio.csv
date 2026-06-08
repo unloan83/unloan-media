@@ -1,9 +1,9 @@
-symbol,company,sector,quantity,averagePrice,currentPrice,previousClose
-RELIANCE,Reliance Industries,,42,2380,2864,2838
-TCS,Tata Consultancy Services,,28,3310,3925,3898
-HDFCBANK,HDFC Bank,,68,1425,1668,1656
-INFY,Infosys,,54,1288,1516,1502
-ICICIBANK,ICICI Bank,,82,905,1118,1106
-SUNPHARMA,Sun Pharmaceutical Industries,,36,1025,1512,1496
-MARUTI,Maruti Suzuki India,,9,8420,12680,12592
-ITC,ITC,,190,344,438,435
+list,stock,quantity
+current,Reliance Industries,42
+current,TCS,28
+current,HDFC Bank,68
+current,Infosys,54
+current,ICICI Bank,82
+watchlist,Maruti Suzuki India,
+watchlist,Sun Pharma,
+watchlist,Titan Company,

@@ -1,11 +1,21 @@
-export type PortfolioHolding = {
+export type PortfolioList = "current" | "watchlist";
+
+export type PortfolioInputRow = {
+  list: PortfolioList;
+  stock: string;
+  quantity: number;
+};
+
+export type PortfolioPosition = {
+  list: PortfolioList;
+  stock: string;
   symbol: string;
   company: string;
   sector: string;
   quantity: number;
-  averagePrice: number;
   currentPrice: number;
   previousClose: number;
+  currency: "INR";
 };
 
 export type SectorAllocation = {
@@ -19,11 +29,8 @@ export type GrowthPoint = {
   value: number;
 };
 
-export type HoldingWithMetrics = PortfolioHolding & {
+export type HoldingWithMetrics = PortfolioPosition & {
   marketValue: number;
-  costBasis: number;
-  gainLoss: number;
-  gainLossPercent: number;
   dayChange: number;
   dayChangePercent: number;
   portfolioWeight: number;
@@ -32,13 +39,16 @@ export type HoldingWithMetrics = PortfolioHolding & {
 export type PortfolioMetrics = {
   holdings: HoldingWithMetrics[];
   totalValue: number;
-  totalCost: number;
-  totalGainLoss: number;
-  totalGainLossPercent: number;
   dayChange: number;
   dayChangePercent: number;
   sectorAllocations: SectorAllocation[];
   growth: GrowthPoint[];
+};
+
+export type StockProfile = {
+  symbol: string;
+  company: string;
+  sector: string;
 };
 
 const numberFormatter = new Intl.NumberFormat("en-IN", {
@@ -47,8 +57,199 @@ const numberFormatter = new Intl.NumberFormat("en-IN", {
   maximumFractionDigits: 0,
 });
 
+const compactInrFormatter = new Intl.NumberFormat("en-IN", {
+  maximumFractionDigits: 1,
+});
+
+const stockProfiles: Record<string, StockProfile> = {
+  ASIANPAINT: {
+    symbol: "ASIANPAINT",
+    company: "Asian Paints",
+    sector: "Consumer Discretionary",
+  },
+  AXISBANK: {
+    symbol: "AXISBANK",
+    company: "Axis Bank",
+    sector: "Financial Services",
+  },
+  BAJFINANCE: {
+    symbol: "BAJFINANCE",
+    company: "Bajaj Finance",
+    sector: "Financial Services",
+  },
+  BHARTIARTL: {
+    symbol: "BHARTIARTL",
+    company: "Bharti Airtel",
+    sector: "Telecommunication",
+  },
+  HCLTECH: {
+    symbol: "HCLTECH",
+    company: "HCL Technologies",
+    sector: "Information Technology",
+  },
+  HDFCBANK: {
+    symbol: "HDFCBANK",
+    company: "HDFC Bank",
+    sector: "Financial Services",
+  },
+  HINDUNILVR: {
+    symbol: "HINDUNILVR",
+    company: "Hindustan Unilever",
+    sector: "Fast Moving Consumer Goods",
+  },
+  ICICIBANK: {
+    symbol: "ICICIBANK",
+    company: "ICICI Bank",
+    sector: "Financial Services",
+  },
+  INFY: {
+    symbol: "INFY",
+    company: "Infosys",
+    sector: "Information Technology",
+  },
+  ITC: {
+    symbol: "ITC",
+    company: "ITC",
+    sector: "Fast Moving Consumer Goods",
+  },
+  KOTAKBANK: {
+    symbol: "KOTAKBANK",
+    company: "Kotak Mahindra Bank",
+    sector: "Financial Services",
+  },
+  LT: {
+    symbol: "LT",
+    company: "Larsen & Toubro",
+    sector: "Construction",
+  },
+  MARUTI: {
+    symbol: "MARUTI",
+    company: "Maruti Suzuki India",
+    sector: "Automobile and Auto Components",
+  },
+  NESTLEIND: {
+    symbol: "NESTLEIND",
+    company: "Nestle India",
+    sector: "Fast Moving Consumer Goods",
+  },
+  NTPC: {
+    symbol: "NTPC",
+    company: "NTPC",
+    sector: "Power",
+  },
+  RELIANCE: {
+    symbol: "RELIANCE",
+    company: "Reliance Industries",
+    sector: "Oil Gas and Consumable Fuels",
+  },
+  SBIN: {
+    symbol: "SBIN",
+    company: "State Bank of India",
+    sector: "Financial Services",
+  },
+  SUNPHARMA: {
+    symbol: "SUNPHARMA",
+    company: "Sun Pharmaceutical Industries",
+    sector: "Healthcare",
+  },
+  TCS: {
+    symbol: "TCS",
+    company: "Tata Consultancy Services",
+    sector: "Information Technology",
+  },
+  TATAMOTORS: {
+    symbol: "TATAMOTORS",
+    company: "Tata Motors",
+    sector: "Automobile and Auto Components",
+  },
+  TATASTEEL: {
+    symbol: "TATASTEEL",
+    company: "Tata Steel",
+    sector: "Metals and Mining",
+  },
+  TITAN: {
+    symbol: "TITAN",
+    company: "Titan Company",
+    sector: "Consumer Durables",
+  },
+  ULTRACEMCO: {
+    symbol: "ULTRACEMCO",
+    company: "UltraTech Cement",
+    sector: "Construction Materials",
+  },
+  WIPRO: {
+    symbol: "WIPRO",
+    company: "Wipro",
+    sector: "Information Technology",
+  },
+};
+
+const stockAliases: Record<string, string> = {
+  "ASIAN PAINTS": "ASIANPAINT",
+  "AXIS BANK": "AXISBANK",
+  "BAJAJ FINANCE": "BAJFINANCE",
+  "BHARTI AIRTEL": "BHARTIARTL",
+  "HCL TECHNOLOGIES": "HCLTECH",
+  "HDFC BANK": "HDFCBANK",
+  "HINDUSTAN UNILEVER": "HINDUNILVR",
+  "ICICI BANK": "ICICIBANK",
+  INFOSYS: "INFY",
+  "KOTAK MAHINDRA BANK": "KOTAKBANK",
+  "LARSEN & TOUBRO": "LT",
+  "LARSEN AND TOUBRO": "LT",
+  "MARUTI SUZUKI": "MARUTI",
+  "MARUTI SUZUKI INDIA": "MARUTI",
+  "NESTLE INDIA": "NESTLEIND",
+  "RELIANCE INDUSTRIES": "RELIANCE",
+  "STATE BANK OF INDIA": "SBIN",
+  SBI: "SBIN",
+  "SUN PHARMA": "SUNPHARMA",
+  "SUN PHARMACEUTICAL": "SUNPHARMA",
+  "SUN PHARMACEUTICAL INDUSTRIES": "SUNPHARMA",
+  "TATA CONSULTANCY SERVICES": "TCS",
+  "TATA MOTORS": "TATAMOTORS",
+  "TATA STEEL": "TATASTEEL",
+  "TITAN COMPANY": "TITAN",
+  "ULTRATECH CEMENT": "ULTRACEMCO",
+};
+
+const companySectorKeywords: Array<[string, string]> = [
+  ["bank", "Financial Services"],
+  ["finance", "Financial Services"],
+  ["financial", "Financial Services"],
+  ["insurance", "Financial Services"],
+  ["technologies", "Information Technology"],
+  ["technology", "Information Technology"],
+  ["software", "Information Technology"],
+  ["pharma", "Healthcare"],
+  ["hospital", "Healthcare"],
+  ["motors", "Automobile and Auto Components"],
+  ["auto", "Automobile and Auto Components"],
+  ["steel", "Metals and Mining"],
+  ["cement", "Construction Materials"],
+  ["power", "Power"],
+  ["energy", "Oil Gas and Consumable Fuels"],
+  ["oil", "Oil Gas and Consumable Fuels"],
+  ["gas", "Oil Gas and Consumable Fuels"],
+  ["telecom", "Telecommunication"],
+  ["consumer", "Fast Moving Consumer Goods"],
+  ["foods", "Fast Moving Consumer Goods"],
+];
+
 export function formatCurrency(value: number) {
   return numberFormatter.format(value);
+}
+
+export function formatCompactInr(value: number) {
+  if (Math.abs(value) >= 10000000) {
+    return `INR ${compactInrFormatter.format(value / 10000000)}Cr`;
+  }
+
+  if (Math.abs(value) >= 100000) {
+    return `INR ${compactInrFormatter.format(value / 100000)}L`;
+  }
+
+  return `INR ${compactInrFormatter.format(value / 1000)}k`;
 }
 
 export function formatPercent(value: number) {
@@ -56,13 +257,13 @@ export function formatPercent(value: number) {
 }
 
 export function calculatePortfolioMetrics(
-  holdings: PortfolioHolding[],
+  positions: PortfolioPosition[],
 ): PortfolioMetrics {
-  const baseHoldings = holdings.map((holding) => {
+  const currentPositions = positions.filter(
+    (position) => position.list === "current" && position.quantity > 0,
+  );
+  const baseHoldings = currentPositions.map((holding) => {
     const marketValue = holding.quantity * holding.currentPrice;
-    const costBasis = holding.quantity * holding.averagePrice;
-    const gainLoss = marketValue - costBasis;
-    const gainLossPercent = costBasis === 0 ? 0 : (gainLoss / costBasis) * 100;
     const dayChange = holding.quantity * (holding.currentPrice - holding.previousClose);
     const dayChangePercent =
       holding.previousClose === 0
@@ -73,9 +274,6 @@ export function calculatePortfolioMetrics(
     return {
       ...holding,
       marketValue,
-      costBasis,
-      gainLoss,
-      gainLossPercent,
       dayChange,
       dayChangePercent,
       portfolioWeight: 0,
@@ -86,17 +284,10 @@ export function calculatePortfolioMetrics(
     (sum, holding) => sum + holding.marketValue,
     0,
   );
-  const totalCost = baseHoldings.reduce(
-    (sum, holding) => sum + holding.costBasis,
-    0,
-  );
   const dayChange = baseHoldings.reduce(
     (sum, holding) => sum + holding.dayChange,
     0,
   );
-  const totalGainLoss = totalValue - totalCost;
-  const totalGainLossPercent =
-    totalCost === 0 ? 0 : (totalGainLoss / totalCost) * 100;
   const dayChangePercent =
     totalValue - dayChange === 0
       ? 0
@@ -129,24 +320,21 @@ export function calculatePortfolioMetrics(
   return {
     holdings: holdingsWithWeights,
     totalValue,
-    totalCost,
-    totalGainLoss,
-    totalGainLossPercent,
     dayChange,
     dayChangePercent,
     sectorAllocations,
-    growth: buildGrowthSeries(totalCost, totalValue),
+    growth: buildGrowthSeries(totalValue - dayChange, totalValue),
   };
 }
 
-function buildGrowthSeries(totalCost: number, totalValue: number): GrowthPoint[] {
+function buildGrowthSeries(previousValue: number, totalValue: number): GrowthPoint[] {
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"];
-  const start = totalCost * 0.86;
+  const start = previousValue * 0.94;
   const end = totalValue;
 
   return months.map((month, index) => {
     const progress = index / (months.length - 1);
-    const wave = Math.sin(index * 1.4) * totalValue * 0.015;
+    const wave = Math.sin(index * 1.4) * totalValue * 0.01;
     return {
       month,
       value: Math.round(start + (end - start) * progress + wave),
@@ -154,55 +342,21 @@ function buildGrowthSeries(totalCost: number, totalValue: number): GrowthPoint[]
   });
 }
 
-const sectorBySymbol: Record<string, string> = {
-  ASIANPAINT: "Consumer Discretionary",
-  AXISBANK: "Financial Services",
-  BAJFINANCE: "Financial Services",
-  BHARTIARTL: "Telecommunication",
-  HCLTECH: "Information Technology",
-  HDFCBANK: "Financial Services",
-  HINDUNILVR: "Fast Moving Consumer Goods",
-  ICICIBANK: "Financial Services",
-  INFY: "Information Technology",
-  ITC: "Fast Moving Consumer Goods",
-  KOTAKBANK: "Financial Services",
-  LT: "Construction",
-  MARUTI: "Automobile and Auto Components",
-  NESTLEIND: "Fast Moving Consumer Goods",
-  NTPC: "Power",
-  RELIANCE: "Oil Gas and Consumable Fuels",
-  SBIN: "Financial Services",
-  SUNPHARMA: "Healthcare",
-  TCS: "Information Technology",
-  TATAMOTORS: "Automobile and Auto Components",
-  TATASTEEL: "Metals and Mining",
-  TITAN: "Consumer Durables",
-  ULTRACEMCO: "Construction Materials",
-  WIPRO: "Information Technology",
-};
+export function resolveStockProfile(stock: string): StockProfile {
+  const normalizedStock = normalizeStockKey(stock);
+  const symbol = stockAliases[normalizedStock] ?? normalizedStock;
+  const cleanSymbol = symbol.replace(/\.NS$|\.BO$/u, "");
 
-const companySectorKeywords: Array<[string, string]> = [
-  ["bank", "Financial Services"],
-  ["finance", "Financial Services"],
-  ["financial", "Financial Services"],
-  ["insurance", "Financial Services"],
-  ["technologies", "Information Technology"],
-  ["technology", "Information Technology"],
-  ["software", "Information Technology"],
-  ["pharma", "Healthcare"],
-  ["hospital", "Healthcare"],
-  ["motors", "Automobile and Auto Components"],
-  ["auto", "Automobile and Auto Components"],
-  ["steel", "Metals and Mining"],
-  ["cement", "Construction Materials"],
-  ["power", "Power"],
-  ["energy", "Oil Gas and Consumable Fuels"],
-  ["oil", "Oil Gas and Consumable Fuels"],
-  ["gas", "Oil Gas and Consumable Fuels"],
-  ["telecom", "Telecommunication"],
-  ["consumer", "Fast Moving Consumer Goods"],
-  ["foods", "Fast Moving Consumer Goods"],
-];
+  if (stockProfiles[cleanSymbol]) {
+    return stockProfiles[cleanSymbol];
+  }
+
+  return {
+    symbol: cleanSymbol,
+    company: stock.trim(),
+    sector: identifySector(cleanSymbol, stock),
+  };
+}
 
 export function identifySector(symbol: string, company = "", fallback = "Unclassified") {
   const normalizedSymbol = symbol
@@ -210,8 +364,8 @@ export function identifySector(symbol: string, company = "", fallback = "Unclass
     .toUpperCase()
     .replace(/\.NS$|\.BO$/u, "");
 
-  if (sectorBySymbol[normalizedSymbol]) {
-    return sectorBySymbol[normalizedSymbol];
+  if (stockProfiles[normalizedSymbol]) {
+    return stockProfiles[normalizedSymbol].sector;
   }
 
   const normalizedCompany = company.trim().toLowerCase();
@@ -222,77 +376,113 @@ export function identifySector(symbol: string, company = "", fallback = "Unclass
   return match?.[1] ?? fallback;
 }
 
-export const sampleHoldings: PortfolioHolding[] = [
+function normalizeStockKey(stock: string) {
+  return stock
+    .trim()
+    .toUpperCase()
+    .replace(/\.NS$|\.BO$/u, "")
+    .replace(/[^A-Z0-9& ]/gu, "")
+    .replace(/\s+/gu, " ");
+}
+
+export const sampleInputs: PortfolioInputRow[] = [
+  { list: "current", stock: "Reliance Industries", quantity: 42 },
+  { list: "current", stock: "TCS", quantity: 28 },
+  { list: "current", stock: "HDFC Bank", quantity: 68 },
+  { list: "current", stock: "Infosys", quantity: 54 },
+  { list: "current", stock: "ICICI Bank", quantity: 82 },
+  { list: "watchlist", stock: "Maruti Suzuki India", quantity: 0 },
+  { list: "watchlist", stock: "Sun Pharma", quantity: 0 },
+  { list: "watchlist", stock: "Titan Company", quantity: 0 },
+];
+
+export const samplePositions: PortfolioPosition[] = [
   {
+    list: "current",
+    stock: "Reliance Industries",
     symbol: "RELIANCE",
     company: "Reliance Industries",
     sector: "Oil Gas and Consumable Fuels",
     quantity: 42,
-    averagePrice: 2380,
     currentPrice: 2864,
     previousClose: 2838,
+    currency: "INR",
   },
   {
+    list: "current",
+    stock: "TCS",
     symbol: "TCS",
     company: "Tata Consultancy Services",
     sector: "Information Technology",
     quantity: 28,
-    averagePrice: 3310,
     currentPrice: 3925,
     previousClose: 3898,
+    currency: "INR",
   },
   {
+    list: "current",
+    stock: "HDFC Bank",
     symbol: "HDFCBANK",
     company: "HDFC Bank",
     sector: "Financial Services",
     quantity: 68,
-    averagePrice: 1425,
     currentPrice: 1668,
     previousClose: 1656,
+    currency: "INR",
   },
   {
+    list: "current",
+    stock: "Infosys",
     symbol: "INFY",
     company: "Infosys",
     sector: "Information Technology",
     quantity: 54,
-    averagePrice: 1288,
     currentPrice: 1516,
     previousClose: 1502,
+    currency: "INR",
   },
   {
+    list: "current",
+    stock: "ICICI Bank",
     symbol: "ICICIBANK",
     company: "ICICI Bank",
     sector: "Financial Services",
     quantity: 82,
-    averagePrice: 905,
     currentPrice: 1118,
     previousClose: 1106,
+    currency: "INR",
   },
   {
-    symbol: "SUNPHARMA",
-    company: "Sun Pharmaceutical Industries",
-    sector: "Healthcare",
-    quantity: 36,
-    averagePrice: 1025,
-    currentPrice: 1512,
-    previousClose: 1496,
-  },
-  {
+    list: "watchlist",
+    stock: "Maruti Suzuki India",
     symbol: "MARUTI",
     company: "Maruti Suzuki India",
     sector: "Automobile and Auto Components",
-    quantity: 9,
-    averagePrice: 8420,
+    quantity: 0,
     currentPrice: 12680,
     previousClose: 12592,
+    currency: "INR",
   },
   {
-    symbol: "ITC",
-    company: "ITC",
-    sector: "Fast Moving Consumer Goods",
-    quantity: 190,
-    averagePrice: 344,
-    currentPrice: 438,
-    previousClose: 435,
+    list: "watchlist",
+    stock: "Sun Pharma",
+    symbol: "SUNPHARMA",
+    company: "Sun Pharmaceutical Industries",
+    sector: "Healthcare",
+    quantity: 0,
+    currentPrice: 1512,
+    previousClose: 1496,
+    currency: "INR",
+  },
+  {
+    list: "watchlist",
+    stock: "Titan Company",
+    symbol: "TITAN",
+    company: "Titan Company",
+    sector: "Consumer Durables",
+    quantity: 0,
+    currentPrice: 3538,
+    previousClose: 3508,
+    currency: "INR",
   },
 ];
