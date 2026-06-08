@@ -49,7 +49,7 @@ import {
   samplePortfolio,
 } from "@/lib/portfolio";
 import { cn } from "@/lib/utils";
-import { useEffect, useRef, useState, type RefObject } from "react";
+import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 
 const sectorColors = [
   "#0f8b8d",
@@ -94,8 +94,58 @@ export function PortfolioDashboard() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [expandedPortfolioId, setExpandedPortfolioId] = useState<string | null>(null);
+  const [hasRepricedSavedPortfolios, setHasRepricedSavedPortfolios] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const fetchQuotePositions = useCallback(async (rows: PortfolioInputRow[]) => {
+    const response = await fetch("/api/quotes", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ rows }),
+    });
+    const payload = (await response.json()) as {
+      positions?: PortfolioPosition[];
+      error?: string;
+    };
+
+    if (!response.ok || !payload.positions) {
+      throw new Error(payload.error ?? "Unable to fetch quote details.");
+    }
+
+    return payload.positions;
+  }, []);
+
+  const repriceSavedPortfolios = useCallback(async () => {
+    const portfoliosToRefresh = portfolios.filter(
+      (portfolio) => portfolio.inputs.length > 0,
+    );
+
+    if (portfoliosToRefresh.length === 0) {
+      return;
+    }
+
+    try {
+      const refreshedPortfolios = await Promise.all(
+        portfoliosToRefresh.map(async (portfolio) => ({
+          ...portfolio,
+          positions: await fetchQuotePositions(portfolio.inputs),
+          refreshedAt: new Date().toISOString(),
+        })),
+      );
+
+      setPortfolios((items) =>
+        items.map(
+          (item) =>
+            refreshedPortfolios.find((portfolio) => portfolio.id === item.id) ?? item,
+        ),
+      );
+    } catch {
+      setError("Some saved portfolios could not be repriced. Use refresh on the portfolio card.");
+    }
+  }, [fetchQuotePositions, portfolios]);
 
   useEffect(() => {
     const savedPortfolios = window.localStorage.getItem(portfoliosStorageKey);
@@ -144,6 +194,15 @@ export function PortfolioDashboard() {
     window.localStorage.setItem(portfoliosStorageKey, JSON.stringify(portfolios));
     window.localStorage.setItem(historyStorageKey, JSON.stringify(history));
   }, [hydrated, portfolios, history]);
+
+  useEffect(() => {
+    if (!hydrated || hasRepricedSavedPortfolios) {
+      return;
+    }
+
+    setHasRepricedSavedPortfolios(true);
+    repriceSavedPortfolios();
+  }, [hydrated, hasRepricedSavedPortfolios, repriceSavedPortfolios]);
 
   function updateDraftRow(index: number, nextRow: Partial<PortfolioInputRow>) {
     setDraftRows((rows) =>
@@ -314,26 +373,6 @@ export function PortfolioDashboard() {
     } finally {
       setIsLoading(false);
     }
-  }
-
-  async function fetchQuotePositions(rows: PortfolioInputRow[]) {
-    const response = await fetch("/api/quotes", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ rows }),
-    });
-    const payload = (await response.json()) as {
-      positions?: PortfolioPosition[];
-      error?: string;
-    };
-
-    if (!response.ok || !payload.positions) {
-      throw new Error(payload.error ?? "Unable to fetch quote details.");
-    }
-
-    return payload.positions;
   }
 
   function updateHistoryStatus(id: string, status: RecommendationStatus) {
@@ -707,6 +746,7 @@ function PortfolioColumn({
           <PortfolioDetailsEditor
             portfolio={portfolio}
             isLoading={isLoading}
+            positions={portfolio.positions}
             onSave={onUpdateInputs}
           />
         ) : null}
@@ -774,10 +814,12 @@ function PortfolioMiniSummary({
 function PortfolioDetailsEditor({
   portfolio,
   isLoading,
+  positions,
   onSave,
 }: {
   portfolio: ManagedPortfolio;
   isLoading: boolean;
+  positions: PortfolioPosition[];
   onSave: (rows: PortfolioInputRow[]) => void;
 }) {
   const [rows, setRows] = useState<PortfolioInputRow[]>(portfolio.inputs);
@@ -799,63 +841,21 @@ function PortfolioDetailsEditor({
       <div>
         <h2 className="text-sm font-semibold">Portfolio Value Details</h2>
         <p className="text-xs text-muted-foreground">
-          Edit stock code, company, or quantity. Blank or zero quantity becomes watchlist.
+          Edit stock code, company, or quantity. Value is quantity multiplied by CMP.
         </p>
       </div>
       <div className="space-y-2">
         {rows.map((row, index) => (
-          <div
+          <PortfolioDetailRow
             key={`${row.stockCode}-${row.company}-${index}`}
-            className="grid gap-2 md:grid-cols-[120px_1fr_100px_40px]"
-          >
-            <input
-              value={row.stockCode}
-              onChange={(event) => {
-                const stockCode = event.target.value.toUpperCase();
-                updateRow(index, {
-                  stockCode,
-                  stock: stockCode || row.company,
-                });
-              }}
-              placeholder="Stock code"
-              className="h-9 rounded-md border bg-background px-2 text-sm outline-none focus:ring-2 focus:ring-ring"
-            />
-            <input
-              value={row.company}
-              onChange={(event) =>
-                updateRow(index, {
-                  company: event.target.value,
-                  stock: row.stockCode || event.target.value,
-                })
-              }
-              placeholder="Company"
-              className="h-9 rounded-md border bg-background px-2 text-sm outline-none focus:ring-2 focus:ring-ring"
-            />
-            <input
-              value={row.quantity || ""}
-              onChange={(event) => {
-                const quantity = parseQuantity(event.target.value);
-                updateRow(index, {
-                  list: quantity > 0 ? "current" : "watchlist",
-                  quantity,
-                });
-              }}
-              placeholder="Qty"
-              type="number"
-              className="h-9 rounded-md border bg-background px-2 text-sm outline-none focus:ring-2 focus:ring-ring"
-            />
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              onClick={() =>
-                setRows((items) => items.filter((_, rowIndex) => rowIndex !== index))
-              }
-              aria-label="Delete holding"
-            >
-              <Trash2 className="h-4 w-4" aria-hidden="true" />
-            </Button>
-          </div>
+            index={index}
+            positions={positions}
+            row={row}
+            updateRow={updateRow}
+            deleteRow={() =>
+              setRows((items) => items.filter((_, rowIndex) => rowIndex !== index))
+            }
+          />
         ))}
       </div>
       <div className="flex flex-col gap-2 sm:flex-row">
@@ -873,6 +873,85 @@ function PortfolioDetailsEditor({
         </Button>
       </div>
     </section>
+  );
+}
+
+function PortfolioDetailRow({
+  row,
+  index,
+  positions,
+  updateRow,
+  deleteRow,
+}: {
+  row: PortfolioInputRow;
+  index: number;
+  positions: PortfolioPosition[];
+  updateRow: (index: number, nextRow: Partial<PortfolioInputRow>) => void;
+  deleteRow: () => void;
+}) {
+  const position = positions.find(
+    (item) =>
+      item.symbol === row.stockCode ||
+      item.company.toLowerCase() === row.company.toLowerCase(),
+  );
+  const currentPrice = position?.currentPrice ?? 0;
+  const marketValue = row.quantity * currentPrice;
+
+  return (
+    <div className="rounded-md border bg-muted/20 p-2">
+      <div className="grid gap-2 md:grid-cols-[120px_1fr_100px_40px]">
+        <input
+          value={row.stockCode}
+          onChange={(event) => {
+            const stockCode = event.target.value.toUpperCase();
+            updateRow(index, {
+              stockCode,
+              stock: stockCode || row.company,
+            });
+          }}
+          placeholder="Stock code"
+          className="h-9 rounded-md border bg-background px-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+        />
+        <input
+          value={row.company}
+          onChange={(event) =>
+            updateRow(index, {
+              company: event.target.value,
+              stock: row.stockCode || event.target.value,
+            })
+          }
+          placeholder="Company"
+          className="h-9 rounded-md border bg-background px-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+        />
+        <input
+          value={row.quantity || ""}
+          onChange={(event) => {
+            const quantity = parseQuantity(event.target.value);
+            updateRow(index, {
+              list: quantity > 0 ? "current" : "watchlist",
+              quantity,
+            });
+          }}
+          placeholder="Qty"
+          type="number"
+          className="h-9 rounded-md border bg-background px-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+        />
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          onClick={deleteRow}
+          aria-label="Delete holding"
+        >
+          <Trash2 className="h-4 w-4" aria-hidden="true" />
+        </Button>
+      </div>
+      <div className="mt-2 grid gap-2 text-xs text-muted-foreground sm:grid-cols-3">
+        <span>CMP: {formatCurrency(currentPrice)}</span>
+        <span>Value: {formatCurrency(marketValue)}</span>
+        <span>Sector: {position?.sector ?? "Pending refresh"}</span>
+      </div>
+    </div>
   );
 }
 

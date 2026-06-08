@@ -407,7 +407,7 @@ function buildGrowthSeries(previousValue: number, totalValue: number): GrowthPoi
   });
 }
 
-export function resolveStockProfile(stock: string): StockProfile {
+export function resolveStockProfile(stock: string, company = ""): StockProfile {
   const normalizedStock = normalizeStockKey(stock);
   const symbol = stockAliases[normalizedStock] ?? normalizedStock;
   const cleanSymbol = symbol.replace(/\.NS$|\.BO$/u, "");
@@ -418,8 +418,8 @@ export function resolveStockProfile(stock: string): StockProfile {
 
   return {
     symbol: cleanSymbol,
-    company: stock.trim(),
-    sector: identifySector(cleanSymbol, stock),
+    company: company.trim() || stock.trim(),
+    sector: identifySector(cleanSymbol, company || stock),
   };
 }
 

@@ -37,6 +37,17 @@ type YahooSearchResponse = {
   }>;
 };
 
+type YahooQuoteSummaryResponse = {
+  quoteSummary?: {
+    result?: Array<{
+      assetProfile?: {
+        sector?: string;
+        industry?: string;
+      };
+    }>;
+  };
+};
+
 export async function POST(request: Request) {
   const body = (await request.json()) as QuoteRequest;
   const rows = normalizeRows(body.rows ?? []);
@@ -89,11 +100,15 @@ function normalizeRows(rows: Array<Partial<PortfolioInputRow>>): PortfolioInputR
 }
 
 async function resolveQuote(row: PortfolioInputRow): Promise<PortfolioPosition> {
-  const profile = resolveStockProfile(row.stockCode || row.stock || row.company);
+  const profile = resolveStockProfile(
+    row.stockCode || row.stock || row.company,
+    row.company,
+  );
   const yahooSymbol = `${profile.symbol}.NS`;
-  const [quote, newsHeadlines] = await Promise.all([
+  const [quote, newsHeadlines, yahooSector] = await Promise.all([
     fetchYahooQuote(yahooSymbol),
     fetchYahooHeadlines(profile.symbol),
+    profile.sector === "Unclassified" ? fetchYahooSector(yahooSymbol) : "",
   ]);
 
   return {
@@ -101,7 +116,7 @@ async function resolveQuote(row: PortfolioInputRow): Promise<PortfolioPosition> 
     stock: row.stock,
     symbol: profile.symbol,
     company: profile.company,
-    sector: profile.sector,
+    sector: yahooSector || profile.sector,
     quantity: row.list === "current" ? row.quantity : 0,
     currentPrice: quote.currentPrice,
     previousClose: quote.previousClose,
@@ -109,6 +124,31 @@ async function resolveQuote(row: PortfolioInputRow): Promise<PortfolioPosition> 
     newsHeadlines,
     currency: "INR",
   };
+}
+
+async function fetchYahooSector(symbol: string) {
+  try {
+    const response = await fetch(
+      `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${encodeURIComponent(symbol)}?modules=assetProfile`,
+      {
+        headers: {
+          "User-Agent": "Mozilla/5.0",
+        },
+        next: { revalidate: 86400 },
+      },
+    );
+
+    if (!response.ok) {
+      return "";
+    }
+
+    const data = (await response.json()) as YahooQuoteSummaryResponse;
+    const profile = data.quoteSummary?.result?.[0]?.assetProfile;
+
+    return profile?.sector ?? profile?.industry ?? "";
+  } catch {
+    return "";
+  }
 }
 
 async function fetchYahooQuote(symbol: string) {
