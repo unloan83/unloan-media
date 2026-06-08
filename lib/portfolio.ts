@@ -2,9 +2,13 @@ export type PortfolioList = "current" | "watchlist";
 
 export type PortfolioInputRow = {
   list: PortfolioList;
+  stockCode: string;
+  company: string;
   stock: string;
   quantity: number;
 };
+
+export type InvestmentAppetite = "safe" | "moderate" | "aggressive";
 
 export type PortfolioPosition = {
   list: PortfolioList;
@@ -56,6 +60,7 @@ export type StockProfile = {
 export type ManagedPortfolio = {
   id: string;
   name: string;
+  appetite: InvestmentAppetite;
   inputs: PortfolioInputRow[];
   positions: PortfolioPosition[];
   refreshedAt?: string;
@@ -83,6 +88,35 @@ export type Recommendation = {
   confidence: number;
   createdAt: string;
   status: RecommendationStatus;
+};
+
+const appetiteProfiles: Record<
+  InvestmentAppetite,
+  {
+    confidenceShift: number;
+    maxIntraday: number;
+    riskLabel: string;
+    preferredActions: Array<Recommendation["action"]>;
+  }
+> = {
+  safe: {
+    confidenceShift: 6,
+    maxIntraday: 3,
+    riskLabel: "capital protection and lower churn",
+    preferredActions: ["Hold", "Buy", "Watch"],
+  },
+  moderate: {
+    confidenceShift: 0,
+    maxIntraday: 4,
+    riskLabel: "balanced compounding and controlled risk",
+    preferredActions: ["Hold", "Accumulate", "Watch"],
+  },
+  aggressive: {
+    confidenceShift: -4,
+    maxIntraday: 5,
+    riskLabel: "higher growth appetite and wider drawdown tolerance",
+    preferredActions: ["Accumulate", "Buy", "Watch"],
+  },
 };
 
 const numberFormatter = new Intl.NumberFormat("en-IN", {
@@ -392,6 +426,28 @@ export function resolveStockProfile(stock: string): StockProfile {
   };
 }
 
+export function buildPortfolioInputRow({
+  stockCode,
+  company,
+  quantity,
+}: {
+  stockCode?: string;
+  company?: string;
+  quantity?: number;
+}): PortfolioInputRow {
+  const cleanStockCode = stockCode?.trim().toUpperCase() ?? "";
+  const cleanCompany = company?.trim() ?? "";
+  const cleanQuantity = Number(quantity ?? 0);
+
+  return {
+    list: cleanQuantity > 0 ? "current" : "watchlist",
+    stockCode: cleanStockCode,
+    company: cleanCompany,
+    stock: cleanStockCode || cleanCompany,
+    quantity: cleanQuantity > 0 ? cleanQuantity : 0,
+  };
+}
+
 export function identifySector(symbol: string, company = "", fallback = "Unclassified") {
   const normalizedSymbol = symbol
     .trim()
@@ -420,14 +476,14 @@ function normalizeStockKey(stock: string) {
 }
 
 export const sampleInputs: PortfolioInputRow[] = [
-  { list: "current", stock: "Reliance Industries", quantity: 42 },
-  { list: "current", stock: "TCS", quantity: 28 },
-  { list: "current", stock: "HDFC Bank", quantity: 68 },
-  { list: "current", stock: "Infosys", quantity: 54 },
-  { list: "current", stock: "ICICI Bank", quantity: 82 },
-  { list: "watchlist", stock: "Maruti Suzuki India", quantity: 0 },
-  { list: "watchlist", stock: "Sun Pharma", quantity: 0 },
-  { list: "watchlist", stock: "Titan Company", quantity: 0 },
+  buildPortfolioInputRow({ stockCode: "RELIANCE", company: "Reliance Industries", quantity: 42 }),
+  buildPortfolioInputRow({ stockCode: "TCS", company: "Tata Consultancy Services", quantity: 28 }),
+  buildPortfolioInputRow({ stockCode: "HDFCBANK", company: "HDFC Bank", quantity: 68 }),
+  buildPortfolioInputRow({ stockCode: "INFY", company: "Infosys", quantity: 54 }),
+  buildPortfolioInputRow({ stockCode: "ICICIBANK", company: "ICICI Bank", quantity: 82 }),
+  buildPortfolioInputRow({ stockCode: "MARUTI", company: "Maruti Suzuki India" }),
+  buildPortfolioInputRow({ stockCode: "SUNPHARMA", company: "Sun Pharmaceutical Industries" }),
+  buildPortfolioInputRow({ stockCode: "TITAN", company: "Titan Company" }),
 ];
 
 export const samplePositions: PortfolioPosition[] = [
@@ -532,6 +588,7 @@ export const samplePositions: PortfolioPosition[] = [
 export const samplePortfolio: ManagedPortfolio = {
   id: "core-sample",
   name: "Core Portfolio",
+  appetite: "moderate",
   inputs: sampleInputs,
   positions: samplePositions,
   refreshedAt: new Date("2026-06-08T06:00:00.000Z").toISOString(),
@@ -543,6 +600,7 @@ export function generateRecommendations(
 ) {
   const createdAt = new Date().toISOString();
   const metrics = calculatePortfolioMetrics(portfolio.positions);
+  const appetite = appetiteProfiles[portfolio.appetite ?? "moderate"];
   const current = metrics.holdings;
   const watchlist = portfolio.positions.filter(
     (position) => position.list === "watchlist",
@@ -562,17 +620,17 @@ export function generateRecommendations(
         (historyScores[position.symbol] ?? 0),
     }))
     .sort((a, b) => b.score - a.score)
-    .slice(0, 5)
+    .slice(0, appetite.maxIntraday)
     .map(({ position, score }) =>
       buildRecommendation({
         portfolio,
         createdAt,
         section: "Intraday",
         position,
-        action: score >= 0 ? "Watch" : "Trim",
+        action: score >= 0 ? "Watch" : portfolio.appetite === "aggressive" ? "Watch" : "Trim",
         horizon: "Today",
-        confidence: confidenceFromScore(score, 4),
-        rationale: `${formatPercent(getDayChangePercent(position))} day move with ${formatVolume(position.volume)} volume signal. ${formatNewsSignal(position.newsHeadlines)}`,
+        confidence: confidenceFromScore(score + appetite.confidenceShift, 4),
+        rationale: `${formatPercent(getDayChangePercent(position))} day move with ${formatVolume(position.volume)} volume signal. ${formatNewsSignal(position.newsHeadlines)} Appetite mode: ${appetite.riskLabel}.`,
       }),
     );
 
@@ -584,6 +642,7 @@ export function generateRecommendations(
       const score =
         getDayChangePercent(position) +
         (sectorWeight > 35 ? -2 : 1) +
+        appetiteScoreBoost(portfolio.appetite, position.sector) +
         (historyScores[position.symbol] ?? 0);
 
       return {
@@ -600,10 +659,10 @@ export function generateRecommendations(
         createdAt,
         section: "1-3 Yr Plan",
         position,
-        action: score > 2 ? "Accumulate" : sectorWeight > 35 ? "Trim" : "Hold",
+        action: getLongTermAction(score, sectorWeight, portfolio.appetite),
         horizon: "1-3 years",
-        confidence: confidenceFromScore(score, 3),
-        rationale: `${position.sector} is ${sectorWeight.toFixed(1)}% of portfolio; use staged allocation discipline.`,
+        confidence: confidenceFromScore(score + appetite.confidenceShift, 3),
+        rationale: `${position.sector} is ${sectorWeight.toFixed(1)}% of portfolio; ${appetite.riskLabel} mode shapes the buy/sell threshold.`,
       }),
     );
 
@@ -622,6 +681,7 @@ export function generateRecommendations(
       score:
         Math.max(getDayChangePercent(position), 0) * 2 +
         (position.list === "watchlist" ? 1.5 : 0.5) +
+        (portfolio.appetite === "aggressive" ? 2 : portfolio.appetite === "safe" ? -1 : 0) +
         (position.newsHeadlines?.length ?? 0) * 0.5 +
         (historyScores[position.symbol] ?? 0),
     }))
@@ -635,8 +695,8 @@ export function generateRecommendations(
         position,
         action: "Watch",
         horizon: "6-12 months",
-        confidence: confidenceFromScore(score, 4),
-        rationale: `${position.sector} exposure with momentum; validate earnings growth, debt, and valuation before entry.`,
+        confidence: confidenceFromScore(score + appetite.confidenceShift, 4),
+        rationale: `${position.sector} exposure with momentum; ${portfolio.appetite} appetite allows ${portfolio.appetite === "aggressive" ? "higher growth optionality" : portfolio.appetite === "safe" ? "only selective tracking" : "balanced tracking"}. Validate earnings growth, debt, and valuation before entry.`,
       }),
     );
 
@@ -670,8 +730,8 @@ export function generateRecommendations(
       },
       action: "Buy",
       horizon: "6-12 months",
-      confidence: 68 - index * 4,
-      rationale: etf.rationale,
+      confidence: 68 - index * 4 + appetite.confidenceShift,
+      rationale: `${etf.rationale} Appetite mode: ${appetite.riskLabel}.`,
     }),
   );
 
@@ -743,6 +803,42 @@ function getDayChangePercent(position: PortfolioPosition) {
 
 function confidenceFromScore(score: number, divisor: number) {
   return Math.max(45, Math.min(88, Math.round(60 + score / divisor)));
+}
+
+function appetiteScoreBoost(appetite: InvestmentAppetite, sector: string) {
+  if (appetite === "aggressive") {
+    return ["Information Technology", "Healthcare", "Automobile and Auto Components", "Consumer Durables"].includes(sector)
+      ? 2
+      : 0;
+  }
+
+  if (appetite === "safe") {
+    return ["Financial Services", "Fast Moving Consumer Goods", "Broad Market ETF", "Power"].includes(sector)
+      ? 1.5
+      : -0.5;
+  }
+
+  return 0.5;
+}
+
+function getLongTermAction(
+  score: number,
+  sectorWeight: number,
+  appetite: InvestmentAppetite,
+): Recommendation["action"] {
+  if (sectorWeight > 40 && appetite !== "aggressive") {
+    return "Trim";
+  }
+
+  if (score > (appetite === "aggressive" ? 1.5 : appetite === "safe" ? 3 : 2)) {
+    return appetite === "safe" ? "Buy" : "Accumulate";
+  }
+
+  if (score < -1.5) {
+    return appetite === "aggressive" ? "Hold" : "Sell";
+  }
+
+  return "Hold";
 }
 
 function formatVolume(volume?: number) {

@@ -33,11 +33,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  InvestmentAppetite,
   ManagedPortfolio,
   PortfolioInputRow,
   PortfolioPosition,
   Recommendation,
   RecommendationStatus,
+  buildPortfolioInputRow,
   calculatePortfolioMetrics,
   formatCurrency,
   formatPercent,
@@ -45,7 +47,7 @@ import {
   samplePortfolio,
 } from "@/lib/portfolio";
 import { cn } from "@/lib/utils";
-import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
+import { useEffect, useRef, useState, type RefObject } from "react";
 
 const sectorColors = [
   "#0f8b8d",
@@ -64,8 +66,12 @@ const historyStorageKey = "multibagger-recommendation-history";
 type CsvRow = {
   list?: string;
   type?: string;
+  "stock code"?: string;
+  stockCode?: string;
+  code?: string;
   stock?: string;
   name?: string;
+  company?: string;
   quantity?: string;
   qty?: string;
 };
@@ -77,8 +83,10 @@ export function PortfolioDashboard() {
   const [history, setHistory] = useState<Recommendation[]>([]);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [portfolioName, setPortfolioName] = useState("");
+  const [investmentAppetite, setInvestmentAppetite] =
+    useState<InvestmentAppetite>("moderate");
   const [draftRows, setDraftRows] = useState<PortfolioInputRow[]>([
-    { list: "current", stock: "", quantity: 0 },
+    buildPortfolioInputRow({}),
   ]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -90,7 +98,20 @@ export function PortfolioDashboard() {
     const savedHistory = window.localStorage.getItem(historyStorageKey);
 
     if (savedPortfolios) {
-      setPortfolios(JSON.parse(savedPortfolios) as ManagedPortfolio[]);
+      setPortfolios(
+        (JSON.parse(savedPortfolios) as ManagedPortfolio[]).map((portfolio) => ({
+          ...portfolio,
+          appetite: portfolio.appetite ?? "moderate",
+          inputs: portfolio.inputs.map((row) => ({
+            ...buildPortfolioInputRow({
+              stockCode: row.stockCode || row.stock,
+              company: row.company,
+              quantity: row.quantity,
+            }),
+            list: row.list,
+          })),
+        })),
+      );
     }
 
     if (savedHistory) {
@@ -109,16 +130,6 @@ export function PortfolioDashboard() {
     window.localStorage.setItem(historyStorageKey, JSON.stringify(history));
   }, [hydrated, portfolios, history]);
 
-  const totalValue = useMemo(
-    () =>
-      portfolios.reduce(
-        (sum, portfolio) =>
-          sum + calculatePortfolioMetrics(portfolio.positions).totalValue,
-        0,
-      ),
-    [portfolios],
-  );
-
   function updateDraftRow(index: number, nextRow: Partial<PortfolioInputRow>) {
     setDraftRows((rows) =>
       rows.map((row, rowIndex) =>
@@ -134,19 +145,24 @@ export function PortfolioDashboard() {
       complete: (result) => {
         const parsed = result.data
           .map((row) => {
-            const listValue = (row.list ?? row.type ?? "current")
+            const stockCode = (row["stock code"] ?? row.stockCode ?? row.code ?? "")
+              .trim()
+              .toUpperCase();
+            const company = (row.company ?? row.stock ?? row.name ?? "").trim();
+            const quantity = Number(row.quantity ?? row.qty ?? 0);
+            const listValue = (row.list ?? row.type ?? "")
               .trim()
               .toLowerCase();
-            const list: PortfolioInputRow["list"] = listValue.includes("watch")
-              ? "watchlist"
-              : "current";
+            const list: PortfolioInputRow["list"] =
+              listValue.includes("watch") || quantity <= 0
+                ? "watchlist"
+                : "current";
 
-            return {
-              list,
-              stock: (row.stock ?? row.name ?? "").trim(),
-              quantity:
-                list === "watchlist" ? 0 : Number(row.quantity ?? row.qty ?? 0),
-            };
+            return buildPortfolioInputRow({
+              stockCode,
+              company,
+              quantity: list === "watchlist" ? 0 : quantity,
+            });
           })
           .filter(
             (row) =>
@@ -156,7 +172,7 @@ export function PortfolioDashboard() {
           );
 
         if (parsed.length === 0) {
-          setError("CSV needs list, stock, quantity columns.");
+          setError("CSV needs stock code, company, quantity columns.");
           return;
         }
 
@@ -194,6 +210,7 @@ export function PortfolioDashboard() {
       const portfolio: ManagedPortfolio = {
         id: `${Date.now()}-${cleanName.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`,
         name: cleanName,
+        appetite: investmentAppetite,
         inputs: cleanRows,
         positions,
         refreshedAt: new Date().toISOString(),
@@ -205,7 +222,8 @@ export function PortfolioDashboard() {
         ...items,
       ]);
       setPortfolioName("");
-      setDraftRows([{ list: "current", stock: "", quantity: 0 }]);
+      setInvestmentAppetite("moderate");
+      setDraftRows([buildPortfolioInputRow({})]);
       setIsAddOpen(false);
     } catch (fetchError) {
       setError(
@@ -284,10 +302,10 @@ export function PortfolioDashboard() {
         <header className="flex flex-col gap-4 border-b border-border pb-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-2">
             <p className="text-sm font-semibold text-primary">
-              Multi-portfolio strategy dashboard
+              unloan stock portfolio dashboard
             </p>
             <h1 className="text-3xl font-semibold tracking-normal text-foreground sm:text-4xl">
-              Portfolio Command Center
+              unloan stock portfolio dashboard
             </h1>
             <p className="max-w-3xl text-sm leading-6 text-muted-foreground">
               Add portfolios, fetch CMP and previous close, compare allocation,
@@ -306,38 +324,22 @@ export function PortfolioDashboard() {
           </div>
         </header>
 
-        <div className="grid dashboard-grid gap-4">
-          <SummaryCard
-            title="Total Portfolio Value"
-            value={formatCurrency(totalValue)}
-            detail={`${portfolios.length} portfolios tracked`}
-          />
-          <SummaryCard
-            title="Recommendation History"
-            value={`${history.length} records`}
-            detail="Hit/Miss/NA feedback improves future scoring"
-          />
-          <SummaryCard
-            title="Live Quote Source"
-            value="CMP + Prev Close"
-            detail="Fetched on upload and refresh"
-          />
-        </div>
-
         {isAddOpen ? (
           <AddPortfolioPanel
             draftRows={draftRows}
             error={error}
             fileInputRef={fileInputRef}
             isLoading={isLoading}
+            investmentAppetite={investmentAppetite}
             portfolioName={portfolioName}
+            setInvestmentAppetite={setInvestmentAppetite}
             setPortfolioName={setPortfolioName}
             parseCsvRows={parseCsvRows}
             updateDraftRow={updateDraftRow}
             addDraftRow={() =>
               setDraftRows((rows) => [
                 ...rows,
-                { list: "current", stock: "", quantity: 0 },
+                buildPortfolioInputRow({}),
               ])
             }
             removeDraftRow={(index) =>
@@ -413,7 +415,9 @@ function AddPortfolioPanel({
   error,
   fileInputRef,
   isLoading,
+  investmentAppetite,
   portfolioName,
+  setInvestmentAppetite,
   setPortfolioName,
   parseCsvRows,
   updateDraftRow,
@@ -425,7 +429,9 @@ function AddPortfolioPanel({
   error: string | null;
   fileInputRef: RefObject<HTMLInputElement | null>;
   isLoading: boolean;
+  investmentAppetite: InvestmentAppetite;
   portfolioName: string;
+  setInvestmentAppetite: (value: InvestmentAppetite) => void;
   setPortfolioName: (value: string) => void;
   parseCsvRows: (file: File) => void;
   updateDraftRow: (index: number, row: Partial<PortfolioInputRow>) => void;
@@ -438,7 +444,7 @@ function AddPortfolioPanel({
       <CardHeader>
         <CardTitle>Add Portfolio</CardTitle>
         <CardDescription>
-          Enter stocks manually or upload CSV with columns: list, stock, quantity.
+          Enter stocks manually or upload CSV with columns: stock code, company, quantity.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -455,36 +461,51 @@ function AddPortfolioPanel({
           className="h-10 w-full rounded-md border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
         />
 
+        <select
+          value={investmentAppetite}
+          onChange={(event) =>
+            setInvestmentAppetite(event.target.value as InvestmentAppetite)
+          }
+          className="h-10 w-full rounded-md border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+        >
+          <option value="safe">Safe - lower churn and capital protection</option>
+          <option value="moderate">Moderate - balanced growth and risk</option>
+          <option value="aggressive">Aggressive - higher growth and volatility</option>
+        </select>
+
         <div className="space-y-2">
           {draftRows.map((row, index) => (
-            <div key={`${row.stock}-${index}`} className="grid gap-2 md:grid-cols-[140px_1fr_120px_40px]">
-              <select
-                value={row.list}
+            <div key={`${row.stock}-${index}`} className="grid gap-2 md:grid-cols-[150px_1fr_120px_40px]">
+              <input
+                value={row.stockCode}
+                onChange={(event) => {
+                  const stockCode = event.target.value.toUpperCase();
+                  updateDraftRow(index, {
+                    stockCode,
+                    stock: stockCode || row.company,
+                  });
+                }}
+                placeholder="Stock code"
+                className="h-10 rounded-md border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+              />
+              <input
+                value={row.company}
                 onChange={(event) =>
                   updateDraftRow(index, {
-                    list: event.target.value as PortfolioInputRow["list"],
-                    quantity:
-                      event.target.value === "watchlist" ? 0 : row.quantity,
+                    company: event.target.value,
+                    stock: row.stockCode || event.target.value,
                   })
                 }
-                className="h-10 rounded-md border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-              >
-                <option value="current">Current</option>
-                <option value="watchlist">Watchlist</option>
-              </select>
-              <input
-                value={row.stock}
-                onChange={(event) =>
-                  updateDraftRow(index, { stock: event.target.value })
-                }
-                placeholder="Stock name or NSE symbol"
+                placeholder="Company"
                 className="h-10 rounded-md border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring"
               />
               <input
                 value={row.quantity || ""}
-                disabled={row.list === "watchlist"}
                 onChange={(event) =>
-                  updateDraftRow(index, { quantity: Number(event.target.value) })
+                  updateDraftRow(index, {
+                    list: Number(event.target.value) > 0 ? "current" : "watchlist",
+                    quantity: Number(event.target.value),
+                  })
                 }
                 placeholder="Qty"
                 type="number"
@@ -560,6 +581,7 @@ function PortfolioColumn({
   const portfolioHistory = history.filter(
     (item) => item.portfolioId === portfolio.id,
   );
+  const quoteScore = getQuoteScore(portfolio.positions);
 
   return (
     <Card className="overflow-hidden">
@@ -568,7 +590,7 @@ function PortfolioColumn({
           <div>
             <CardTitle>{portfolio.name}</CardTitle>
             <CardDescription>
-              {metrics.holdings.length} holdings | {formatCurrency(metrics.totalValue)}
+              {portfolio.appetite ?? "moderate"} appetite | {metrics.holdings.length} holdings
             </CardDescription>
           </div>
           <div className="flex gap-2">
@@ -595,6 +617,23 @@ function PortfolioColumn({
         </div>
       </CardHeader>
       <CardContent className="space-y-5 pt-5">
+        <div className="grid dashboard-grid gap-2">
+          <SummaryCard
+            title="Portfolio Value"
+            value={formatCurrency(metrics.totalValue)}
+            detail={`${metrics.holdings.length} active holdings`}
+          />
+          <SummaryCard
+            title="Recommendation History"
+            value={`${portfolioHistory.length} records`}
+            detail="Portfolio-specific feedback loop"
+          />
+          <SummaryCard
+            title="Live Quote Score"
+            value={`${quoteScore}%`}
+            detail="CMP, previous close, volume, headlines"
+          />
+        </div>
         <PortfolioMiniSummary metrics={metrics} />
 
         <RecommendationBlock
@@ -835,4 +874,23 @@ function generateRecommendationList(
 
 function csvEscape(value: string) {
   return `"${value.replace(/"/g, '""')}"`;
+}
+
+function getQuoteScore(positions: PortfolioPosition[]) {
+  if (positions.length === 0) {
+    return 0;
+  }
+
+  const totalSignals = positions.length * 4;
+  const availableSignals = positions.reduce((score, position) => {
+    return (
+      score +
+      Number(position.currentPrice > 0) +
+      Number(position.previousClose > 0) +
+      Number((position.volume ?? 0) > 0) +
+      Number((position.newsHeadlines?.length ?? 0) > 0)
+    );
+  }, 0);
+
+  return Math.round((availableSignals / totalSignals) * 100);
 }

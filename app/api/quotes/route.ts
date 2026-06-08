@@ -60,12 +60,18 @@ export async function POST(request: Request) {
 function normalizeRows(rows: Array<Partial<PortfolioInputRow>>): PortfolioInputRow[] {
   return rows
     .map((row) => {
-      const list: PortfolioList = row.list === "watchlist" ? "watchlist" : "current";
-      const stock = String(row.stock ?? "").trim();
-      const quantity = list === "watchlist" ? 0 : Number(row.quantity);
+      const stockCode = String(row.stockCode ?? "").trim().toUpperCase();
+      const company = String(row.company ?? "").trim();
+      const stock = String(row.stock ?? (stockCode || company)).trim();
+      const rawQuantity = Number(row.quantity ?? 0);
+      const list: PortfolioList =
+        row.list === "watchlist" || rawQuantity <= 0 ? "watchlist" : "current";
+      const quantity = list === "watchlist" ? 0 : rawQuantity;
 
       return {
         list,
+        stockCode,
+        company,
         stock,
         quantity,
       };
@@ -74,7 +80,7 @@ function normalizeRows(rows: Array<Partial<PortfolioInputRow>>): PortfolioInputR
 }
 
 async function resolveQuote(row: PortfolioInputRow): Promise<PortfolioPosition> {
-  const profile = resolveStockProfile(row.stock);
+  const profile = resolveStockProfile(row.stockCode || row.stock || row.company);
   const yahooSymbol = `${profile.symbol}.NS`;
   const [quote, newsHeadlines] = await Promise.all([
     fetchYahooQuote(yahooSymbol),

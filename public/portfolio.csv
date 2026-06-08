@@ -1,9 +1,9 @@
-list,stock,quantity
-current,Reliance Industries,42
-current,TCS,28
-current,HDFC Bank,68
-current,Infosys,54
-current,ICICI Bank,82
-watchlist,Maruti Suzuki India,
-watchlist,Sun Pharma,
-watchlist,Titan Company,
+stock code,company,quantity
+RELIANCE,Reliance Industries,42
+TCS,Tata Consultancy Services,28
+HDFCBANK,HDFC Bank,68
+INFY,Infosys,54
+ICICIBANK,ICICI Bank,82
+MARUTI,Maruti Suzuki India,
+SUNPHARMA,Sun Pharmaceutical Industries,
+TITAN,Titan Company,

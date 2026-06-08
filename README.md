@@ -1,12 +1,13 @@
-# Multibagger Portfolio Dashboard
+# unloan stock portfolio dashboard
 
 A Vercel-ready portfolio dashboard built with Next.js 15, TypeScript, Tailwind CSS, shadcn/ui-style components, Recharts, and PapaParse.
 
 ## Features
 
-- Upload a simple current portfolio and watchlist CSV in the browser.
+- Upload a simple portfolio CSV in the browser.
 - Fetch CMP, previous close, volume, headline signals, sector, and valuation details after upload.
-- Portfolio summary cards for value, daily movement, watchlist count, and top sector.
+- Portfolio-specific summary cards for value, recommendation history, and live quote score.
+- Investment appetite modes: safe, moderate, and aggressive.
 - Portfolio growth chart.
 - Holdings table with value, return, and allocation weight.
 - Sector allocation pie chart.
@@ -18,20 +19,20 @@ A Vercel-ready portfolio dashboard built with Next.js 15, TypeScript, Tailwind C
 Use the included sample at `public/portfolio.csv`.
 
 ```csv
-list,stock,quantity
-current,Reliance Industries,42
-current,TCS,28
-watchlist,Maruti Suzuki India,
+stock code,company,quantity
+RELIANCE,Reliance Industries,42
+TCS,Tata Consultancy Services,28
+MARUTI,Maruti Suzuki India,
 ```
 
 Required columns:
 
-- `list` - use `current` or `watchlist`
-- `stock` - stock name or NSE symbol, such as `Reliance Industries`, `TCS`, or `HDFCBANK`
+- `stock code` - NSE symbol such as `RELIANCE`, `TCS`, or `HDFCBANK`
+- `company` - company name
 
 Optional column:
 
-- `quantity` - required for `current` rows, optional for `watchlist` rows.
+- `quantity` - rows with quantity become current holdings; blank or zero quantity rows become watchlist items.
 
 After upload, the app resolves the stock name or symbol and fetches CMP, previous close, volume, and available headline signals using a Next.js API route.
 
