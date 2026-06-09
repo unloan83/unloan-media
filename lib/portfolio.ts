@@ -1,3 +1,11 @@
+import {
+  analyzeStockSignal,
+  buildSignalRemark,
+  getSignalAction,
+  type AnalysisProfile,
+  type StockSignalMetrics,
+} from "@/lib/analysis";
+
 export type PortfolioList = "current" | "watchlist";
 
 export type PortfolioInputRow = {
@@ -20,6 +28,12 @@ export type PortfolioPosition = {
   currentPrice: number;
   previousClose: number;
   volume?: number;
+  bars?: Array<{
+    close: number;
+    high: number;
+    low: number;
+    volume: number;
+  }>;
   newsHeadlines?: string[];
   currency: "INR";
 };
@@ -86,6 +100,8 @@ export type Recommendation = {
   action: "Accumulate" | "Urgent Sell";
   horizon: string;
   rationale: string;
+  caveats?: string[];
+  metrics?: StockSignalMetrics;
   confidence: number;
   createdAt: string;
   status: RecommendationStatus;
@@ -636,26 +652,29 @@ export function generateRecommendations(
   const historyScores = buildHistoryScores(history);
 
   const intraday = universe
-    .map((position) => ({
-      position,
-      score:
-        getDayChangePercent(position) * 4 +
-        Math.log10((position.volume ?? 1) + 1) +
-        (position.newsHeadlines?.length ?? 0) * 0.5 +
-        (historyScores[position.symbol] ?? 0),
-    }))
-    .sort((a, b) => b.score - a.score)
+    .map((position) => {
+      const metrics = analyzePosition({
+        position,
+        profile: "intraday",
+        historyScore: historyScores[position.symbol] ?? 0,
+      });
+
+      return { position, metrics };
+    })
+    .sort((a, b) => b.metrics.finalScore - a.metrics.finalScore)
     .slice(0, appetite.maxIntraday)
-    .map(({ position, score }) =>
+    .map(({ position, metrics }) =>
       buildRecommendation({
         portfolio,
         createdAt,
         section: "Intraday",
         position,
-        action: score >= 0 || portfolio.appetite === "aggressive" ? "Accumulate" : "Urgent Sell",
-        horizon: "Today",
-        confidence: confidenceFromScore(score + appetite.confidenceShift, 4),
-        rationale: `${formatPercent(getDayChangePercent(position))} day move with ${formatVolume(position.volume)} volume signal. ${formatNewsSignal(position.newsHeadlines)} Appetite mode: ${appetite.riskLabel}.`,
+        action: getSignalAction(metrics, "intraday"),
+        horizon: "Today | refresh 5-15 min",
+        confidence: confidenceFromSignal(metrics, appetite.confidenceShift),
+        rationale: `${buildSignalRemark(metrics, "intraday")} ${formatNewsSignal(position.newsHeadlines)} Appetite mode: ${appetite.riskLabel}.`,
+        caveats: metrics.caveats,
+        metrics,
       }),
     );
 
@@ -664,30 +683,39 @@ export function generateRecommendations(
       const sectorWeight =
         metrics.sectorAllocations.find((sector) => sector.sector === position.sector)
           ?.percentage ?? 0;
-      const score =
-        getDayChangePercent(position) +
-        (sectorWeight > 35 ? -2 : 1) +
-        appetiteScoreBoost(portfolio.appetite, position.sector) +
-        (historyScores[position.symbol] ?? 0);
+      const signalMetrics = analyzePosition({
+        position,
+        profile: "long-term",
+        portfolioWeight: position.portfolioWeight,
+        historyScore:
+          (historyScores[position.symbol] ?? 0) +
+          appetiteScoreBoost(portfolio.appetite, position.sector) -
+          (sectorWeight > 35 ? 4 : 0),
+      });
 
       return {
         position,
-        score,
+        metrics: signalMetrics,
         sectorWeight,
       };
     })
-    .sort((a, b) => b.score - a.score)
+    .sort((a, b) => b.metrics.finalScore - a.metrics.finalScore)
     .slice(0, 5)
-    .map(({ position, score, sectorWeight }) =>
+    .map(({ position, metrics, sectorWeight }) =>
       buildRecommendation({
         portfolio,
         createdAt,
         section: "1-3 Yr Plan",
         position,
-        action: getLongTermAction(score, sectorWeight, portfolio.appetite),
+        action:
+          sectorWeight > 40 && portfolio.appetite !== "aggressive"
+            ? "Urgent Sell"
+            : getSignalAction(metrics, "long-term"),
         horizon: "1-3 years",
-        confidence: confidenceFromScore(score + appetite.confidenceShift, 3),
-        rationale: `${position.sector} is ${sectorWeight.toFixed(1)}% of portfolio; ${appetite.riskLabel} mode shapes the buy/sell threshold.`,
+        confidence: confidenceFromSignal(metrics, appetite.confidenceShift),
+        rationale: `${buildSignalRemark(metrics, "long-term")} ${position.sector} is ${sectorWeight.toFixed(1)}% of portfolio; ${appetite.riskLabel} mode shapes the buy/sell threshold.`,
+        caveats: metrics.caveats,
+        metrics,
       }),
     );
 
@@ -701,27 +729,32 @@ export function generateRecommendations(
         "Consumer Durables",
       ].includes(position.sector),
     )
-    .map((position) => ({
-      position,
-      score:
-        Math.max(getDayChangePercent(position), 0) * 2 +
-        (position.list === "watchlist" ? 1.5 : 0.5) +
-        (portfolio.appetite === "aggressive" ? 2 : portfolio.appetite === "safe" ? -1 : 0) +
-        (position.newsHeadlines?.length ?? 0) * 0.5 +
-        (historyScores[position.symbol] ?? 0),
-    }))
-    .sort((a, b) => b.score - a.score)
+    .map((position) => {
+      const metrics = analyzePosition({
+        position,
+        profile: position.list === "watchlist" ? "watchlist" : "short-term",
+        historyScore:
+          (historyScores[position.symbol] ?? 0) +
+          (position.list === "watchlist" ? 4 : 1) +
+          (portfolio.appetite === "aggressive" ? 4 : portfolio.appetite === "safe" ? -3 : 0),
+      });
+
+      return { position, metrics };
+    })
+    .sort((a, b) => b.metrics.finalScore - a.metrics.finalScore)
     .slice(0, 3)
-    .map(({ position, score }) =>
+    .map(({ position, metrics }) =>
       buildRecommendation({
         portfolio,
         createdAt,
         section: "Multibagger",
         position,
-        action: score > 1 ? "Accumulate" : "Urgent Sell",
+        action: getSignalAction(metrics, "watchlist"),
         horizon: "6-12 months",
-        confidence: confidenceFromScore(score + appetite.confidenceShift, 4),
-        rationale: `${position.sector} exposure with momentum; ${portfolio.appetite} appetite allows ${portfolio.appetite === "aggressive" ? "higher growth optionality" : portfolio.appetite === "safe" ? "only selective tracking" : "balanced tracking"}. Validate earnings growth, debt, and valuation before entry.`,
+        confidence: confidenceFromSignal(metrics, appetite.confidenceShift),
+        rationale: `${buildSignalRemark(metrics, "watchlist")} ${position.sector} exposure with momentum; validate earnings growth, debt, valuation, and news before entry.`,
+        caveats: metrics.caveats,
+        metrics,
       }),
     );
 
@@ -777,6 +810,8 @@ function buildRecommendation({
   horizon,
   confidence,
   rationale,
+  caveats,
+  metrics,
 }: {
   portfolio: ManagedPortfolio;
   createdAt: string;
@@ -786,6 +821,8 @@ function buildRecommendation({
   horizon: string;
   confidence: number;
   rationale: string;
+  caveats?: string[];
+  metrics?: StockSignalMetrics;
 }): Recommendation {
   return {
     id: `${portfolio.id}-${section}-${position.symbol}-${createdAt}`,
@@ -797,10 +834,37 @@ function buildRecommendation({
     action,
     horizon,
     rationale,
+    caveats,
+    metrics,
     confidence,
     createdAt,
     status: "NA",
   };
+}
+
+function analyzePosition({
+  position,
+  profile,
+  historyScore = 0,
+  portfolioWeight = 0,
+}: {
+  position: PortfolioPosition;
+  profile: AnalysisProfile;
+  historyScore?: number;
+  portfolioWeight?: number;
+}) {
+  return analyzeStockSignal({
+    symbol: position.symbol,
+    price: position.currentPrice,
+    previousClose: position.previousClose,
+    volume: position.volume,
+    sector: position.sector,
+    bars: position.bars,
+    newsCount: position.newsHeadlines?.length ?? 0,
+    portfolioWeight,
+    profile,
+    historyScore,
+  });
 }
 
 function buildHistoryScores(history: Recommendation[]) {
@@ -818,16 +882,11 @@ function buildHistoryScores(history: Recommendation[]) {
   }, {});
 }
 
-function getDayChangePercent(position: PortfolioPosition) {
-  if (position.previousClose === 0) {
-    return 0;
-  }
-
-  return ((position.currentPrice - position.previousClose) / position.previousClose) * 100;
-}
-
-function confidenceFromScore(score: number, divisor: number) {
-  return Math.max(45, Math.min(88, Math.round(60 + score / divisor)));
+function confidenceFromSignal(metrics: StockSignalMetrics, shift: number) {
+  return Math.max(
+    42,
+    Math.min(92, Math.round(metrics.finalScore * 0.72 + 18 + shift - metrics.riskScore * 0.4)),
+  );
 }
 
 function appetiteScoreBoost(appetite: InvestmentAppetite, sector: string) {
@@ -844,42 +903,6 @@ function appetiteScoreBoost(appetite: InvestmentAppetite, sector: string) {
   }
 
   return 0.5;
-}
-
-function getLongTermAction(
-  score: number,
-  sectorWeight: number,
-  appetite: InvestmentAppetite,
-): Recommendation["action"] {
-  if (sectorWeight > 40 && appetite !== "aggressive") {
-    return "Urgent Sell";
-  }
-
-  if (score > (appetite === "aggressive" ? 1.5 : appetite === "safe" ? 3 : 2)) {
-    return "Accumulate";
-  }
-
-  if (score < -1.5) {
-    return appetite === "aggressive" ? "Accumulate" : "Urgent Sell";
-  }
-
-  return score >= 0 ? "Accumulate" : "Urgent Sell";
-}
-
-function formatVolume(volume?: number) {
-  if (!volume) {
-    return "limited";
-  }
-
-  if (volume >= 10000000) {
-    return `${(volume / 10000000).toFixed(1)}Cr`;
-  }
-
-  if (volume >= 100000) {
-    return `${(volume / 100000).toFixed(1)}L`;
-  }
-
-  return volume.toLocaleString("en-IN");
 }
 
 function formatNewsSignal(headlines?: string[]) {

@@ -1,4 +1,11 @@
 import { NextResponse } from "next/server";
+import {
+  analyzeStockSignal,
+  buildSignalRemark,
+  getSignalAction,
+  type PriceBar,
+  type StockSignalMetrics,
+} from "@/lib/analysis";
 
 export const dynamic = "force-dynamic";
 
@@ -12,6 +19,14 @@ type YahooChartResponse = {
         regularMarketVolume?: number;
         shortName?: string;
         longName?: string;
+      };
+      indicators?: {
+        quote?: Array<{
+          close?: Array<number | null>;
+          high?: Array<number | null>;
+          low?: Array<number | null>;
+          volume?: Array<number | null>;
+        }>;
       };
     }>;
   };
@@ -27,6 +42,11 @@ type ExpertQuote = {
   volumeShock: number;
   target: number;
   upside: number;
+  score: number;
+  action: "Accumulate" | "Urgent Sell";
+  remark: string;
+  caveats: string[];
+  metrics: StockSignalMetrics;
 };
 
 type ExpertCategory = {
@@ -98,11 +118,7 @@ export async function GET() {
       const quotes = (
         await Promise.all(
           symbols.map((symbol) =>
-            fetchExpertQuote(
-              symbol,
-              categoryMeta[key as keyof typeof categoryMeta].targetFloor,
-              categoryMeta[key as keyof typeof categoryMeta].targetCeiling,
-            ),
+            fetchExpertQuote(symbol, categoryMeta[key as keyof typeof categoryMeta].title),
           ),
         )
       ).filter((quote) => quote.price > 0);
@@ -111,10 +127,10 @@ export async function GET() {
         key,
         title: categoryMeta[key as keyof typeof categoryMeta].title,
         longTermUpsides: [...quotes]
-          .sort((a, b) => b.upside - a.upside)
+          .sort((a, b) => b.score + b.upside - (a.score + a.upside))
           .slice(0, 5),
         intradayBreakouts: [...quotes]
-          .sort((a, b) => b.volumeShock - a.volumeShock)
+          .sort((a, b) => b.metrics.finalScore + b.volumeShock * 5 - (a.metrics.finalScore + a.volumeShock * 5))
           .slice(0, 5),
       } satisfies ExpertCategory;
     }),
@@ -122,18 +138,16 @@ export async function GET() {
 
   return NextResponse.json({
     title: "Expert Action Matrix",
-    verified: "Native NSE live quote mapping with volume and target scoring",
+    verified: "NSE quote, EMA20/50, VWAP, ATR, volume shock, target, risk and caveat scoring",
     source: "Adapted from unloan83/Expert_insight recommendation matrix style",
     asOf: new Date().toISOString(),
+    refreshCycle: "Intraday breakout signals refresh every 5 minutes; long-term targets refresh every 15 minutes.",
+    caveat: "For research and screening only. Validate with fundamentals, news, liquidity, and risk controls before investing.",
     categories,
   });
 }
 
-async function fetchExpertQuote(
-  symbol: string,
-  targetFloor: number,
-  targetCeiling: number,
-): Promise<ExpertQuote> {
+async function fetchExpertQuote(symbol: string, segment: string): Promise<ExpertQuote> {
   const fallback = {
     symbol,
     name: symbol,
@@ -144,18 +158,23 @@ async function fetchExpertQuote(
     volumeShock: 0,
     target: 0,
     upside: 0,
+    score: 0,
+    action: "Urgent Sell" as const,
+    remark: "Quote unavailable.",
+    caveats: ["Quote unavailable; do not act without live validation."],
+    metrics: analyzeStockSignal({ symbol, price: 0, previousClose: 0 }),
   };
 
   try {
     const response = await fetch(
       `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(
         `${symbol}.NS`,
-      )}?range=1d&interval=1d`,
+      )}?range=3mo&interval=1d`,
       {
         headers: {
           "User-Agent": "Mozilla/5.0",
         },
-        next: { revalidate: 900 },
+        next: { revalidate: 300 },
       },
     );
 
@@ -170,10 +189,16 @@ async function fetchExpertQuote(
     const changePercent =
       previousClose === 0 ? 0 : ((price - previousClose) / previousClose) * 100;
     const volume = meta?.regularMarketVolume ?? 0;
-    const volumeShock = buildVolumeShock(symbol, volume, changePercent);
-    const targetMultiplier = targetFloor + volumeShock * 0.08 + Math.max(changePercent, 0) / 100;
-    const cappedMultiplier = Math.min(targetMultiplier, targetCeiling);
-    const target = price * cappedMultiplier;
+    const bars = buildPriceBars(data.chart?.result?.[0]?.indicators?.quote?.[0]);
+    const metrics = analyzeStockSignal({
+      symbol,
+      price,
+      previousClose,
+      volume,
+      bars,
+      segment,
+      profile: "intraday",
+    });
 
     return {
       symbol,
@@ -182,20 +207,34 @@ async function fetchExpertQuote(
       previousClose,
       changePercent,
       volume,
-      volumeShock,
-      target,
-      upside: price === 0 ? 0 : ((target - price) / price) * 100,
+      volumeShock: metrics.volumeShock,
+      target: metrics.target,
+      upside: metrics.upsidePercent,
+      score: metrics.finalScore,
+      action: getSignalAction(metrics, "intraday"),
+      remark: buildSignalRemark(metrics, "intraday"),
+      caveats: metrics.caveats,
+      metrics,
     };
   } catch {
     return fallback;
   }
 }
 
-function buildVolumeShock(symbol: string, volume: number, changePercent: number) {
-  const symbolSeed = [...symbol].reduce((sum, char) => sum + char.charCodeAt(0), 0);
-  const liquidityScore = Math.min(Math.log10(volume + 1) / 7, 1.4);
-  const momentumScore = Math.max(changePercent, 0) / 8;
-  const stableNoise = (symbolSeed % 19) / 100;
+function buildPriceBars(quote?: {
+  close?: Array<number | null>;
+  high?: Array<number | null>;
+  low?: Array<number | null>;
+  volume?: Array<number | null>;
+}): PriceBar[] {
+  const closes = quote?.close ?? [];
 
-  return Number(Math.max(0.15, liquidityScore + momentumScore + stableNoise).toFixed(2));
+  return closes
+    .map((close, index) => ({
+      close: close ?? 0,
+      high: quote?.high?.[index] ?? close ?? 0,
+      low: quote?.low?.[index] ?? close ?? 0,
+      volume: quote?.volume?.[index] ?? 0,
+    }))
+    .filter((bar) => bar.close > 0 && bar.high > 0 && bar.low > 0);
 }

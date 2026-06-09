@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { PriceBar } from "@/lib/analysis";
 import {
   PortfolioInputRow,
   PortfolioList,
@@ -23,6 +24,14 @@ type YahooChartResponse = {
         previousClose?: number;
         regularMarketVolume?: number;
         symbol?: string;
+      };
+      indicators?: {
+        quote?: Array<{
+          close?: Array<number | null>;
+          high?: Array<number | null>;
+          low?: Array<number | null>;
+          volume?: Array<number | null>;
+        }>;
       };
     }>;
     error?: {
@@ -121,6 +130,7 @@ async function resolveQuote(row: PortfolioInputRow): Promise<PortfolioPosition> 
     currentPrice: quote.currentPrice,
     previousClose: quote.previousClose,
     volume: quote.volume,
+    bars: quote.bars,
     newsHeadlines,
     currency: "INR",
   };
@@ -156,16 +166,17 @@ async function fetchYahooQuote(symbol: string) {
     currentPrice: 0,
     previousClose: 0,
     volume: 0,
+    bars: [] as PriceBar[],
   };
 
   try {
     const response = await fetch(
-      `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=1d&interval=1d`,
+      `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=3mo&interval=1d`,
       {
         headers: {
           "User-Agent": "Mozilla/5.0",
         },
-        next: { revalidate: 60 },
+        next: { revalidate: 300 },
       },
     );
 
@@ -178,15 +189,36 @@ async function fetchYahooQuote(symbol: string) {
     const currentPrice = meta?.regularMarketPrice ?? 0;
     const previousClose = meta?.previousClose ?? meta?.chartPreviousClose ?? 0;
     const volume = meta?.regularMarketVolume ?? 0;
+    const quote = data.chart?.result?.[0]?.indicators?.quote?.[0];
+    const bars = buildPriceBars(quote);
 
     return {
       currentPrice,
       previousClose,
       volume,
+      bars,
     };
   } catch {
     return fallback;
   }
+}
+
+function buildPriceBars(quote?: {
+  close?: Array<number | null>;
+  high?: Array<number | null>;
+  low?: Array<number | null>;
+  volume?: Array<number | null>;
+}): PriceBar[] {
+  const closes = quote?.close ?? [];
+
+  return closes
+    .map((close, index) => ({
+      close: close ?? 0,
+      high: quote?.high?.[index] ?? close ?? 0,
+      low: quote?.low?.[index] ?? close ?? 0,
+      volume: quote?.volume?.[index] ?? 0,
+    }))
+    .filter((bar) => bar.close > 0 && bar.high > 0 && bar.low > 0);
 }
 
 async function fetchYahooHeadlines(symbol: string) {

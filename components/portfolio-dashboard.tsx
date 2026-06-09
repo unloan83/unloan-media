@@ -111,6 +111,10 @@ type ExpertMatrixQuote = {
   target: number;
   upside: number;
   volumeShock: number;
+  score: number;
+  action: "Accumulate" | "Urgent Sell";
+  remark: string;
+  caveats: string[];
 };
 
 type ExpertMatrixCategory = {
@@ -125,6 +129,8 @@ type ExpertActionMatrix = {
   verified: string;
   source: string;
   asOf: string;
+  refreshCycle?: string;
+  caveat?: string;
   categories: ExpertMatrixCategory[];
 };
 
@@ -243,7 +249,27 @@ export function PortfolioDashboard() {
   useEffect(() => {
     refreshMarketOverview();
     refreshExpertMatrix();
+
+    const marketInterval = window.setInterval(refreshMarketOverview, 5 * 60 * 1000);
+    const expertInterval = window.setInterval(refreshExpertMatrix, 15 * 60 * 1000);
+
+    return () => {
+      window.clearInterval(marketInterval);
+      window.clearInterval(expertInterval);
+    };
   }, []);
+
+  useEffect(() => {
+    if (!hydrated) {
+      return;
+    }
+
+    const portfolioInterval = window.setInterval(() => {
+      repriceSavedPortfolios();
+    }, 15 * 60 * 1000);
+
+    return () => window.clearInterval(portfolioInterval);
+  }, [hydrated, repriceSavedPortfolios]);
 
   useEffect(() => {
     if (!hydrated) {
@@ -998,6 +1024,12 @@ function ExpertActionMatrixSection({
                 : "Live feed pending"}
             </span>
           </div>
+          <div className="rounded-md border border-amber-200 bg-amber-50/80 px-3 py-2 text-[11px] leading-4 text-amber-950">
+            {matrix?.refreshCycle ??
+              "Intraday signals refresh every 5 minutes; longer-horizon signals refresh every 15 minutes."}{" "}
+            {matrix?.caveat ??
+              "For screening only. Confirm fundamentals, news, liquidity and risk before investing."}
+          </div>
           <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-4">
           {(matrix?.categories ?? []).map((category) => (
             <ExpertCategoryCard key={category.key} category={category} />
@@ -1055,12 +1087,25 @@ function ExpertPickList({
         >
           <div className="flex items-center justify-between gap-2">
             <span className="font-semibold">{item.symbol}</span>
-            <span className="text-muted-foreground">{formatCurrency(item.price)}</span>
+            <span className="rounded bg-white px-1.5 py-0.5 font-semibold text-amber-900">
+              {item.score}/100
+            </span>
+          </div>
+          <div className="mt-0.5 flex items-center justify-between gap-2">
+            <span className="truncate text-[10px] text-muted-foreground">
+              {formatCurrency(item.price)} | {item.action}
+            </span>
           </div>
           <div className="mt-0.5 text-[10px] leading-4 text-muted-foreground">
             {mode === "target"
               ? `Target ${formatCurrency(item.target)} (${formatPercent(item.upside)})`
               : `Volume shock ${item.volumeShock.toFixed(2)}x`}
+          </div>
+          <div className="mt-0.5 text-[10px] leading-4 text-muted-foreground">
+            {item.remark}
+          </div>
+          <div className="mt-1 text-[10px] leading-4 text-amber-900">
+            {item.caveats?.[0] ?? "Validate before action."}
           </div>
         </div>
       ))}
@@ -1416,6 +1461,21 @@ function RecommendationBlock({
                 : "Accumulate means the model sees future growth potential and supports staged buying. "}
               {item.rationale}
             </p>
+            {item.metrics ? (
+              <div className="mt-2 grid gap-1 rounded-md bg-muted/35 p-2 text-[11px] text-muted-foreground sm:grid-cols-2">
+                <span>EMA20: {formatCurrency(item.metrics.ema20)}</span>
+                <span>EMA50: {formatCurrency(item.metrics.ema50)}</span>
+                <span>VWAP gap: {formatPercent(item.metrics.vwapDistancePercent)}</span>
+                <span>ATR risk: {formatPercent(item.metrics.atrPercent)}</span>
+                <span>Volume shock: {item.metrics.volumeShock.toFixed(2)}x</span>
+                <span>Risk score: {item.metrics.riskScore.toFixed(1)}</span>
+              </div>
+            ) : null}
+            {item.caveats?.length ? (
+              <div className="mt-2 rounded-md border border-amber-200 bg-amber-50 px-2 py-1.5 text-[11px] leading-4 text-amber-950">
+                {item.caveats[0]}
+              </div>
+            ) : null}
           </div>
         ))}
       </div>
