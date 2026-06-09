@@ -597,18 +597,6 @@ export function PortfolioDashboard() {
           </div>
         </header>
 
-        <MarketOverviewSection
-          market={marketOverview}
-          isLoading={isMarketLoading}
-          onRefresh={refreshMarketOverview}
-        />
-
-        <ExpertActionMatrixSection
-          matrix={expertMatrix}
-          isLoading={isExpertLoading}
-          onRefresh={refreshExpertMatrix}
-        />
-
         {isAddOpen ? (
           <AddPortfolioPanel
             draftRows={draftRows}
@@ -633,6 +621,18 @@ export function PortfolioDashboard() {
             addPortfolio={addPortfolio}
           />
         ) : null}
+
+        <MarketOverviewSection
+          market={marketOverview}
+          isLoading={isMarketLoading}
+          onRefresh={refreshMarketOverview}
+        />
+
+        <ExpertActionMatrixSection
+          matrix={expertMatrix}
+          isLoading={isExpertLoading}
+          onRefresh={refreshExpertMatrix}
+        />
 
         {error && !isAddOpen ? (
           <div className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
@@ -1170,8 +1170,8 @@ function ExpertPickList({
                 <span>Volume shock: {item.volumeShock.toFixed(2)}x</span>
                 <span>Score: {item.score}/100</span>
               </div>
-              <p className="leading-4 text-muted-foreground">{item.remark}</p>
-              <p className="leading-4 text-amber-950">
+              <p className="leading-4 text-zinc-300">{item.remark}</p>
+              <p className="leading-4 text-amber-200">
                 {item.caveats?.[0] ?? "Validate before action."}
               </p>
             </div>
@@ -1525,14 +1525,14 @@ function RecommendationBlock({
                   <span>Action: {item.action}</span>
                   <span>Confidence: {item.confidence}%</span>
                 </div>
-                <p className="leading-5 text-muted-foreground">
+                <p className="leading-5 text-zinc-300">
                   {item.action === "Urgent Sell"
                     ? "Urgent Sell means the model expects significant near-term downside risk and weak recovery probability. "
                     : "Accumulate means the model sees future growth potential and supports staged buying. "}
                   {item.rationale}
                 </p>
                 {item.metrics ? (
-                  <div className="grid gap-1 rounded bg-black/5 p-2 text-[11px] sm:grid-cols-2">
+                  <div className="grid gap-1 rounded border border-white/10 bg-white/5 p-2 text-[11px] text-zinc-200 sm:grid-cols-2">
                     <span>EMA20: {formatCurrency(item.metrics.ema20)}</span>
                     <span>EMA50: {formatCurrency(item.metrics.ema50)}</span>
                     <span>VWAP gap: {formatPercent(item.metrics.vwapDistancePercent)}</span>
@@ -1542,7 +1542,7 @@ function RecommendationBlock({
                   </div>
                 ) : null}
                 {item.caveats?.length ? (
-                  <div className="rounded border border-amber-200 bg-amber-50 px-2 py-1.5 leading-4 text-amber-950">
+                  <div className="rounded border border-amber-300/30 bg-amber-300/10 px-2 py-1.5 leading-4 text-amber-200">
                     {item.caveats[0]}
                   </div>
                 ) : null}
@@ -1594,14 +1594,14 @@ function StockSignalBar({
             <span className={cn("h-2 w-2 shrink-0 rounded-full", stockBarClasses[tone].dot)} />
             <span className="truncate text-sm font-semibold leading-none">{symbol}</span>
           </div>
-          <div className="mt-1 truncate text-[10px] leading-none opacity-80">{name}</div>
+          <div className="mt-1 truncate text-[10px] leading-none text-zinc-300">{name}</div>
         </div>
-        <div className="shrink-0 rounded bg-white/60 px-1.5 py-0.5 text-[11px] font-semibold">
+        <div className="shrink-0 rounded border border-white/10 bg-white/5 px-1.5 py-0.5 text-[11px] font-semibold">
           {primaryValue}
         </div>
         <div className="flex shrink-0 items-center gap-1">
           {secondaryValue ? (
-            <span className="hidden rounded bg-white/40 px-1.5 py-0.5 text-[10px] font-semibold sm:inline">
+            <span className="hidden rounded border border-white/10 bg-white/5 px-1.5 py-0.5 text-[10px] font-semibold sm:inline">
               {secondaryValue}
             </span>
           ) : null}
@@ -1622,22 +1622,22 @@ function StockSignalBar({
 
 const stockBarClasses = {
   up: {
-    shell: "border-emerald-300 bg-emerald-50",
-    button: "bg-emerald-600 text-white hover:bg-emerald-700",
-    dot: "bg-emerald-100",
-    details: "border-emerald-200 bg-emerald-50 text-emerald-950",
+    shell: "border-emerald-400/60 bg-zinc-950",
+    button: "bg-zinc-950 text-emerald-300 hover:bg-zinc-900",
+    dot: "bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.95)]",
+    details: "border-emerald-400/30 bg-zinc-950 text-zinc-100",
   },
   down: {
-    shell: "border-red-300 bg-red-50",
-    button: "bg-red-600 text-white hover:bg-red-700",
-    dot: "bg-red-100",
-    details: "border-red-200 bg-red-50 text-red-950",
+    shell: "border-red-400/60 bg-zinc-950",
+    button: "bg-zinc-950 text-red-300 hover:bg-zinc-900",
+    dot: "bg-red-400 shadow-[0_0_10px_rgba(248,113,113,0.95)]",
+    details: "border-red-400/30 bg-zinc-950 text-zinc-100",
   },
   flat: {
-    shell: "border-amber-300 bg-amber-50",
-    button: "bg-amber-400 text-amber-950 hover:bg-amber-500",
-    dot: "bg-amber-900",
-    details: "border-amber-200 bg-amber-50 text-amber-950",
+    shell: "border-amber-300/60 bg-zinc-950",
+    button: "bg-zinc-950 text-amber-300 hover:bg-zinc-900",
+    dot: "bg-amber-300 shadow-[0_0_10px_rgba(252,211,77,0.95)]",
+    details: "border-amber-300/30 bg-zinc-950 text-zinc-100",
   },
 } as const;
 
