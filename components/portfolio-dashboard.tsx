@@ -10,6 +10,7 @@ import {
 } from "recharts";
 import {
   Download,
+  ChevronDown,
   FileUp,
   Plus,
   RefreshCw,
@@ -49,7 +50,14 @@ import {
   samplePortfolio,
 } from "@/lib/portfolio";
 import { cn } from "@/lib/utils";
-import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+  type RefObject,
+} from "react";
 
 const sectorColors = [
   "#0f8b8d",
@@ -110,6 +118,7 @@ type ExpertMatrixQuote = {
   symbol: string;
   name: string;
   price: number;
+  changePercent?: number;
   target: number;
   upside: number;
   volumeShock: number;
@@ -1002,23 +1011,22 @@ function MoverMiniList({
         {title}
       </div>
       {quotes.map((quote) => (
-        <div
+        <StockSignalBar
           key={`${title}-${quote.symbol}`}
-          className="grid grid-cols-[1fr_auto] gap-2 rounded bg-muted/30 px-2 py-1 text-[11px]"
-        >
-          <span className="truncate font-semibold">{quote.symbol}</span>
-          <span
-            className={cn(
-              "font-semibold",
-              quote.change >= 0 ? "text-emerald-700" : "text-destructive",
-            )}
-          >
-            {formatPercent(quote.changePercent)}
-          </span>
-          <span className="col-span-2 truncate text-[10px] text-muted-foreground">
-            {quote.name} | {quote.price.toLocaleString("en-IN")}
-          </span>
-        </div>
+          symbol={quote.symbol}
+          name={quote.name}
+          primaryValue={formatPercent(quote.changePercent)}
+          secondaryValue={quote.price.toLocaleString("en-IN")}
+          tone={quote.change > 0 ? "up" : quote.change < 0 ? "down" : "flat"}
+          details={
+            <div className="grid gap-1 text-[11px] sm:grid-cols-2">
+              <span>Price: {quote.price.toLocaleString("en-IN")}</span>
+              <span>Move: {formatPercent(quote.changePercent)}</span>
+              <span>Change: {quote.change.toFixed(2)}</span>
+              <span>Volume: {quote.volume.toLocaleString("en-IN")}</span>
+            </div>
+          }
+        />
       ))}
       {quotes.length === 0 ? (
         <div className="rounded bg-muted/30 px-2 py-2 text-[11px] text-muted-foreground">
@@ -1141,33 +1149,34 @@ function ExpertPickList({
     <div className="mt-2 space-y-1">
       <h3 className="text-[11px] font-semibold text-muted-foreground">{title}</h3>
       {items.map((item) => (
-        <div
+        <StockSignalBar
           key={`${title}-${item.symbol}`}
-          className="rounded bg-muted/35 px-2 py-1 text-[11px]"
-        >
-          <div className="flex items-center justify-between gap-2">
-            <span className="font-semibold">{item.symbol}</span>
-            <span className="rounded bg-white px-1.5 py-0.5 font-semibold text-amber-900">
-              {item.score}/100
-            </span>
-          </div>
-          <div className="mt-0.5 flex items-center justify-between gap-2">
-            <span className="truncate text-[10px] text-muted-foreground">
-              {formatCurrency(item.price)} | {item.action}
-            </span>
-          </div>
-          <div className="mt-0.5 text-[10px] leading-4 text-muted-foreground">
-            {mode === "target"
-              ? `Target ${formatCurrency(item.target)} (${formatPercent(item.upside)})`
-              : `Volume shock ${item.volumeShock.toFixed(2)}x`}
-          </div>
-          <div className="mt-0.5 text-[10px] leading-4 text-muted-foreground">
-            {item.remark}
-          </div>
-          <div className="mt-1 text-[10px] leading-4 text-amber-900">
-            {item.caveats?.[0] ?? "Validate before action."}
-          </div>
-        </div>
+          symbol={item.symbol}
+          name={item.name}
+          primaryValue={`${item.score}/100`}
+          secondaryValue={
+            mode === "target"
+              ? formatPercent(item.upside)
+              : `${item.volumeShock.toFixed(2)}x`
+          }
+          tone={item.score >= 68 ? "up" : item.score >= 52 ? "flat" : "down"}
+          details={
+            <div className="space-y-2 text-[11px]">
+              <div className="grid gap-1 sm:grid-cols-2">
+                <span>CMP: {formatCurrency(item.price)}</span>
+                <span>Action: {item.action}</span>
+                <span>Target: {formatCurrency(item.target)}</span>
+                <span>Upside: {formatPercent(item.upside)}</span>
+                <span>Volume shock: {item.volumeShock.toFixed(2)}x</span>
+                <span>Score: {item.score}/100</span>
+              </div>
+              <p className="leading-4 text-muted-foreground">{item.remark}</p>
+              <p className="leading-4 text-amber-950">
+                {item.caveats?.[0] ?? "Validate before action."}
+              </p>
+            </div>
+          }
+        />
       ))}
       {items.length === 0 ? (
         <div className="rounded-md bg-muted/35 px-2 py-2 text-xs text-muted-foreground">
@@ -1501,42 +1510,45 @@ function RecommendationBlock({
       <h2 className="text-sm font-semibold">{title}</h2>
       <div className="space-y-2">
         {items.map((item) => (
-          <div key={item.id} className="rounded-md border bg-background p-3">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <div className="text-sm font-semibold">
-                  {item.symbol} | {item.action}
+          <StockSignalBar
+            key={item.id}
+            symbol={item.symbol}
+            name={item.company}
+            primaryValue={item.action}
+            secondaryValue={`${item.confidence}%`}
+            tone={item.action === "Urgent Sell" ? "down" : item.confidence >= 72 ? "up" : "flat"}
+            details={
+              <div className="space-y-2 text-[11px]">
+                <div className="grid gap-1 sm:grid-cols-2">
+                  <span>Company: {item.company}</span>
+                  <span>Horizon: {item.horizon}</span>
+                  <span>Action: {item.action}</span>
+                  <span>Confidence: {item.confidence}%</span>
                 </div>
-                <div className="text-xs text-muted-foreground">
-                  {item.company} | {item.horizon}
-                </div>
+                <p className="leading-5 text-muted-foreground">
+                  {item.action === "Urgent Sell"
+                    ? "Urgent Sell means the model expects significant near-term downside risk and weak recovery probability. "
+                    : "Accumulate means the model sees future growth potential and supports staged buying. "}
+                  {item.rationale}
+                </p>
+                {item.metrics ? (
+                  <div className="grid gap-1 rounded bg-black/5 p-2 text-[11px] sm:grid-cols-2">
+                    <span>EMA20: {formatCurrency(item.metrics.ema20)}</span>
+                    <span>EMA50: {formatCurrency(item.metrics.ema50)}</span>
+                    <span>VWAP gap: {formatPercent(item.metrics.vwapDistancePercent)}</span>
+                    <span>ATR risk: {formatPercent(item.metrics.atrPercent)}</span>
+                    <span>Volume shock: {item.metrics.volumeShock.toFixed(2)}x</span>
+                    <span>Risk score: {item.metrics.riskScore.toFixed(1)}</span>
+                  </div>
+                ) : null}
+                {item.caveats?.length ? (
+                  <div className="rounded border border-amber-200 bg-amber-50 px-2 py-1.5 leading-4 text-amber-950">
+                    {item.caveats[0]}
+                  </div>
+                ) : null}
               </div>
-              <div className="rounded-md bg-accent px-2 py-1 text-xs font-semibold text-accent-foreground">
-                {item.confidence}%
-              </div>
-            </div>
-            <p className="mt-2 text-xs leading-5 text-muted-foreground">
-              {item.action === "Urgent Sell"
-                ? "Urgent Sell means the model expects significant near-term downside risk and weak recovery probability. "
-                : "Accumulate means the model sees future growth potential and supports staged buying. "}
-              {item.rationale}
-            </p>
-            {item.metrics ? (
-              <div className="mt-2 grid gap-1 rounded-md bg-muted/35 p-2 text-[11px] text-muted-foreground sm:grid-cols-2">
-                <span>EMA20: {formatCurrency(item.metrics.ema20)}</span>
-                <span>EMA50: {formatCurrency(item.metrics.ema50)}</span>
-                <span>VWAP gap: {formatPercent(item.metrics.vwapDistancePercent)}</span>
-                <span>ATR risk: {formatPercent(item.metrics.atrPercent)}</span>
-                <span>Volume shock: {item.metrics.volumeShock.toFixed(2)}x</span>
-                <span>Risk score: {item.metrics.riskScore.toFixed(1)}</span>
-              </div>
-            ) : null}
-            {item.caveats?.length ? (
-              <div className="mt-2 rounded-md border border-amber-200 bg-amber-50 px-2 py-1.5 text-[11px] leading-4 text-amber-950">
-                {item.caveats[0]}
-              </div>
-            ) : null}
-          </div>
+            }
+          />
         ))}
         {items.length === 0 ? (
           <div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-950">
@@ -1548,6 +1560,86 @@ function RecommendationBlock({
     </section>
   );
 }
+
+function StockSignalBar({
+  symbol,
+  name,
+  primaryValue,
+  secondaryValue,
+  tone,
+  details,
+}: {
+  symbol: string;
+  name: string;
+  primaryValue: string;
+  secondaryValue?: string;
+  tone: "up" | "down" | "flat";
+  details: ReactNode;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className={cn("overflow-hidden rounded-md border shadow-sm", stockBarClasses[tone].shell)}>
+      <button
+        type="button"
+        onClick={() => setIsOpen((value) => !value)}
+        className={cn(
+          "grid min-h-10 w-full grid-cols-[1fr_auto_auto] items-center gap-2 px-2.5 py-2 text-left text-xs transition-colors",
+          stockBarClasses[tone].button,
+        )}
+        aria-expanded={isOpen}
+      >
+        <div className="min-w-0">
+          <div className="flex min-w-0 items-center gap-2">
+            <span className={cn("h-2 w-2 shrink-0 rounded-full", stockBarClasses[tone].dot)} />
+            <span className="truncate text-sm font-semibold leading-none">{symbol}</span>
+          </div>
+          <div className="mt-1 truncate text-[10px] leading-none opacity-80">{name}</div>
+        </div>
+        <div className="shrink-0 rounded bg-white/60 px-1.5 py-0.5 text-[11px] font-semibold">
+          {primaryValue}
+        </div>
+        <div className="flex shrink-0 items-center gap-1">
+          {secondaryValue ? (
+            <span className="hidden rounded bg-white/40 px-1.5 py-0.5 text-[10px] font-semibold sm:inline">
+              {secondaryValue}
+            </span>
+          ) : null}
+          <ChevronDown
+            className={cn("h-3.5 w-3.5 transition-transform", isOpen ? "rotate-180" : "")}
+            aria-hidden="true"
+          />
+        </div>
+      </button>
+      {isOpen ? (
+        <div className={cn("border-t px-2.5 py-2", stockBarClasses[tone].details)}>
+          {details}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+const stockBarClasses = {
+  up: {
+    shell: "border-emerald-300 bg-emerald-50",
+    button: "bg-emerald-600 text-white hover:bg-emerald-700",
+    dot: "bg-emerald-100",
+    details: "border-emerald-200 bg-emerald-50 text-emerald-950",
+  },
+  down: {
+    shell: "border-red-300 bg-red-50",
+    button: "bg-red-600 text-white hover:bg-red-700",
+    dot: "bg-red-100",
+    details: "border-red-200 bg-red-50 text-red-950",
+  },
+  flat: {
+    shell: "border-amber-300 bg-amber-50",
+    button: "bg-amber-400 text-amber-950 hover:bg-amber-500",
+    dot: "bg-amber-900",
+    details: "border-amber-200 bg-amber-50 text-amber-950",
+  },
+} as const;
 
 function SectorAllocationBlock({
   metrics,
