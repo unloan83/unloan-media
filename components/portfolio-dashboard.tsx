@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PortfolioCoach } from "@/components/portfolio-coach";
-import { PortfolioHealth } from "@/components/portfolio-health";
+import { PortfolioHealthScore } from "@/components/portfolio-health-score";
 import { PortfolioRiskEngine } from "@/components/portfolio-risk-engine";
 import {
   Card,
@@ -1352,6 +1352,7 @@ function PortfolioColumn({
             }
             onClick={portfolio.isMarketPortfolio ? undefined : onToggleValue}
           />
+          <PortfolioHealthScore portfolio={portfolio} compact />
           <SummaryCard
             title="Recommendation History"
             value={`${portfolioHistory.length} records`}
@@ -1373,7 +1374,7 @@ function PortfolioColumn({
         ) : null}
         <PortfolioMiniSummary metrics={metrics} />
         <PortfolioRiskEngine portfolio={portfolio} />
-        <PortfolioHealth portfolio={portfolio} />
+        <PortfolioHealthScore portfolio={portfolio} />
         <PortfolioCoach portfolio={portfolio} />
 
         <RecommendationBlock
