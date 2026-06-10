@@ -18,6 +18,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PortfolioCoach } from "@/components/portfolio-coach";
 import { PortfolioHealth } from "@/components/portfolio-health";
 import {
   Card,
@@ -1371,6 +1372,7 @@ function PortfolioColumn({
         ) : null}
         <PortfolioMiniSummary metrics={metrics} />
         <PortfolioHealth portfolio={portfolio} />
+        <PortfolioCoach portfolio={portfolio} />
 
         <RecommendationBlock
           title="1. Short-term Buy/Sell Analysis"
