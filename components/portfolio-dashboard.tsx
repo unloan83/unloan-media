@@ -20,6 +20,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { PortfolioCoach } from "@/components/portfolio-coach";
 import { PortfolioHealth } from "@/components/portfolio-health";
+import { PortfolioRiskEngine } from "@/components/portfolio-risk-engine";
 import {
   Card,
   CardContent,
@@ -1371,6 +1372,7 @@ function PortfolioColumn({
           />
         ) : null}
         <PortfolioMiniSummary metrics={metrics} />
+        <PortfolioRiskEngine portfolio={portfolio} />
         <PortfolioHealth portfolio={portfolio} />
         <PortfolioCoach portfolio={portfolio} />
 

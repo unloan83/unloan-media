@@ -101,7 +101,7 @@ function buildCoachItems(
   portfolio: ManagedPortfolio,
   metrics: PortfolioMetrics,
   recommendations: Recommendation[],
-) {
+): CoachItem[] {
   const recommendationBySymbol = recommendations.reduce<Record<string, Recommendation[]>>(
     (acc, recommendation) => {
       acc[recommendation.symbol] = [...(acc[recommendation.symbol] ?? []), recommendation];
@@ -132,9 +132,9 @@ function buildCoachItems(
       holding,
     });
   });
-  const watchlistBuyItems = portfolio.positions
+  const watchlistBuyItems: CoachItem[] = portfolio.positions
     .filter((position) => position.list === "watchlist" && position.currentPrice > 0)
-    .map((position) => {
+    .flatMap((position) => {
       const stockRecommendations = recommendationBySymbol[position.symbol] ?? [];
       const bestRecommendation = [...stockRecommendations].sort(
         (a, b) =>
@@ -144,19 +144,18 @@ function buildCoachItems(
       const score = bestRecommendation?.metrics?.finalScore ?? bestRecommendation?.confidence ?? 0;
 
       if (score < 62) {
-        return null;
+        return [];
       }
 
-      return {
+      return [{
         symbol: position.symbol,
         company: position.company,
         action: "BUY" as const,
         priority: score >= 75 ? "HIGH" as const : "MEDIUM" as const,
         score,
         reason: `Watchlist stock has supportive recommendation score of ${score}/100; consider staged buying after price and liquidity validation.`,
-      };
-    })
-    .filter((item): item is CoachItem => Boolean(item));
+      }];
+    });
 
   return [...holdingItems, ...watchlistBuyItems]
     .sort((a, b) => priorityRank[b.priority] - priorityRank[a.priority] || b.score - a.score)
