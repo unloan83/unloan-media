@@ -10,6 +10,7 @@ import {
 } from "recharts";
 import {
   ChevronDown,
+  ChevronRight,
   FileUp,
   Lock,
   Plus,
@@ -78,6 +79,7 @@ const sectorColors = [
 const portfoliosStorageKey = "multibagger-portfolios";
 const historyStorageKey = "multibagger-recommendation-history";
 const pinStorageKey = "unloan-portfolio-pin-hashes";
+const portfolioDashboardCollapseKey = "unloan-portfolio-dashboard-open";
 const masterRecoveryPin = "1008";
 
 type CsvRow = {
@@ -178,9 +180,10 @@ export function PortfolioDashboard() {
   const [isLoading, setIsLoading] = useState(false);
   const [marketOverview, setMarketOverview] = useState<MarketOverview | null>(null);
   const [isMarketLoading, setIsMarketLoading] = useState(false);
-  const [expertMatrix, setExpertMatrix] = useState<ExpertActionMatrix | null>(null);
-  const [isExpertLoading, setIsExpertLoading] = useState(false);
+  const [, setExpertMatrix] = useState<ExpertActionMatrix | null>(null);
+  const [, setIsExpertLoading] = useState(false);
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
+  const [isPortfolioDashboardOpen, setIsPortfolioDashboardOpen] = useState(true);
   const [selectedPortfolioId, setSelectedPortfolioId] = useState(samplePortfolio.id);
   const [pinHashes, setPinHashes] = useState<Record<string, string>>({});
   const [pinChallengePortfolio, setPinChallengePortfolio] =
@@ -276,6 +279,14 @@ export function PortfolioDashboard() {
         setPinHashes(JSON.parse(savedPins) as Record<string, string>);
       }
 
+      const savedDashboardOpen = window.sessionStorage.getItem(
+        portfolioDashboardCollapseKey,
+      );
+
+      if (savedDashboardOpen) {
+        setIsPortfolioDashboardOpen(savedDashboardOpen !== "false");
+      }
+
       try {
         const response = await fetch("/api/portfolios");
         const payload = (await response.json()) as {
@@ -359,6 +370,17 @@ export function PortfolioDashboard() {
 
     window.localStorage.setItem(pinStorageKey, JSON.stringify(pinHashes));
   }, [hydrated, pinHashes]);
+
+  useEffect(() => {
+    if (!hydrated) {
+      return;
+    }
+
+    window.sessionStorage.setItem(
+      portfolioDashboardCollapseKey,
+      String(isPortfolioDashboardOpen),
+    );
+  }, [hydrated, isPortfolioDashboardOpen]);
 
   useEffect(() => {
     if (portfolios.length === 0) {
@@ -696,11 +718,10 @@ export function PortfolioDashboard() {
                 Unloan
               </p>
               <h1 className="text-3xl font-semibold tracking-normal text-white sm:text-4xl">
-                UNLOAN INVESTOR INTELLIGENCE
+                UNLOAN INVESTOR COMMAND CENTER
               </h1>
               <p className="max-w-3xl text-sm leading-6 text-slate-300">
-                A dark-mode investment terminal for market context, secured
-                portfolio access, risk, health, and action-first analytics.
+                Market Intelligence. Portfolio Insights. Smarter Decisions.
               </p>
             </div>
           </div>
@@ -770,43 +791,63 @@ export function PortfolioDashboard() {
         ) : null}
 
         {selectedPortfolio ? (
-          <section className="space-y-5">
-            <SectionHeader
-              title="Portfolio Dashboard"
-              description={`${selectedPortfolio.name} is unlocked for review.`}
-            />
-            <PortfolioSummarySection portfolios={[selectedPortfolio]} />
-            <div className="grid gap-4 xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
-              <PortfolioHealthScore portfolio={selectedPortfolio} />
-              <PortfolioAnalyticsSection portfolios={[selectedPortfolio]} />
+          <section className="overflow-hidden rounded-2xl border border-white/10 bg-[#0F1B2D] shadow-xl">
+            <div className="flex flex-col gap-3 px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
+              <div>
+                <h2 className="text-lg font-semibold text-white">Portfolio Dashboard</h2>
+                <p className="text-sm text-slate-400">
+                  {selectedPortfolio.name} is unlocked for review.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsPortfolioDashboardOpen((value) => !value)}
+                className="flex h-12 w-12 items-center justify-center self-end rounded-xl border border-cyan-300/30 bg-cyan-300/10 text-cyan-200 shadow-sm transition hover:border-cyan-200/60 hover:bg-cyan-300/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 lg:self-auto"
+                aria-expanded={isPortfolioDashboardOpen}
+                aria-label={
+                  isPortfolioDashboardOpen
+                    ? "Collapse Portfolio Dashboard"
+                    : "Expand Portfolio Dashboard"
+                }
+              >
+                <ChevronRight
+                  className={cn(
+                    "h-8 w-8 transition-transform",
+                    isPortfolioDashboardOpen ? "rotate-90" : "",
+                  )}
+                  aria-hidden="true"
+                />
+              </button>
             </div>
-            <HoldingsSection portfolios={[selectedPortfolio]} />
-            <PortfolioCard
-              key={selectedPortfolio.id}
-              portfolio={selectedPortfolio}
-              isLoading={isLoading}
-              onRefresh={() => refreshPortfolio(selectedPortfolio)}
-              onRemove={() => removePortfolio(selectedPortfolio.id)}
-              onUpdateInputs={(rows) => updatePortfolioInputs(selectedPortfolio, rows)}
-              isValueExpanded={expandedPortfolioId === selectedPortfolio.id}
-              onToggleValue={() =>
-                setExpandedPortfolioId((current) =>
-                  current === selectedPortfolio.id ? null : selectedPortfolio.id,
-                )
-              }
-            />
+            {isPortfolioDashboardOpen ? (
+              <div className="space-y-5 border-t border-white/10 p-5">
+                <PortfolioSummarySection portfolios={[selectedPortfolio]} />
+                <div className="grid gap-4 xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
+                  <PortfolioHealthScore portfolio={selectedPortfolio} />
+                  <CurrentHoldingsSection portfolio={selectedPortfolio} />
+                </div>
+                <PortfolioCard
+                  key={selectedPortfolio.id}
+                  portfolio={selectedPortfolio}
+                  isLoading={isLoading}
+                  onRefresh={() => refreshPortfolio(selectedPortfolio)}
+                  onRemove={() => removePortfolio(selectedPortfolio.id)}
+                  onUpdateInputs={(rows) => updatePortfolioInputs(selectedPortfolio, rows)}
+                  isValueExpanded={expandedPortfolioId === selectedPortfolio.id}
+                  onToggleValue={() =>
+                    setExpandedPortfolioId((current) =>
+                      current === selectedPortfolio.id ? null : selectedPortfolio.id,
+                    )
+                  }
+                />
+              </div>
+            ) : null}
           </section>
         ) : null}
 
         <AdvancedInsightsSection
           isOpen={isAdvancedOpen}
           onToggle={() => setIsAdvancedOpen((value) => !value)}
-          market={marketOverview}
-          isMarketLoading={isMarketLoading}
-          onMarketRefresh={refreshMarketOverview}
-          matrix={expertMatrix}
-          isExpertLoading={isExpertLoading}
-          onExpertRefresh={refreshExpertMatrix}
         />
 
         <GlossarySection />
@@ -1174,93 +1215,58 @@ function SummaryTile({
   );
 }
 
-function PortfolioAnalyticsSection({
-  portfolios,
+function CurrentHoldingsSection({
+  portfolio,
 }: {
-  portfolios: ManagedPortfolio[];
+  portfolio: ManagedPortfolio;
 }) {
-  const metrics = calculatePortfolioMetrics(portfolios.flatMap((portfolio) => portfolio.positions));
-  const currentValue = metrics.totalValue;
-  const averageQuoteScore =
-    portfolios.length === 0
-      ? 0
-      : Math.round(
-          portfolios.reduce((sum, portfolio) => sum + getQuoteScore(portfolio.positions), 0) /
-            portfolios.length,
-        );
-
-  return (
-    <section className="space-y-3">
-      <SectionHeader
-        title="Portfolio Analytics"
-        description="A concise construction view before deeper portfolio cards."
-      />
-      <div className="grid gap-3 md:grid-cols-3">
-        <SummaryTile
-          label="Invested Value"
-          value={formatCurrency(currentValue)}
-          detail="Current holdings value"
-          accent="blue"
-        />
-        <SummaryTile
-          label="Quote Coverage"
-          value={`${averageQuoteScore}%`}
-          detail="CMP, previous close, volume, headlines"
-          accent="gold"
-        />
-        <SummaryTile
-          label="Sector Count"
-          value={String(metrics.sectorAllocations.length)}
-          detail="Distinct allocation groups"
-          accent="brown"
-        />
-      </div>
-    </section>
-  );
-}
-
-function HoldingsSection({
-  portfolios,
-}: {
-  portfolios: ManagedPortfolio[];
-}) {
-  const holdings = portfolios
-    .flatMap((portfolio) =>
-      calculatePortfolioMetrics(portfolio.positions).holdings.map((holding) => ({
-        ...holding,
-        portfolioName: portfolio.name,
-      })),
-    )
+  const holdings = calculatePortfolioMetrics(portfolio.positions).holdings
     .sort((a, b) => b.marketValue - a.marketValue)
-    .slice(0, 12);
+    .slice(0, 5);
 
   return (
-    <section className="space-y-3">
-      <SectionHeader
-        title="Holdings"
-        description="Top holdings across visible portfolios."
-      />
-      <Card className="wealth-card overflow-hidden">
+    <section className="h-full space-y-3">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <h3 className="text-lg font-semibold text-white">Current Holdings</h3>
+          <p className="text-sm text-slate-400">Top 5 positions by current value.</p>
+        </div>
+        <Button type="button" variant="outline" size="sm">
+          View All Holdings
+        </Button>
+      </div>
+      <Card className="h-[calc(100%-3.5rem)] overflow-hidden border-white/10 bg-[#16263D] shadow-sm">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Portfolio</TableHead>
-                  <TableHead>Stock</TableHead>
-                  <TableHead>Qty</TableHead>
-                  <TableHead>Value</TableHead>
-                  <TableHead>Sector</TableHead>
+                  <TableHead>Symbol</TableHead>
+                  <TableHead>Quantity</TableHead>
+                  <TableHead>Average Price</TableHead>
+                  <TableHead>CMP</TableHead>
+                  <TableHead>P/L %</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {holdings.map((holding) => (
-                  <TableRow key={`${holding.portfolioName}-${holding.symbol}`}>
-                    <TableCell className="text-xs">{holding.portfolioName}</TableCell>
+                  <TableRow key={`${portfolio.id}-${holding.symbol}`}>
                     <TableCell className="font-medium">{holding.symbol}</TableCell>
                     <TableCell>{holding.quantity}</TableCell>
-                    <TableCell>{formatCurrency(holding.marketValue)}</TableCell>
-                    <TableCell className="text-xs text-muted-foreground">{holding.sector}</TableCell>
+                    <TableCell>{formatCurrency(getAveragePrice(portfolio, holding.symbol))}</TableCell>
+                    <TableCell>{formatCurrency(holding.currentPrice)}</TableCell>
+                    <TableCell
+                      className={cn(
+                        "font-semibold",
+                        getProfitLossPercent(portfolio, holding.symbol, holding.currentPrice) >= 0
+                          ? "text-emerald-300"
+                          : "text-rose-300",
+                      )}
+                    >
+                      {formatPercent(
+                        getProfitLossPercent(portfolio, holding.symbol, holding.currentPrice),
+                      )}
+                    </TableCell>
                   </TableRow>
                 ))}
                 {holdings.length === 0 ? (
@@ -1282,24 +1288,12 @@ function HoldingsSection({
 function AdvancedInsightsSection({
   isOpen,
   onToggle,
-  market,
-  isMarketLoading,
-  onMarketRefresh,
-  matrix,
-  isExpertLoading,
-  onExpertRefresh,
 }: {
   isOpen: boolean;
   onToggle: () => void;
-  market: MarketOverview | null;
-  isMarketLoading: boolean;
-  onMarketRefresh: () => void;
-  matrix: ExpertActionMatrix | null;
-  isExpertLoading: boolean;
-  onExpertRefresh: () => void;
 }) {
   return (
-    <section className="wealth-card overflow-hidden">
+    <section className="overflow-hidden rounded-2xl border border-white/10 bg-[#0F1B2D] shadow-xl">
       <button
         type="button"
         onClick={onToggle}
@@ -1307,92 +1301,24 @@ function AdvancedInsightsSection({
         aria-expanded={isOpen}
       >
         <div>
-          <h2 className="text-lg font-semibold text-primary">Advanced Insights</h2>
-          <p className="text-sm text-muted-foreground">
-            Market scanner, expert matrix, and secondary analytics.
+          <h2 className="text-lg font-semibold text-white">Advanced Insights</h2>
+          <p className="text-sm text-slate-400">
+            Reserved for deeper portfolio intelligence.
           </p>
         </div>
         <ChevronDown
-          className={cn("h-5 w-5 text-primary transition-transform", isOpen ? "rotate-180" : "")}
+          className={cn("h-5 w-5 text-cyan-300 transition-transform", isOpen ? "rotate-180" : "")}
           aria-hidden="true"
         />
       </button>
       {isOpen ? (
-        <div className="space-y-4 border-t bg-[#F7F8FA]/70 p-4">
-          <MarketScannerSummary
-            market={market}
-            isLoading={isMarketLoading}
-            onRefresh={onMarketRefresh}
-          />
-          <ExpertActionMatrixSection
-            matrix={matrix}
-            isLoading={isExpertLoading}
-            onRefresh={onExpertRefresh}
-          />
+        <div className="border-t border-white/10 p-5">
+          <p className="rounded-xl border border-dashed border-white/15 bg-white/[0.03] px-4 py-5 text-sm text-slate-400">
+            Additional portfolio intelligence modules coming soon.
+          </p>
         </div>
       ) : null}
     </section>
-  );
-}
-
-function MarketScannerSummary({
-  market,
-  isLoading,
-  onRefresh,
-}: {
-  market: MarketOverview | null;
-  isLoading: boolean;
-  onRefresh: () => void;
-}) {
-  const sentimentClass =
-    market?.sentiment === "Positive"
-      ? "text-secondary"
-      : market?.sentiment === "Negative"
-        ? "text-destructive"
-        : "text-muted-foreground";
-
-  return (
-    <Card className="border-[#8A6A52]/20 bg-white">
-      <CardHeader className="flex flex-row items-start justify-between gap-3">
-        <div>
-          <CardTitle>Market Scanner</CardTitle>
-          <CardDescription>Sentiment and key index context.</CardDescription>
-        </div>
-        <Button
-          type="button"
-          variant="outline"
-          size="icon"
-          onClick={onRefresh}
-          disabled={isLoading}
-          aria-label="Refresh market scanner"
-        >
-          <RefreshCw className="h-4 w-4" aria-hidden="true" />
-        </Button>
-      </CardHeader>
-      <CardContent className="grid gap-3 md:grid-cols-[200px_1fr]">
-        <div className="rounded-md border border-[#8A6A52]/20 bg-[#8A6A52]/10 p-3">
-          <div className="text-xs uppercase text-muted-foreground">Market Sentiment</div>
-          <div className={cn("mt-1 text-2xl font-semibold", sentimentClass)}>
-            {market?.sentiment ?? "Loading"}
-          </div>
-          <div className="mt-1 text-sm text-muted-foreground">
-            Index average: {formatPercent(market?.averageMove ?? 0)}
-          </div>
-        </div>
-        <div className="grid gap-2 md:grid-cols-3">
-          {(market?.indices ?? []).map((index) => (
-            <MarketTicker key={index.symbol} quote={index} />
-          ))}
-          {!market ? (
-            <>
-              <TickerSkeleton />
-              <TickerSkeleton />
-              <TickerSkeleton />
-            </>
-          ) : null}
-        </div>
-      </CardContent>
-    </Card>
   );
 }
 
@@ -1436,34 +1362,6 @@ function DailyMoversSection({
         ) : null}
       </div>
     </section>
-  );
-}
-
-function MarketTicker({ quote }: { quote: MarketQuote }) {
-  return (
-    <div className="rounded-md border border-white/70 bg-white/78 p-3 shadow-sm">
-      <div className="text-sm font-semibold">{quote.name}</div>
-      <div className="mt-1 text-xl font-semibold">{quote.price.toLocaleString("en-IN")}</div>
-      <div
-        className={cn(
-          "text-sm font-medium",
-          quote.change >= 0 ? "text-emerald-700" : "text-destructive",
-        )}
-      >
-        {quote.change >= 0 ? "+" : ""}
-        {quote.change.toFixed(2)} ({formatPercent(quote.changePercent)})
-      </div>
-    </div>
-  );
-}
-
-function TickerSkeleton() {
-  return (
-    <div className="rounded-md border bg-background p-3">
-      <div className="h-4 w-24 rounded bg-muted" />
-      <div className="mt-3 h-6 w-20 rounded bg-muted" />
-      <div className="mt-2 h-4 w-28 rounded bg-muted" />
-    </div>
   );
 }
 
@@ -1544,157 +1442,6 @@ function MoverSegmentSkeleton() {
   );
 }
 
-function ExpertActionMatrixSection({
-  matrix,
-  isLoading,
-  onRefresh,
-}: {
-  matrix: ExpertActionMatrix | null;
-  isLoading: boolean;
-  onRefresh: () => void;
-}) {
-  return (
-    <Card className="border-amber-100/90 bg-[linear-gradient(135deg,rgba(255,255,255,0.96),rgba(255,247,237,0.88))]">
-        <CardHeader className="pb-3">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-            <div>
-              <CardTitle>Expert Action Matrix</CardTitle>
-              <CardDescription>
-                Compact daily expert-style picks with long-term targets and breakout signals.
-              </CardDescription>
-              <div className="mt-1 text-xs font-medium text-amber-800">
-                Generated: {matrix?.asOf ? formatTimestamp(matrix.asOf) : "Fetching live feed"}
-              </div>
-            </div>
-            <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={onRefresh}
-            disabled={isLoading}
-          >
-            <RefreshCw className="h-4 w-4" aria-hidden="true" />
-            {isLoading ? "Refreshing" : "Refresh"}
-          </Button>
-        </div>
-      </CardHeader>
-        <CardContent className="space-y-2">
-          <div className="flex flex-col gap-1 rounded-md border border-amber-100 bg-white/60 px-3 py-2 text-[11px] text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-            <span>{matrix?.verified ?? "Fetching live NSE recommendation matrix."}</span>
-            <span>
-              {matrix?.asOf
-                ? `Timestamp: ${formatTimestamp(matrix.asOf)}`
-                : "Live feed pending"}
-            </span>
-          </div>
-          <div className="rounded-md border border-amber-200 bg-amber-50/80 px-3 py-2 text-[11px] leading-4 text-amber-950">
-            {matrix?.refreshCycle ??
-              "Intraday signals refresh every 5 minutes; longer-horizon signals refresh every 15 minutes."}{" "}
-            {matrix?.caveat ??
-              "For screening only. Confirm fundamentals, news, liquidity and risk before investing."}
-          </div>
-          <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-4">
-          {(matrix?.categories ?? []).map((category) => (
-            <ExpertCategoryCard key={category.key} category={category} />
-          ))}
-          {!matrix ? (
-            <>
-              <ExpertSkeleton />
-              <ExpertSkeleton />
-              <ExpertSkeleton />
-              <ExpertSkeleton />
-            </>
-          ) : null}
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-function ExpertCategoryCard({ category }: { category: ExpertMatrixCategory }) {
-  return (
-    <section className="rounded-md border border-amber-100/80 bg-white/78 p-2 shadow-sm">
-      <h2 className="text-xs font-semibold uppercase tracking-normal text-amber-900">
-        {category.title}
-      </h2>
-      <ExpertPickList
-        title="Targets"
-        items={category.longTermUpsides}
-        mode="target"
-      />
-      <ExpertPickList
-        title="Breakouts"
-        items={category.intradayBreakouts}
-        mode="volume"
-      />
-    </section>
-  );
-}
-
-function ExpertPickList({
-  title,
-  items,
-  mode,
-}: {
-  title: string;
-  items: ExpertMatrixQuote[];
-  mode: "target" | "volume";
-}) {
-  return (
-    <div className="mt-2 space-y-1">
-      <h3 className="text-[11px] font-semibold text-muted-foreground">{title}</h3>
-      {items.map((item) => (
-        <StockSignalBar
-          key={`${title}-${item.symbol}`}
-          symbol={item.symbol}
-          name={item.name}
-          primaryValue={`${item.score}/100`}
-          secondaryValue={
-            mode === "target"
-              ? formatPercent(item.upside)
-              : `${item.volumeShock.toFixed(2)}x`
-          }
-          tone={item.score >= 68 ? "up" : item.score >= 52 ? "flat" : "down"}
-          details={
-            <div className="space-y-2 text-[11px]">
-              <div className="grid gap-1 sm:grid-cols-2">
-                <span>CMP: {formatCurrency(item.price)}</span>
-                <span>Action: {item.action}</span>
-                <span>Target: {formatCurrency(item.target)}</span>
-                <span>Upside: {formatPercent(item.upside)}</span>
-                <span>Volume shock: {item.volumeShock.toFixed(2)}x</span>
-                <span>Score: {item.score}/100</span>
-              </div>
-              <p className="leading-4 text-zinc-300">{item.remark}</p>
-              <p className="leading-4 text-amber-200">
-                {item.caveats?.[0] ?? "Validate before action."}
-              </p>
-            </div>
-          }
-        />
-      ))}
-      {items.length === 0 ? (
-        <div className="rounded-md bg-muted/35 px-2 py-2 text-xs text-muted-foreground">
-          No qualifying picks available yet.
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
-function ExpertSkeleton() {
-  return (
-    <section className="rounded-md border bg-background p-3">
-      <div className="h-4 w-36 rounded bg-muted" />
-      <div className="mt-4 space-y-2">
-        <div className="h-10 rounded bg-muted" />
-        <div className="h-10 rounded bg-muted" />
-        <div className="h-10 rounded bg-muted" />
-      </div>
-    </section>
-  );
-}
-
 function PortfolioCard({
   portfolio,
   isLoading,
@@ -1713,7 +1460,6 @@ function PortfolioCard({
   onToggleValue: () => void;
 }) {
   const metrics = calculatePortfolioMetrics(portfolio.positions);
-  const quoteScore = getQuoteScore(portfolio.positions);
 
   return (
     <Card className="portfolio-shell overflow-hidden">
@@ -1726,6 +1472,15 @@ function PortfolioCard({
             </CardDescription>
           </div>
           <div className="flex gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={onToggleValue}
+              disabled={portfolio.isMarketPortfolio}
+            >
+              {isValueExpanded ? "Close Edit" : "Edit Holdings"}
+            </Button>
             <Button
               type="button"
               variant="outline"
@@ -1750,23 +1505,6 @@ function PortfolioCard({
         </div>
       </CardHeader>
       <CardContent className="space-y-5 pt-5">
-        <div className="grid dashboard-grid gap-2">
-          <SummaryCard
-            title="Portfolio Value"
-            value={formatCurrency(metrics.totalValue)}
-            detail={
-              portfolio.isMarketPortfolio
-                ? "2-day repeated Expert Insight picks"
-                : `${metrics.holdings.length} active holdings`
-            }
-            onClick={portfolio.isMarketPortfolio ? undefined : onToggleValue}
-          />
-          <SummaryCard
-            title="Live Quote Score"
-            value={`${quoteScore}%`}
-            detail="CMP, previous close, volume, headlines"
-          />
-        </div>
         {isValueExpanded ? (
           <PortfolioDetailsEditor
             portfolio={portfolio}
@@ -1775,45 +1513,11 @@ function PortfolioCard({
             onSave={onUpdateInputs}
           />
         ) : null}
-        <PortfolioMiniSummary metrics={metrics} />
         <PortfolioRiskEngine portfolio={portfolio} />
         <PortfolioCoach portfolio={portfolio} />
         <SectorAllocationBlock metrics={metrics} />
       </CardContent>
     </Card>
-  );
-}
-
-function PortfolioMiniSummary({
-  metrics,
-}: {
-  metrics: ReturnType<typeof calculatePortfolioMetrics>;
-}) {
-  return (
-    <div className="grid grid-cols-2 gap-2 text-sm">
-      <div className="rounded-md border bg-muted/40 p-3">
-        <div className="text-muted-foreground">Day Change</div>
-        <div
-          className={cn(
-            "font-semibold",
-            metrics.dayChange >= 0 ? "text-emerald-700" : "text-destructive",
-          )}
-        >
-          {formatCurrency(metrics.dayChange)}
-        </div>
-      </div>
-      <div className="rounded-md border bg-muted/40 p-3">
-        <div className="text-muted-foreground">Move</div>
-        <div
-          className={cn(
-            "font-semibold",
-            metrics.dayChange >= 0 ? "text-emerald-700" : "text-destructive",
-          )}
-        >
-          {formatPercent(metrics.dayChangePercent)}
-        </div>
-      </div>
-    </div>
   );
 }
 
@@ -2088,46 +1792,6 @@ function SectorAllocationBlock({
   );
 }
 
-function SummaryCard({
-  title,
-  value,
-  detail,
-  onClick,
-}: {
-  title: string;
-  value: string;
-  detail: string;
-  onClick?: () => void;
-}) {
-  const content = (
-    <>
-      <CardHeader className="pb-3">
-        <CardDescription>{title}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="truncate text-2xl font-semibold">{value}</div>
-        <p className="mt-1 text-sm text-muted-foreground">{detail}</p>
-      </CardContent>
-    </>
-  );
-
-  if (onClick) {
-    return (
-      <button
-        type="button"
-        onClick={onClick}
-        className="rounded-lg text-left transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-      >
-        <Card>{content}</Card>
-      </button>
-    );
-  }
-
-  return (
-    <Card>{content}</Card>
-  );
-}
-
 function GlossarySection() {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -2178,6 +1842,19 @@ function RoadmapSection() {
           Coming soon modules for a stronger investor intelligence platform.
         </p>
       </div>
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        {futurePlaceholderItems.map((item) => (
+          <article
+            key={item}
+            className="rounded-xl border border-dashed border-white/15 bg-white/[0.03] p-4"
+          >
+            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-300">
+              Coming Soon
+            </div>
+            <h3 className="mt-2 text-sm font-semibold text-white">{item}</h3>
+          </article>
+        ))}
+      </div>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {roadmapItems.map((item, index) => (
           <article
@@ -2210,23 +1887,26 @@ function generateRecommendationList(
   ];
 }
 
-function getQuoteScore(positions: PortfolioPosition[]) {
-  if (positions.length === 0) {
+function getAveragePrice(portfolio: ManagedPortfolio, symbol: string) {
+  const input = portfolio.inputs.find(
+    (row) => row.stockCode === symbol || row.stock === symbol,
+  );
+
+  return input?.buyPrice && input.buyPrice > 0 ? input.buyPrice : 0;
+}
+
+function getProfitLossPercent(
+  portfolio: ManagedPortfolio,
+  symbol: string,
+  currentPrice: number,
+) {
+  const averagePrice = getAveragePrice(portfolio, symbol);
+
+  if (averagePrice <= 0) {
     return 0;
   }
 
-  const totalSignals = positions.length * 4;
-  const availableSignals = positions.reduce((score, position) => {
-    return (
-      score +
-      Number(position.currentPrice > 0) +
-      Number(position.previousClose > 0) +
-      Number((position.volume ?? 0) > 0) +
-      Number((position.newsHeadlines?.length ?? 0) > 0)
-    );
-  }, 0);
-
-  return Math.round((availableSignals / totalSignals) * 100);
+  return ((currentPrice - averagePrice) / averagePrice) * 100;
 }
 
 function normalizePortfolioRows(rows: Array<Partial<PortfolioInputRow>>) {
@@ -2303,13 +1983,6 @@ function filterHomepagePortfolios(portfolios: ManagedPortfolio[]) {
 
       return a.name.localeCompare(b.name);
     });
-}
-
-function formatTimestamp(value: string) {
-  return new Date(value).toLocaleString("en-IN", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  });
 }
 
 function getCsvValue(row: CsvRow, keys: string[]) {
@@ -2398,4 +2071,12 @@ const roadmapItems = [
   "Multibagger Discovery Engine",
   "Adaptive Learning Engine",
   "Recommendation Reliability Score",
+];
+
+const futurePlaceholderItems = [
+  "Today's Action Center",
+  "What Changed Since Yesterday",
+  "Decision Journal",
+  "Recommendation Reliability",
+  "Risk Alerts",
 ];

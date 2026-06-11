@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, RefreshCw, TrendingUp } from "lucide-react";
+import { ChevronRight, RefreshCw, TrendingUp } from "lucide-react";
 import { useMemo, useState } from "react";
 import {
   Area,
@@ -64,13 +64,8 @@ export function MarketOverviewCollapsible({
 
   return (
     <section className="rounded-2xl border border-sky-400/20 bg-[#0F1B2D] shadow-xl">
-      <div className="flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-        <button
-          type="button"
-          onClick={() => setIsOpen((value) => !value)}
-          className="flex items-center gap-3 text-left"
-          aria-expanded={isOpen}
-        >
+      <div className="flex flex-col gap-4 px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex items-center gap-3 text-left">
           <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-cyan-300/25 bg-cyan-300/10 text-cyan-200">
             <TrendingUp className="h-5 w-5" aria-hidden="true" />
           </span>
@@ -80,15 +75,25 @@ export function MarketOverviewCollapsible({
               Live context, breadth, volatility, and sector pressure.
             </span>
           </span>
-          <ChevronDown
-            className={cn("h-5 w-5 text-cyan-300 transition-transform", isOpen ? "rotate-180" : "")}
-            aria-hidden="true"
-          />
-        </button>
-        <Button type="button" variant="outline" onClick={onRefresh} disabled={isLoading}>
-          <RefreshCw className={cn("h-4 w-4", isLoading ? "animate-spin" : "")} aria-hidden="true" />
-          Refresh
-        </Button>
+        </div>
+        <div className="flex items-center justify-end gap-3">
+          <Button type="button" variant="outline" onClick={onRefresh} disabled={isLoading}>
+            <RefreshCw className={cn("h-4 w-4", isLoading ? "animate-spin" : "")} aria-hidden="true" />
+            Refresh
+          </Button>
+          <button
+            type="button"
+            onClick={() => setIsOpen((value) => !value)}
+            className="flex h-12 w-12 items-center justify-center rounded-xl border border-cyan-300/30 bg-cyan-300/10 text-cyan-200 shadow-sm transition hover:border-cyan-200/60 hover:bg-cyan-300/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300"
+            aria-expanded={isOpen}
+            aria-label={isOpen ? "Collapse Market Overview" : "Expand Market Overview"}
+          >
+            <ChevronRight
+              className={cn("h-8 w-8 transition-transform", isOpen ? "rotate-90" : "")}
+              aria-hidden="true"
+            />
+          </button>
+        </div>
       </div>
 
       {isOpen ? (
