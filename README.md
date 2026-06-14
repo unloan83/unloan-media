@@ -27,3 +27,23 @@ Publishing Frequency:
 
 Primary Objective:
 Build a scalable audience and monetize through education, sponsorships, memberships, and premium financial products.
+
+## Content Engine
+
+This repo includes an initial CSV-driven content engine for generating UNLOAN Media short-form drafts.
+
+Run from the repository root:
+
+```bash
+node automation/content_engine.mjs
+```
+
+The engine reads `content_calendar/master_calendar.csv` and writes drafts to:
+
+* `content/reels`
+* `content/shorts`
+* `content/captions`
+
+Reusable prompt templates live in `templates/prompts`.
+
+Workflow documentation: `docs/content_engine_workflow.md`
