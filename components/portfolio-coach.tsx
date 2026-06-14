@@ -1,6 +1,7 @@
 "use client";
 
 import { BrainCircuit, CircleDot, TrendingDown, TrendingUp } from "lucide-react";
+import { buildPortfolioIntelligenceCore } from "@/lib/portfolio-intelligence";
 import {
   calculatePortfolioMetrics,
   formatCurrency,
@@ -35,6 +36,11 @@ export function PortfolioCoach({ portfolio }: { portfolio: ManagedPortfolio }) {
   const metrics = calculatePortfolioMetrics(portfolio.positions);
   const recommendations = flattenRecommendations(generateRecommendations(portfolio));
   const coachItems = buildCoachItems(portfolio, metrics, recommendations);
+  const intelligence = buildPortfolioIntelligenceCore({
+    portfolio,
+    market: null,
+    history: [],
+  });
 
   return (
     <section className="space-y-3 rounded-md border border-sky-400/40 bg-zinc-950 p-3 text-zinc-100 shadow-sm">
@@ -54,6 +60,17 @@ export function PortfolioCoach({ portfolio }: { portfolio: ManagedPortfolio }) {
         </div>
       </div>
 
+      <div className="grid gap-2 text-[11px] sm:grid-cols-2">
+        <CoachSummary label="Top Improvement" value={intelligence.coach.topImprovement} />
+        <CoachSummary label="Biggest Risk" value={intelligence.coach.biggestRisk} />
+        <CoachSummary label="Best Opportunity" value={intelligence.coach.bestOpportunity} />
+        <CoachSummary label="Portfolio Weakness" value={intelligence.coach.portfolioWeakness} />
+        <div className="rounded border border-sky-300/20 bg-sky-300/10 px-3 py-2 text-sky-100 sm:col-span-2">
+          <span className="font-semibold">Suggested Next Action: </span>
+          {intelligence.coach.suggestedNextAction}
+        </div>
+      </div>
+
       <div className="space-y-2">
         {coachItems.map((item) => (
           <CoachSignal key={`${item.action}-${item.symbol}`} item={item} />
@@ -65,6 +82,15 @@ export function PortfolioCoach({ portfolio }: { portfolio: ManagedPortfolio }) {
         ) : null}
       </div>
     </section>
+  );
+}
+
+function CoachSummary({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded border border-white/10 bg-black/50 px-3 py-2">
+      <div className="text-[10px] uppercase tracking-[0.14em] text-zinc-500">{label}</div>
+      <div className="mt-1 line-clamp-2 font-semibold text-zinc-100">{value}</div>
+    </div>
   );
 }
 

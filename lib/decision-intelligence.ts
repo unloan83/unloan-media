@@ -1,6 +1,10 @@
 import { analyzePortfolioHealthScore } from "@/lib/portfolio-health";
 import { analyzePortfolioRisk, type RiskStatus } from "@/lib/risk-engine";
 import {
+  buildPortfolioIntelligenceCore,
+  type PortfolioIntelligenceCore,
+} from "@/lib/portfolio-intelligence";
+import {
   calculatePortfolioMetrics,
   generateRecommendations,
   type ManagedPortfolio,
@@ -94,6 +98,7 @@ export type DecisionIntelligence = {
     last90Days: ReliabilityWindow;
     allTime: ReliabilityWindow;
   };
+  portfolioCore: PortfolioIntelligenceCore;
   summary: string;
   snapshot: DecisionSnapshot;
 };
@@ -138,6 +143,11 @@ export function buildDecisionIntelligence({
   const reliability = buildReliability(history);
   const historicalAccuracy = reliability.last90Days.winRate ?? reliability.allTime.winRate ?? 50;
   const recommendations = generateRecommendations(portfolio, history);
+  const portfolioCore = buildPortfolioIntelligenceCore({
+    portfolio,
+    market,
+    history,
+  });
   const candidates = [
     ...recommendations.intraday,
     ...recommendations.longTermPlan,
@@ -219,6 +229,7 @@ export function buildDecisionIntelligence({
       label: finalConfidence >= 72 ? "High" : finalConfidence >= 55 ? "Medium" : "Low",
     },
     reliability,
+    portfolioCore,
     summary: buildSummary({
       healthScore: health.healthScore,
       marketBias: marketBias.label,
