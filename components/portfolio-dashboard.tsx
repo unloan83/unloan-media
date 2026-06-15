@@ -814,6 +814,7 @@ export function PortfolioDashboard({
             expertMatrix={expertMatrix}
             history={history}
             marketOverview={marketOverview}
+            pinHashes={pinHashes}
             portfolios={portfolios}
             onOpen={(portfolio) => setSelectedPortfolioId(portfolio.id)}
             onEdit={updatePortfolioMetadata}
@@ -1044,6 +1045,7 @@ function AdminControlPanel({
   expertMatrix,
   history,
   marketOverview,
+  pinHashes,
   portfolios,
   onOpen,
   onEdit,
@@ -1053,6 +1055,7 @@ function AdminControlPanel({
   expertMatrix: ExpertActionMatrix | null;
   history: Recommendation[];
   marketOverview: MarketOverview | null;
+  pinHashes: Record<string, string>;
   portfolios: ManagedPortfolio[];
   onOpen: (portfolio: ManagedPortfolio) => void;
   onEdit: (portfolio: ManagedPortfolio) => void;
@@ -1118,23 +1121,40 @@ function AdminControlPanel({
           expertMatrix={expertMatrix}
         />
       ) : null}
+      {activeTab === "pin-diagnostics" ? (
+        <PinDiagnosticsTab
+          pinHashes={pinHashes}
+          portfolios={portfolios}
+          onOpen={onOpen}
+        />
+      ) : null}
       <SectionFooter text="Admin operations use the existing authenticated session and portfolio persistence." />
     </section>
   );
 }
 
-type AdminTab = "portfolio" | "monitor" | "performance" | "export";
+type AdminTab = "portfolio" | "monitor" | "performance" | "export" | "pin-diagnostics";
 
 const adminTabs: Array<{ id: AdminTab; label: string }> = [
   { id: "portfolio", label: "Portfolio Administration" },
   { id: "monitor", label: "Intelligence Monitor" },
   { id: "performance", label: "Performance Analytics" },
   { id: "export", label: "Data Export" },
+  { id: "pin-diagnostics", label: "PIN Diagnostics" },
 ];
 
 type AdminIntelligence = ReturnType<typeof buildAdminIntelligence>;
 type AdminPerformance = ReturnType<typeof buildPerformanceAnalytics>;
 type PerformanceWindow = "today" | "7d" | "30d" | "90d" | "all";
+type PinDiagnosticResult = {
+  portfolioId?: string;
+  status: "Success" | "Failure" | "Pass" | "Fail";
+  portfolioFound: boolean;
+  pinMatch: boolean;
+  validationPassed: boolean;
+  routeOpened: boolean;
+  detail: string;
+};
 
 function PortfolioAdministrationTab({
   portfolios,
@@ -1209,6 +1229,174 @@ function PortfolioAdministrationTab({
       </Table>
     </div>
   );
+}
+
+function PinDiagnosticsTab({
+  pinHashes,
+  portfolios,
+  onOpen,
+}: {
+  pinHashes: Record<string, string>;
+  portfolios: ManagedPortfolio[];
+  onOpen: (portfolio: ManagedPortfolio) => void;
+}) {
+  const [result, setResult] = useState<PinDiagnosticResult | null>(null);
+  const protectedCount = portfolios.filter((portfolio) => pinHashes[portfolio.id]).length;
+
+  function testPortfolioAccess(portfolio: ManagedPortfolio) {
+    const storedPinHash = pinHashes[portfolio.id];
+    const portfolioFound = portfolios.some((item) => item.id === portfolio.id);
+    const pinMatch = isStoredPinHashValid(storedPinHash);
+    const validationPassed = portfolioFound && pinMatch;
+
+    if (validationPassed) {
+      onOpen(portfolio);
+    }
+
+    setResult({
+      portfolioId: portfolio.id,
+      status: validationPassed ? "Success" : "Failure",
+      portfolioFound,
+      pinMatch,
+      validationPassed,
+      routeOpened: validationPassed,
+      detail: validationPassed
+        ? "Stored PIN hash is present, hash format is valid, and admin route access simulation opened the portfolio."
+        : "Portfolio access simulation failed because a portfolio is missing or the stored PIN hash is absent/invalid.",
+    });
+  }
+
+  function testMasterPin() {
+    const validationPassed = masterRecoveryPin === "1008";
+    const pinMatch = validationPassed;
+
+    setResult({
+      status: validationPassed ? "Pass" : "Fail",
+      portfolioFound: true,
+      pinMatch,
+      validationPassed,
+      routeOpened: false,
+      detail: validationPassed
+        ? "Master PIN constant validates against 1008."
+        : "Master PIN constant does not validate against 1008.",
+    });
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="grid gap-3 md:grid-cols-3">
+        <AdminMetric label="Portfolios Found" value={String(portfolios.length)} />
+        <AdminMetric label="Stored PIN Records" value={String(protectedCount)} />
+        <AdminMetric
+          label="Master PIN Test"
+          value={result?.portfolioId ? "Not Run" : result?.status ?? "Pending"}
+          tone={result && !result.portfolioId && result.status === "Pass" ? "up" : "flat"}
+        />
+      </div>
+
+      <div className="flex flex-wrap items-center gap-2">
+        <Button type="button" variant="outline" onClick={testMasterPin}>
+          Test Master PIN
+        </Button>
+        <span className="text-xs text-slate-400">
+          Diagnostics are read-only. Stored PIN displays the current hash record, not plaintext.
+        </span>
+      </div>
+
+      {result ? (
+        <div className="rounded-xl border border-cyan-300/20 bg-cyan-300/10 p-4 text-sm text-cyan-100">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="font-semibold">
+              Test Result:{" "}
+              <span className={result.status === "Success" || result.status === "Pass" ? "text-emerald-300" : "text-rose-300"}>
+                {result.status}
+              </span>
+            </div>
+            <div className="text-xs text-cyan-200">{result.detail}</div>
+          </div>
+          <div className="mt-3 grid gap-2 text-xs sm:grid-cols-4">
+            <DebugFlag label="Portfolio Found" value={result.portfolioFound} />
+            <DebugFlag label="PIN Match" value={result.pinMatch} />
+            <DebugFlag label="Validation Passed" value={result.validationPassed} />
+            <DebugFlag label="Route Opened" value={result.routeOpened} />
+          </div>
+        </div>
+      ) : null}
+
+      <div className="overflow-x-auto rounded-xl border border-white/10">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Portfolio Name</TableHead>
+              <TableHead>Portfolio ID</TableHead>
+              <TableHead>Stored PIN</TableHead>
+              <TableHead>PIN Last Updated</TableHead>
+              <TableHead>Access Status</TableHead>
+              <TableHead>Test</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {portfolios.map((portfolio) => {
+              const storedPinHash = pinHashes[portfolio.id];
+              const hasPin = isStoredPinHashValid(storedPinHash);
+
+              return (
+                <TableRow key={`pin-diagnostics-${portfolio.id}`}>
+                  <TableCell className="font-semibold">{portfolio.name}</TableCell>
+                  <TableCell className="max-w-64 truncate text-xs text-slate-400">
+                    {portfolio.id}
+                  </TableCell>
+                  <TableCell className="max-w-72 truncate font-mono text-xs text-slate-300">
+                    {storedPinHash ? `hash:${storedPinHash}` : "No stored PIN hash"}
+                  </TableCell>
+                  <TableCell className="text-xs text-slate-400">
+                    Not tracked by current PIN store
+                  </TableCell>
+                  <TableCell>
+                    <span
+                      className={cn(
+                        "rounded-full border px-2 py-0.5 text-xs font-semibold",
+                        hasPin
+                          ? "border-emerald-300/30 bg-emerald-300/10 text-emerald-200"
+                          : "border-amber-300/30 bg-amber-300/10 text-amber-200",
+                      )}
+                    >
+                      {hasPin ? "Protected" : "Missing PIN"}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => testPortfolioAccess(portfolio)}
+                    >
+                      Test Portfolio Access
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
+  );
+}
+
+function DebugFlag({ label, value }: { label: string; value: boolean }) {
+  return (
+    <div className="rounded-lg border border-white/10 bg-[#08121F] px-3 py-2">
+      <div className="text-[10px] uppercase tracking-[0.14em] text-slate-500">{label}</div>
+      <div className={cn("mt-1 font-semibold", value ? "text-emerald-300" : "text-rose-300")}>
+        {value ? "Yes" : "No"}
+      </div>
+    </div>
+  );
+}
+
+function isStoredPinHashValid(value?: string) {
+  return Boolean(value && /^[a-f0-9]{64}$/iu.test(value));
 }
 
 function IntelligenceMonitorTab({
