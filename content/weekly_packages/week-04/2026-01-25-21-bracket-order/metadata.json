@@ -1,0 +1,32 @@
+{
+  "topic": "Bracket Order",
+  "category": "Trading Platform Features",
+  "difficulty": "Intermediate",
+  "platform": "Both",
+  "status": "Draft",
+  "allowedStatuses": [
+    "Draft",
+    "Ready",
+    "Approved",
+    "Published"
+  ],
+  "cta": "Save this before using complex order types.",
+  "thumbnail": "Bracket Order Explained Simply",
+  "keywords": [
+    "unloan",
+    "beginner investing",
+    "bracket order",
+    "trading platform features",
+    "intermediate",
+    "financial education",
+    "no financial advice"
+  ],
+  "sourceFiles": {
+    "reel": "content/reels/2026-01-25-21-bracket-order.md",
+    "short": "content/shorts/2026-01-25-21-bracket-order.md",
+    "caption": "content/captions/2026-01-25-21-bracket-order.md",
+    "thumbnail": "content/thumbnails/2026-01-25-21-bracket-order.md",
+    "visualBrief": "content/visual_briefs/2026-01-25-21-bracket-order.md",
+    "canvaPackage": "content/canva_packages/2026-01-25-21-bracket-order.md"
+  }
+}

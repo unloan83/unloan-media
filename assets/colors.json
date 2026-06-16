@@ -1,0 +1,23 @@
+{
+  "brand": {
+    "unloanNavy": "#08121F",
+    "deepPanel": "#0F1B2D",
+    "surfaceBlue": "#16263D",
+    "textPrimary": "#FFFFFF",
+    "textSecondary": "#CBD5E1"
+  },
+  "accents": {
+    "wealthEmerald": "#22C55E",
+    "riskAmber": "#F59E0B",
+    "toolCyan": "#06B6D4",
+    "behaviorViolet": "#8B5CF6",
+    "vocabularyGold": "#EAB308",
+    "alertRose": "#F43F5E"
+  },
+  "usage": {
+    "background": "Use unloanNavy or deepPanel for most short-form frames.",
+    "headline": "Use textPrimary on dark backgrounds.",
+    "categoryAccent": "Use one accent color per asset based on category.",
+    "compliance": "Use textSecondary for disclaimers, never hidden or unreadable."
+  }
+}

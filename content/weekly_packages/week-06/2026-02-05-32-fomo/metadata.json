@@ -1,0 +1,32 @@
+{
+  "topic": "FOMO",
+  "category": "Behavioral Finance",
+  "difficulty": "Beginner",
+  "platform": "Both",
+  "status": "Draft",
+  "allowedStatuses": [
+    "Draft",
+    "Ready",
+    "Approved",
+    "Published"
+  ],
+  "cta": "Save this before chasing market trends.",
+  "thumbnail": "FOMO Explained Simply",
+  "keywords": [
+    "unloan",
+    "beginner investing",
+    "fomo",
+    "behavioral finance",
+    "beginner",
+    "financial education",
+    "no financial advice"
+  ],
+  "sourceFiles": {
+    "reel": "content/reels/2026-02-05-32-fomo.md",
+    "short": "content/shorts/2026-02-05-32-fomo.md",
+    "caption": "content/captions/2026-02-05-32-fomo.md",
+    "thumbnail": "content/thumbnails/2026-02-05-32-fomo.md",
+    "visualBrief": "content/visual_briefs/2026-02-05-32-fomo.md",
+    "canvaPackage": "content/canva_packages/2026-02-05-32-fomo.md"
+  }
+}

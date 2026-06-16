@@ -1,0 +1,44 @@
+[
+  {
+    "topic": "ROE",
+    "category": "Investor Terminology",
+    "difficulty": "Intermediate",
+    "status": "Draft",
+    "packagePath": "content/weekly_packages/week-05/2026-01-29-25-roe"
+  },
+  {
+    "topic": "ROCE",
+    "category": "Investor Terminology",
+    "difficulty": "Intermediate",
+    "status": "Draft",
+    "packagePath": "content/weekly_packages/week-05/2026-01-30-26-roce"
+  },
+  {
+    "topic": "EPS",
+    "category": "Investor Terminology",
+    "difficulty": "Beginner",
+    "status": "Draft",
+    "packagePath": "content/weekly_packages/week-05/2026-01-31-27-eps"
+  },
+  {
+    "topic": "CAGR",
+    "category": "Investor Terminology",
+    "difficulty": "Beginner",
+    "status": "Draft",
+    "packagePath": "content/weekly_packages/week-05/2026-02-01-28-cagr"
+  },
+  {
+    "topic": "XIRR",
+    "category": "Investor Terminology",
+    "difficulty": "Intermediate",
+    "status": "Draft",
+    "packagePath": "content/weekly_packages/week-05/2026-02-02-29-xirr"
+  },
+  {
+    "topic": "ETF",
+    "category": "Investor Terminology",
+    "difficulty": "Beginner",
+    "status": "Draft",
+    "packagePath": "content/weekly_packages/week-05/2026-02-03-30-etf"
+  }
+]

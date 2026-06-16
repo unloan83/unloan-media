@@ -1,0 +1,32 @@
+{
+  "topic": "Compounding",
+  "category": "Wealth Building",
+  "difficulty": "Beginner",
+  "platform": "Both",
+  "status": "Draft",
+  "allowedStatuses": [
+    "Draft",
+    "Ready",
+    "Approved",
+    "Published"
+  ],
+  "cta": "Save this for your investing basics checklist.",
+  "thumbnail": "Compounding Explained Simply",
+  "keywords": [
+    "unloan",
+    "beginner investing",
+    "compounding",
+    "wealth building",
+    "beginner",
+    "financial education",
+    "no financial advice"
+  ],
+  "sourceFiles": {
+    "reel": "content/reels/2026-01-05-01-compounding.md",
+    "short": "content/shorts/2026-01-05-01-compounding.md",
+    "caption": "content/captions/2026-01-05-01-compounding.md",
+    "thumbnail": "content/thumbnails/2026-01-05-01-compounding.md",
+    "visualBrief": "content/visual_briefs/2026-01-05-01-compounding.md",
+    "canvaPackage": "content/canva_packages/2026-01-05-01-compounding.md"
+  }
+}

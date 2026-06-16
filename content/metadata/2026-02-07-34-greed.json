@@ -1,0 +1,32 @@
+{
+  "topic": "Greed",
+  "category": "Behavioral Finance",
+  "difficulty": "Beginner",
+  "platform": "Both",
+  "status": "Draft",
+  "allowedStatuses": [
+    "Draft",
+    "Ready",
+    "Approved",
+    "Published"
+  ],
+  "cta": "Share this with someone who needs a trading pause.",
+  "thumbnail": "Greed Explained Simply",
+  "keywords": [
+    "unloan",
+    "beginner investing",
+    "greed",
+    "behavioral finance",
+    "beginner",
+    "financial education",
+    "no financial advice"
+  ],
+  "sourceFiles": {
+    "reel": "content/reels/2026-02-07-34-greed.md",
+    "short": "content/shorts/2026-02-07-34-greed.md",
+    "caption": "content/captions/2026-02-07-34-greed.md",
+    "thumbnail": "content/thumbnails/2026-02-07-34-greed.md",
+    "visualBrief": "content/visual_briefs/2026-02-07-34-greed.md",
+    "canvaPackage": "content/canva_packages/2026-02-07-34-greed.md"
+  }
+}

@@ -1,0 +1,68 @@
+## ROCE
+
+1. ROCE Explained Simply
+2. ROCE For Beginners
+3. Learn ROCE First
+4. ROCE: No Jargon
+5. ROCE In One Minute
+
+## Existing Thumbnail Asset
+
+# Thumbnail: ROCE
+
+- Date: 2026-01-30
+- Topic: ROCE
+- Category: Investor Terminology
+- Difficulty: Intermediate
+- Platform: Both
+- Status: Planned
+
+## Thumbnail Title
+
+ROCE: Learn It Simply
+
+## Supporting Text
+
+Intermediate guide. No hype. No stock tips.
+
+## Visual Direction
+
+- Use clear, high-contrast text.
+- Show one concept only.
+- Avoid profit screenshots, guaranteed-return language, or specific stock logos.
+
+## Call To Action
+
+Save this for fundamental analysis basics.
+
+## Reusable Prompt
+
+```text
+# Thumbnail Title Prompt
+
+You are the UNLOAN Media thumbnail title writer.
+
+Brand mission: Build Wealth. Not Debt.
+Audience: Beginner investors and young wealth builders.
+
+Create thumbnail title options for:
+
+- Date: 2026-01-30
+- Category: Investor Terminology
+- Topic: ROCE
+- Difficulty: Intermediate
+- Platform plan: Both
+- Angle: Explain return on capital employed without ranking stocks
+
+Output format:
+
+1. Primary title: 3 to 6 words.
+2. Alternate title: 3 to 6 words.
+3. Supporting text: One short clarifying phrase.
+
+Constraints:
+
+- Use simple English.
+- Avoid profit claims, guaranteed returns, urgency manipulation, and stock tips.
+- Make the title educational, clear, and easy to read on a phone.
+```

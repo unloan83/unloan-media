@@ -1,0 +1,32 @@
+{
+  "topic": "CAGR",
+  "category": "Investor Terminology",
+  "difficulty": "Beginner",
+  "platform": "Both",
+  "status": "Draft",
+  "allowedStatuses": [
+    "Draft",
+    "Ready",
+    "Approved",
+    "Published"
+  ],
+  "cta": "Save this before reading any return chart.",
+  "thumbnail": "CAGR Explained Simply",
+  "keywords": [
+    "unloan",
+    "beginner investing",
+    "cagr",
+    "investor terminology",
+    "beginner",
+    "financial education",
+    "no financial advice"
+  ],
+  "sourceFiles": {
+    "reel": "content/reels/2026-02-01-28-cagr.md",
+    "short": "content/shorts/2026-02-01-28-cagr.md",
+    "caption": "content/captions/2026-02-01-28-cagr.md",
+    "thumbnail": "content/thumbnails/2026-02-01-28-cagr.md",
+    "visualBrief": "content/visual_briefs/2026-02-01-28-cagr.md",
+    "canvaPackage": "content/canva_packages/2026-02-01-28-cagr.md"
+  }
+}

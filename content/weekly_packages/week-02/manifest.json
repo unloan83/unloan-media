@@ -1,0 +1,44 @@
+[
+  {
+    "topic": "Market Capitalization",
+    "category": "Stock Market Basics",
+    "difficulty": "Beginner",
+    "status": "Draft",
+    "packagePath": "content/weekly_packages/week-02/2026-01-11-07-market-capitalization"
+  },
+  {
+    "topic": "Dividend",
+    "category": "Stock Market Basics",
+    "difficulty": "Beginner",
+    "status": "Draft",
+    "packagePath": "content/weekly_packages/week-02/2026-01-12-08-dividend"
+  },
+  {
+    "topic": "Bonus Shares",
+    "category": "Stock Market Basics",
+    "difficulty": "Beginner",
+    "status": "Draft",
+    "packagePath": "content/weekly_packages/week-02/2026-01-13-09-bonus-shares"
+  },
+  {
+    "topic": "Stock Split",
+    "category": "Stock Market Basics",
+    "difficulty": "Beginner",
+    "status": "Draft",
+    "packagePath": "content/weekly_packages/week-02/2026-01-14-10-stock-split"
+  },
+  {
+    "topic": "Intraday Trading",
+    "category": "Trading Basics",
+    "difficulty": "Beginner",
+    "status": "Draft",
+    "packagePath": "content/weekly_packages/week-02/2026-01-15-11-intraday-trading"
+  },
+  {
+    "topic": "Delivery Trading",
+    "category": "Trading Basics",
+    "difficulty": "Beginner",
+    "status": "Draft",
+    "packagePath": "content/weekly_packages/week-02/2026-01-16-12-delivery-trading"
+  }
+]

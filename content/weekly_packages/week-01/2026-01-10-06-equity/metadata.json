@@ -1,0 +1,32 @@
+{
+  "topic": "Equity",
+  "category": "Stock Market Basics",
+  "difficulty": "Beginner",
+  "platform": "Both",
+  "status": "Draft",
+  "allowedStatuses": [
+    "Draft",
+    "Ready",
+    "Approved",
+    "Published"
+  ],
+  "cta": "Save this as your first stock market term.",
+  "thumbnail": "Equity Explained Simply",
+  "keywords": [
+    "unloan",
+    "beginner investing",
+    "equity",
+    "stock market basics",
+    "beginner",
+    "financial education",
+    "no financial advice"
+  ],
+  "sourceFiles": {
+    "reel": "content/reels/2026-01-10-06-equity.md",
+    "short": "content/shorts/2026-01-10-06-equity.md",
+    "caption": "content/captions/2026-01-10-06-equity.md",
+    "thumbnail": "content/thumbnails/2026-01-10-06-equity.md",
+    "visualBrief": "content/visual_briefs/2026-01-10-06-equity.md",
+    "canvaPackage": "content/canva_packages/2026-01-10-06-equity.md"
+  }
+}

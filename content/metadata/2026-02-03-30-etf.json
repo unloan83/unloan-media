@@ -1,0 +1,32 @@
+{
+  "topic": "ETF",
+  "category": "Investor Terminology",
+  "difficulty": "Beginner",
+  "platform": "Both",
+  "status": "Draft",
+  "allowedStatuses": [
+    "Draft",
+    "Ready",
+    "Approved",
+    "Published"
+  ],
+  "cta": "Save this for your fund basics list.",
+  "thumbnail": "ETF Explained Simply",
+  "keywords": [
+    "unloan",
+    "beginner investing",
+    "etf",
+    "investor terminology",
+    "beginner",
+    "financial education",
+    "no financial advice"
+  ],
+  "sourceFiles": {
+    "reel": "content/reels/2026-02-03-30-etf.md",
+    "short": "content/shorts/2026-02-03-30-etf.md",
+    "caption": "content/captions/2026-02-03-30-etf.md",
+    "thumbnail": "content/thumbnails/2026-02-03-30-etf.md",
+    "visualBrief": "content/visual_briefs/2026-02-03-30-etf.md",
+    "canvaPackage": "content/canva_packages/2026-02-03-30-etf.md"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "topic": "Market Order",
+  "category": "Trading Platform Features",
+  "difficulty": "Beginner",
+  "platform": "Both",
+  "status": "Draft",
+  "allowedStatuses": [
+    "Draft",
+    "Ready",
+    "Approved",
+    "Published"
+  ],
+  "cta": "Share this with a new demat account user.",
+  "thumbnail": "Market Order Explained Simply",
+  "keywords": [
+    "unloan",
+    "beginner investing",
+    "market order",
+    "trading platform features",
+    "beginner",
+    "financial education",
+    "no financial advice"
+  ],
+  "sourceFiles": {
+    "reel": "content/reels/2026-01-24-20-market-order.md",
+    "short": "content/shorts/2026-01-24-20-market-order.md",
+    "caption": "content/captions/2026-01-24-20-market-order.md",
+    "thumbnail": "content/thumbnails/2026-01-24-20-market-order.md",
+    "visualBrief": "content/visual_briefs/2026-01-24-20-market-order.md",
+    "canvaPackage": "content/canva_packages/2026-01-24-20-market-order.md"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "topic": "Rule of 72",
+  "category": "Wealth Building",
+  "difficulty": "Beginner",
+  "platform": "Both",
+  "status": "Draft",
+  "allowedStatuses": [
+    "Draft",
+    "Ready",
+    "Approved",
+    "Published"
+  ],
+  "cta": "Share this with someone learning money basics.",
+  "thumbnail": "Rule of 72 Explained Simply",
+  "keywords": [
+    "unloan",
+    "beginner investing",
+    "rule of 72",
+    "wealth building",
+    "beginner",
+    "financial education",
+    "no financial advice"
+  ],
+  "sourceFiles": {
+    "reel": "content/reels/2026-01-06-02-rule-of-72.md",
+    "short": "content/shorts/2026-01-06-02-rule-of-72.md",
+    "caption": "content/captions/2026-01-06-02-rule-of-72.md",
+    "thumbnail": "content/thumbnails/2026-01-06-02-rule-of-72.md",
+    "visualBrief": "content/visual_briefs/2026-01-06-02-rule-of-72.md",
+    "canvaPackage": "content/canva_packages/2026-01-06-02-rule-of-72.md"
+  }
+}

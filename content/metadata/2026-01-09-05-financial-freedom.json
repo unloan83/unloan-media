@@ -1,0 +1,32 @@
+{
+  "topic": "Financial Freedom",
+  "category": "Wealth Building",
+  "difficulty": "Beginner",
+  "platform": "Both",
+  "status": "Draft",
+  "allowedStatuses": [
+    "Draft",
+    "Ready",
+    "Approved",
+    "Published"
+  ],
+  "cta": "Comment FREEDOM if you want more beginner money lessons.",
+  "thumbnail": "Financial Freedom Explained Simply",
+  "keywords": [
+    "unloan",
+    "beginner investing",
+    "financial freedom",
+    "wealth building",
+    "beginner",
+    "financial education",
+    "no financial advice"
+  ],
+  "sourceFiles": {
+    "reel": "content/reels/2026-01-09-05-financial-freedom.md",
+    "short": "content/shorts/2026-01-09-05-financial-freedom.md",
+    "caption": "content/captions/2026-01-09-05-financial-freedom.md",
+    "thumbnail": "content/thumbnails/2026-01-09-05-financial-freedom.md",
+    "visualBrief": "content/visual_briefs/2026-01-09-05-financial-freedom.md",
+    "canvaPackage": "content/canva_packages/2026-01-09-05-financial-freedom.md"
+  }
+}

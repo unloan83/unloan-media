@@ -1,0 +1,32 @@
+{
+  "topic": "Risk Management",
+  "category": "Trading Basics",
+  "difficulty": "Beginner",
+  "platform": "Both",
+  "status": "Draft",
+  "allowedStatuses": [
+    "Draft",
+    "Ready",
+    "Approved",
+    "Published"
+  ],
+  "cta": "Comment RISK if you want a simple trading checklist.",
+  "thumbnail": "Risk Management Explained Simply",
+  "keywords": [
+    "unloan",
+    "beginner investing",
+    "risk management",
+    "trading basics",
+    "beginner",
+    "financial education",
+    "no financial advice"
+  ],
+  "sourceFiles": {
+    "reel": "content/reels/2026-01-19-15-risk-management.md",
+    "short": "content/shorts/2026-01-19-15-risk-management.md",
+    "caption": "content/captions/2026-01-19-15-risk-management.md",
+    "thumbnail": "content/thumbnails/2026-01-19-15-risk-management.md",
+    "visualBrief": "content/visual_briefs/2026-01-19-15-risk-management.md",
+    "canvaPackage": "content/canva_packages/2026-01-19-15-risk-management.md"
+  }
+}

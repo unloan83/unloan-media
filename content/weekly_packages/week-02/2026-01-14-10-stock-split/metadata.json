@@ -1,0 +1,32 @@
+{
+  "topic": "Stock Split",
+  "category": "Stock Market Basics",
+  "difficulty": "Beginner",
+  "platform": "Both",
+  "status": "Draft",
+  "allowedStatuses": [
+    "Draft",
+    "Ready",
+    "Approved",
+    "Published"
+  ],
+  "cta": "Share this with someone confused by stock splits.",
+  "thumbnail": "Stock Split Explained Simply",
+  "keywords": [
+    "unloan",
+    "beginner investing",
+    "stock split",
+    "stock market basics",
+    "beginner",
+    "financial education",
+    "no financial advice"
+  ],
+  "sourceFiles": {
+    "reel": "content/reels/2026-01-14-10-stock-split.md",
+    "short": "content/shorts/2026-01-14-10-stock-split.md",
+    "caption": "content/captions/2026-01-14-10-stock-split.md",
+    "thumbnail": "content/thumbnails/2026-01-14-10-stock-split.md",
+    "visualBrief": "content/visual_briefs/2026-01-14-10-stock-split.md",
+    "canvaPackage": "content/canva_packages/2026-01-14-10-stock-split.md"
+  }
+}

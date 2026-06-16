@@ -1,0 +1,32 @@
+{
+  "topic": "Position Trading",
+  "category": "Trading Basics",
+  "difficulty": "Intermediate",
+  "platform": "Both",
+  "status": "Draft",
+  "allowedStatuses": [
+    "Draft",
+    "Ready",
+    "Approved",
+    "Published"
+  ],
+  "cta": "Share this with someone comparing trading styles.",
+  "thumbnail": "Position Trading Explained Simply",
+  "keywords": [
+    "unloan",
+    "beginner investing",
+    "position trading",
+    "trading basics",
+    "intermediate",
+    "financial education",
+    "no financial advice"
+  ],
+  "sourceFiles": {
+    "reel": "content/reels/2026-01-18-14-position-trading.md",
+    "short": "content/shorts/2026-01-18-14-position-trading.md",
+    "caption": "content/captions/2026-01-18-14-position-trading.md",
+    "thumbnail": "content/thumbnails/2026-01-18-14-position-trading.md",
+    "visualBrief": "content/visual_briefs/2026-01-18-14-position-trading.md",
+    "canvaPackage": "content/canva_packages/2026-01-18-14-position-trading.md"
+  }
+}

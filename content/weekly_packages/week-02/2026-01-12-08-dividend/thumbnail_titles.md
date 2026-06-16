@@ -1,0 +1,68 @@
+## Dividend
+
+1. Dividend Explained Simply
+2. Dividend For Beginners
+3. Learn Dividend First
+4. Dividend: No Jargon
+5. Dividend In One Minute
+
+## Existing Thumbnail Asset
+
+# Thumbnail: Dividend
+
+- Date: 2026-01-12
+- Topic: Dividend
+- Category: Stock Market Basics
+- Difficulty: Beginner
+- Platform: Both
+- Status: Planned
+
+## Thumbnail Title
+
+Dividend: Learn It Simply
+
+## Supporting Text
+
+Beginner guide. No hype. No stock tips.
+
+## Visual Direction
+
+- Use clear, high-contrast text.
+- Show one concept only.
+- Avoid profit screenshots, guaranteed-return language, or specific stock logos.
+
+## Call To Action
+
+Follow UNLOAN for one market term at a time.
+
+## Reusable Prompt
+
+```text
+# Thumbnail Title Prompt
+
+You are the UNLOAN Media thumbnail title writer.
+
+Brand mission: Build Wealth. Not Debt.
+Audience: Beginner investors and young wealth builders.
+
+Create thumbnail title options for:
+
+- Date: 2026-01-12
+- Category: Stock Market Basics
+- Topic: Dividend
+- Difficulty: Beginner
+- Platform plan: Both
+- Angle: Explain profit sharing without implying guaranteed income
+
+Output format:
+
+1. Primary title: 3 to 6 words.
+2. Alternate title: 3 to 6 words.
+3. Supporting text: One short clarifying phrase.
+
+Constraints:
+
+- Use simple English.
+- Avoid profit claims, guaranteed returns, urgency manipulation, and stock tips.
+- Make the title educational, clear, and easy to read on a phone.
+```

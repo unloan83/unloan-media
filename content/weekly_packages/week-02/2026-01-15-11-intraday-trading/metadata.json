@@ -1,0 +1,32 @@
+{
+  "topic": "Intraday Trading",
+  "category": "Trading Basics",
+  "difficulty": "Beginner",
+  "platform": "Both",
+  "status": "Draft",
+  "allowedStatuses": [
+    "Draft",
+    "Ready",
+    "Approved",
+    "Published"
+  ],
+  "cta": "Save this before trying any trading style.",
+  "thumbnail": "Intraday Trading Explained Simply",
+  "keywords": [
+    "unloan",
+    "beginner investing",
+    "intraday trading",
+    "trading basics",
+    "beginner",
+    "financial education",
+    "no financial advice"
+  ],
+  "sourceFiles": {
+    "reel": "content/reels/2026-01-15-11-intraday-trading.md",
+    "short": "content/shorts/2026-01-15-11-intraday-trading.md",
+    "caption": "content/captions/2026-01-15-11-intraday-trading.md",
+    "thumbnail": "content/thumbnails/2026-01-15-11-intraday-trading.md",
+    "visualBrief": "content/visual_briefs/2026-01-15-11-intraday-trading.md",
+    "canvaPackage": "content/canva_packages/2026-01-15-11-intraday-trading.md"
+  }
+}

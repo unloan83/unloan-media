@@ -1,0 +1,25 @@
+{
+  "brandName": "UNLOAN Media",
+  "mission": "Build Wealth. Not Debt.",
+  "voice": [
+    "Simple",
+    "Calm",
+    "Beginner friendly",
+    "Educational",
+    "Risk aware"
+  ],
+  "contentBoundaries": [
+    "No stock recommendations",
+    "No buy or sell signals",
+    "No return guarantees",
+    "No profit claims",
+    "No external publishing or platform authentication"
+  ],
+  "categorySystems": {
+    "Wealth Building": "Emerald accent, growth visuals, long-term framing",
+    "Trading Basics": "Amber accent, risk checklist visuals, caution-first framing",
+    "Investor Toolkit": "Cyan accent, platform tool visuals, utility-first framing",
+    "Behavioral Finance": "Violet accent, decision psychology visuals, reflection framing",
+    "Market Vocabulary": "Gold accent, definition card visuals, dictionary framing"
+  }
+}

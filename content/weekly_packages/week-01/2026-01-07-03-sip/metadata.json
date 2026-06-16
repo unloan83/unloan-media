@@ -1,0 +1,32 @@
+{
+  "topic": "SIP",
+  "category": "Wealth Building",
+  "difficulty": "Beginner",
+  "platform": "Both",
+  "status": "Draft",
+  "allowedStatuses": [
+    "Draft",
+    "Ready",
+    "Approved",
+    "Published"
+  ],
+  "cta": "Follow UNLOAN for simple investing education.",
+  "thumbnail": "SIP Explained Simply",
+  "keywords": [
+    "unloan",
+    "beginner investing",
+    "sip",
+    "wealth building",
+    "beginner",
+    "financial education",
+    "no financial advice"
+  ],
+  "sourceFiles": {
+    "reel": "content/reels/2026-01-07-03-sip.md",
+    "short": "content/shorts/2026-01-07-03-sip.md",
+    "caption": "content/captions/2026-01-07-03-sip.md",
+    "thumbnail": "content/thumbnails/2026-01-07-03-sip.md",
+    "visualBrief": "content/visual_briefs/2026-01-07-03-sip.md",
+    "canvaPackage": "content/canva_packages/2026-01-07-03-sip.md"
+  }
+}

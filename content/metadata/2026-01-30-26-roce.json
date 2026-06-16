@@ -1,0 +1,32 @@
+{
+  "topic": "ROCE",
+  "category": "Investor Terminology",
+  "difficulty": "Intermediate",
+  "platform": "Both",
+  "status": "Draft",
+  "allowedStatuses": [
+    "Draft",
+    "Ready",
+    "Approved",
+    "Published"
+  ],
+  "cta": "Save this for fundamental analysis basics.",
+  "thumbnail": "ROCE Explained Simply",
+  "keywords": [
+    "unloan",
+    "beginner investing",
+    "roce",
+    "investor terminology",
+    "intermediate",
+    "financial education",
+    "no financial advice"
+  ],
+  "sourceFiles": {
+    "reel": "content/reels/2026-01-30-26-roce.md",
+    "short": "content/shorts/2026-01-30-26-roce.md",
+    "caption": "content/captions/2026-01-30-26-roce.md",
+    "thumbnail": "content/thumbnails/2026-01-30-26-roce.md",
+    "visualBrief": "content/visual_briefs/2026-01-30-26-roce.md",
+    "canvaPackage": "content/canva_packages/2026-01-30-26-roce.md"
+  }
+}

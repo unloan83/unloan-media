@@ -1,0 +1,32 @@
+{
+  "topic": "Market Capitalization",
+  "category": "Stock Market Basics",
+  "difficulty": "Beginner",
+  "platform": "Both",
+  "status": "Draft",
+  "allowedStatuses": [
+    "Draft",
+    "Ready",
+    "Approved",
+    "Published"
+  ],
+  "cta": "Share this with a beginner investor.",
+  "thumbnail": "Market Capitalization",
+  "keywords": [
+    "unloan",
+    "beginner investing",
+    "market capitalization",
+    "stock market basics",
+    "beginner",
+    "financial education",
+    "no financial advice"
+  ],
+  "sourceFiles": {
+    "reel": "content/reels/2026-01-11-07-market-capitalization.md",
+    "short": "content/shorts/2026-01-11-07-market-capitalization.md",
+    "caption": "content/captions/2026-01-11-07-market-capitalization.md",
+    "thumbnail": "content/thumbnails/2026-01-11-07-market-capitalization.md",
+    "visualBrief": "content/visual_briefs/2026-01-11-07-market-capitalization.md",
+    "canvaPackage": "content/canva_packages/2026-01-11-07-market-capitalization.md"
+  }
+}

@@ -1,0 +1,44 @@
+[
+  {
+    "topic": "Swing Trading",
+    "category": "Trading Basics",
+    "difficulty": "Intermediate",
+    "status": "Draft",
+    "packagePath": "content/weekly_packages/week-03/2026-01-17-13-swing-trading"
+  },
+  {
+    "topic": "Position Trading",
+    "category": "Trading Basics",
+    "difficulty": "Intermediate",
+    "status": "Draft",
+    "packagePath": "content/weekly_packages/week-03/2026-01-18-14-position-trading"
+  },
+  {
+    "topic": "Risk Management",
+    "category": "Trading Basics",
+    "difficulty": "Beginner",
+    "status": "Draft",
+    "packagePath": "content/weekly_packages/week-03/2026-01-19-15-risk-management"
+  },
+  {
+    "topic": "GTT Orders",
+    "category": "Trading Platform Features",
+    "difficulty": "Beginner",
+    "status": "Draft",
+    "packagePath": "content/weekly_packages/week-03/2026-01-20-16-gtt-orders"
+  },
+  {
+    "topic": "Stop Loss",
+    "category": "Trading Platform Features",
+    "difficulty": "Beginner",
+    "status": "Draft",
+    "packagePath": "content/weekly_packages/week-03/2026-01-21-17-stop-loss"
+  },
+  {
+    "topic": "Trailing Stop Loss",
+    "category": "Trading Platform Features",
+    "difficulty": "Intermediate",
+    "status": "Draft",
+    "packagePath": "content/weekly_packages/week-03/2026-01-22-18-trailing-stop-loss"
+  }
+]

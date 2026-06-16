@@ -1,0 +1,32 @@
+{
+  "topic": "ROE",
+  "category": "Investor Terminology",
+  "difficulty": "Intermediate",
+  "platform": "Both",
+  "status": "Draft",
+  "allowedStatuses": [
+    "Draft",
+    "Ready",
+    "Approved",
+    "Published"
+  ],
+  "cta": "Follow UNLOAN for one investing term daily.",
+  "thumbnail": "ROE Explained Simply",
+  "keywords": [
+    "unloan",
+    "beginner investing",
+    "roe",
+    "investor terminology",
+    "intermediate",
+    "financial education",
+    "no financial advice"
+  ],
+  "sourceFiles": {
+    "reel": "content/reels/2026-01-29-25-roe.md",
+    "short": "content/shorts/2026-01-29-25-roe.md",
+    "caption": "content/captions/2026-01-29-25-roe.md",
+    "thumbnail": "content/thumbnails/2026-01-29-25-roe.md",
+    "visualBrief": "content/visual_briefs/2026-01-29-25-roe.md",
+    "canvaPackage": "content/canva_packages/2026-01-29-25-roe.md"
+  }
+}

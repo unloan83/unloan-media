@@ -1,0 +1,32 @@
+{
+  "topic": "Confirmation Bias",
+  "category": "Behavioral Finance",
+  "difficulty": "Intermediate",
+  "platform": "Both",
+  "status": "Draft",
+  "allowedStatuses": [
+    "Draft",
+    "Ready",
+    "Approved",
+    "Published"
+  ],
+  "cta": "Save this as an investing behavior checklist.",
+  "thumbnail": "Confirmation Bias Explained Simply",
+  "keywords": [
+    "unloan",
+    "beginner investing",
+    "confirmation bias",
+    "behavioral finance",
+    "intermediate",
+    "financial education",
+    "no financial advice"
+  ],
+  "sourceFiles": {
+    "reel": "content/reels/2026-02-08-35-confirmation-bias.md",
+    "short": "content/shorts/2026-02-08-35-confirmation-bias.md",
+    "caption": "content/captions/2026-02-08-35-confirmation-bias.md",
+    "thumbnail": "content/thumbnails/2026-02-08-35-confirmation-bias.md",
+    "visualBrief": "content/visual_briefs/2026-02-08-35-confirmation-bias.md",
+    "canvaPackage": "content/canva_packages/2026-02-08-35-confirmation-bias.md"
+  }
+}

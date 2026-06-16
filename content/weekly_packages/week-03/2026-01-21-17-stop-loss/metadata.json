@@ -1,0 +1,32 @@
+{
+  "topic": "Stop Loss",
+  "category": "Trading Platform Features",
+  "difficulty": "Beginner",
+  "platform": "Both",
+  "status": "Draft",
+  "allowedStatuses": [
+    "Draft",
+    "Ready",
+    "Approved",
+    "Published"
+  ],
+  "cta": "Share this with someone learning order types.",
+  "thumbnail": "Stop Loss Explained Simply",
+  "keywords": [
+    "unloan",
+    "beginner investing",
+    "stop loss",
+    "trading platform features",
+    "beginner",
+    "financial education",
+    "no financial advice"
+  ],
+  "sourceFiles": {
+    "reel": "content/reels/2026-01-21-17-stop-loss.md",
+    "short": "content/shorts/2026-01-21-17-stop-loss.md",
+    "caption": "content/captions/2026-01-21-17-stop-loss.md",
+    "thumbnail": "content/thumbnails/2026-01-21-17-stop-loss.md",
+    "visualBrief": "content/visual_briefs/2026-01-21-17-stop-loss.md",
+    "canvaPackage": "content/canva_packages/2026-01-21-17-stop-loss.md"
+  }
+}

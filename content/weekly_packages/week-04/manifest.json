@@ -1,0 +1,44 @@
+[
+  {
+    "topic": "Limit Order",
+    "category": "Trading Platform Features",
+    "difficulty": "Beginner",
+    "status": "Draft",
+    "packagePath": "content/weekly_packages/week-04/2026-01-23-19-limit-order"
+  },
+  {
+    "topic": "Market Order",
+    "category": "Trading Platform Features",
+    "difficulty": "Beginner",
+    "status": "Draft",
+    "packagePath": "content/weekly_packages/week-04/2026-01-24-20-market-order"
+  },
+  {
+    "topic": "Bracket Order",
+    "category": "Trading Platform Features",
+    "difficulty": "Intermediate",
+    "status": "Draft",
+    "packagePath": "content/weekly_packages/week-04/2026-01-25-21-bracket-order"
+  },
+  {
+    "topic": "Cover Order",
+    "category": "Trading Platform Features",
+    "difficulty": "Intermediate",
+    "status": "Draft",
+    "packagePath": "content/weekly_packages/week-04/2026-01-26-22-cover-order"
+  },
+  {
+    "topic": "PE Ratio",
+    "category": "Investor Terminology",
+    "difficulty": "Beginner",
+    "status": "Draft",
+    "packagePath": "content/weekly_packages/week-04/2026-01-27-23-pe-ratio"
+  },
+  {
+    "topic": "PB Ratio",
+    "category": "Investor Terminology",
+    "difficulty": "Intermediate",
+    "status": "Draft",
+    "packagePath": "content/weekly_packages/week-04/2026-01-28-24-pb-ratio"
+  }
+]

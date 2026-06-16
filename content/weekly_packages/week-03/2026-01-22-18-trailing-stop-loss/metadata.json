@@ -1,0 +1,32 @@
+{
+  "topic": "Trailing Stop Loss",
+  "category": "Trading Platform Features",
+  "difficulty": "Intermediate",
+  "platform": "Both",
+  "status": "Draft",
+  "allowedStatuses": [
+    "Draft",
+    "Ready",
+    "Approved",
+    "Published"
+  ],
+  "cta": "Follow UNLOAN for simple platform education.",
+  "thumbnail": "Trailing Stop Loss Explained Simply",
+  "keywords": [
+    "unloan",
+    "beginner investing",
+    "trailing stop loss",
+    "trading platform features",
+    "intermediate",
+    "financial education",
+    "no financial advice"
+  ],
+  "sourceFiles": {
+    "reel": "content/reels/2026-01-22-18-trailing-stop-loss.md",
+    "short": "content/shorts/2026-01-22-18-trailing-stop-loss.md",
+    "caption": "content/captions/2026-01-22-18-trailing-stop-loss.md",
+    "thumbnail": "content/thumbnails/2026-01-22-18-trailing-stop-loss.md",
+    "visualBrief": "content/visual_briefs/2026-01-22-18-trailing-stop-loss.md",
+    "canvaPackage": "content/canva_packages/2026-01-22-18-trailing-stop-loss.md"
+  }
+}

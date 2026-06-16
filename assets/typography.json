@@ -1,0 +1,30 @@
+{
+  "families": {
+    "headline": "Inter, Montserrat, or a bold geometric sans-serif",
+    "body": "Inter, Arial, or a clean sans-serif",
+    "caption": "Inter Medium or equivalent"
+  },
+  "mobileVideo": {
+    "headline": {
+      "size": "72-96px",
+      "weight": "800",
+      "lineHeight": "0.95-1.05"
+    },
+    "body": {
+      "size": "38-48px",
+      "weight": "500",
+      "lineHeight": "1.15"
+    },
+    "disclaimer": {
+      "size": "24-30px",
+      "weight": "500",
+      "lineHeight": "1.2"
+    }
+  },
+  "rules": [
+    "Keep text readable on a phone.",
+    "Use no more than two font families per asset.",
+    "Avoid cramped all-caps paragraphs.",
+    "Use large numbers only for educational concepts, never profit claims."
+  ]
+}

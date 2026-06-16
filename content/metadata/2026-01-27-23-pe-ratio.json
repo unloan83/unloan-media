@@ -1,0 +1,32 @@
+{
+  "topic": "PE Ratio",
+  "category": "Investor Terminology",
+  "difficulty": "Beginner",
+  "platform": "Both",
+  "status": "Draft",
+  "allowedStatuses": [
+    "Draft",
+    "Ready",
+    "Approved",
+    "Published"
+  ],
+  "cta": "Save this for your investing dictionary.",
+  "thumbnail": "PE Ratio Explained Simply",
+  "keywords": [
+    "unloan",
+    "beginner investing",
+    "pe ratio",
+    "investor terminology",
+    "beginner",
+    "financial education",
+    "no financial advice"
+  ],
+  "sourceFiles": {
+    "reel": "content/reels/2026-01-27-23-pe-ratio.md",
+    "short": "content/shorts/2026-01-27-23-pe-ratio.md",
+    "caption": "content/captions/2026-01-27-23-pe-ratio.md",
+    "thumbnail": "content/thumbnails/2026-01-27-23-pe-ratio.md",
+    "visualBrief": "content/visual_briefs/2026-01-27-23-pe-ratio.md",
+    "canvaPackage": "content/canva_packages/2026-01-27-23-pe-ratio.md"
+  }
+}

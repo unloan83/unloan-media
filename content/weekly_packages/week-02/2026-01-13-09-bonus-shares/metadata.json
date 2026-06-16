@@ -1,0 +1,32 @@
+{
+  "topic": "Bonus Shares",
+  "category": "Stock Market Basics",
+  "difficulty": "Beginner",
+  "platform": "Both",
+  "status": "Draft",
+  "allowedStatuses": [
+    "Draft",
+    "Ready",
+    "Approved",
+    "Published"
+  ],
+  "cta": "Save this for your market basics folder.",
+  "thumbnail": "Bonus Shares Explained Simply",
+  "keywords": [
+    "unloan",
+    "beginner investing",
+    "bonus shares",
+    "stock market basics",
+    "beginner",
+    "financial education",
+    "no financial advice"
+  ],
+  "sourceFiles": {
+    "reel": "content/reels/2026-01-13-09-bonus-shares.md",
+    "short": "content/shorts/2026-01-13-09-bonus-shares.md",
+    "caption": "content/captions/2026-01-13-09-bonus-shares.md",
+    "thumbnail": "content/thumbnails/2026-01-13-09-bonus-shares.md",
+    "visualBrief": "content/visual_briefs/2026-01-13-09-bonus-shares.md",
+    "canvaPackage": "content/canva_packages/2026-01-13-09-bonus-shares.md"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "topic": "IPO",
+  "category": "Investor Terminology",
+  "difficulty": "Beginner",
+  "platform": "Both",
+  "status": "Draft",
+  "allowedStatuses": [
+    "Draft",
+    "Ready",
+    "Approved",
+    "Published"
+  ],
+  "cta": "Share this with someone excited about IPOs.",
+  "thumbnail": "IPO Explained Simply",
+  "keywords": [
+    "unloan",
+    "beginner investing",
+    "ipo",
+    "investor terminology",
+    "beginner",
+    "financial education",
+    "no financial advice"
+  ],
+  "sourceFiles": {
+    "reel": "content/reels/2026-02-04-31-ipo.md",
+    "short": "content/shorts/2026-02-04-31-ipo.md",
+    "caption": "content/captions/2026-02-04-31-ipo.md",
+    "thumbnail": "content/thumbnails/2026-02-04-31-ipo.md",
+    "visualBrief": "content/visual_briefs/2026-02-04-31-ipo.md",
+    "canvaPackage": "content/canva_packages/2026-02-04-31-ipo.md"
+  }
+}

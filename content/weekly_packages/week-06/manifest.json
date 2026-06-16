@@ -1,0 +1,44 @@
+[
+  {
+    "topic": "IPO",
+    "category": "Investor Terminology",
+    "difficulty": "Beginner",
+    "status": "Draft",
+    "packagePath": "content/weekly_packages/week-06/2026-02-04-31-ipo"
+  },
+  {
+    "topic": "FOMO",
+    "category": "Behavioral Finance",
+    "difficulty": "Beginner",
+    "status": "Draft",
+    "packagePath": "content/weekly_packages/week-06/2026-02-05-32-fomo"
+  },
+  {
+    "topic": "Panic Selling",
+    "category": "Behavioral Finance",
+    "difficulty": "Beginner",
+    "status": "Draft",
+    "packagePath": "content/weekly_packages/week-06/2026-02-06-33-panic-selling"
+  },
+  {
+    "topic": "Greed",
+    "category": "Behavioral Finance",
+    "difficulty": "Beginner",
+    "status": "Draft",
+    "packagePath": "content/weekly_packages/week-06/2026-02-07-34-greed"
+  },
+  {
+    "topic": "Confirmation Bias",
+    "category": "Behavioral Finance",
+    "difficulty": "Intermediate",
+    "status": "Draft",
+    "packagePath": "content/weekly_packages/week-06/2026-02-08-35-confirmation-bias"
+  },
+  {
+    "topic": "Overtrading",
+    "category": "Behavioral Finance",
+    "difficulty": "Beginner",
+    "status": "Draft",
+    "packagePath": "content/weekly_packages/week-06/2026-02-09-36-overtrading"
+  }
+]
