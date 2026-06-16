@@ -75,6 +75,8 @@ node automation/package_engine.mjs
 This creates visual briefs, Canva-ready specs, topic metadata, publishing
 readiness tracking, and weekly production packages.
 
+Use `assets/logo.svg` as the default UNLOAN logo for all branding and content packages.
+
 Publishing integrations are intentionally excluded. Do not connect to,
 authenticate with, or modify Instagram, Meta Business Suite, Facebook, YouTube,
 Google APIs, Canva APIs, or third-party publishing tools from this version of the repo.

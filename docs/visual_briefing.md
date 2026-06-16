@@ -33,6 +33,7 @@ content/visual_briefs
 Each visual brief includes:
 
 - Visual system
+- Required logo asset: `assets/logo.svg`
 - Mood
 - Color use
 - Primary icon language

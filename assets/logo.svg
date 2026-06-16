@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">UNLOAN logo</title>
+  <desc id="desc">Blue upward U-shaped arrow with currency texture above the UNLOAN wordmark.</desc>
+  <defs>
+    <linearGradient id="unloan-blue" x1="410" x2="1110" y1="245" y2="735" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1297F5"/>
+      <stop offset="0.48" stop-color="#0877D9"/>
+      <stop offset="1" stop-color="#082778"/>
+    </linearGradient>
+    <linearGradient id="wordmark-blue" x1="385" x2="1185" y1="695" y2="695" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#138DF0"/>
+      <stop offset="0.42" stop-color="#0877D9"/>
+      <stop offset="1" stop-color="#082778"/>
+    </linearGradient>
+    <clipPath id="arrow-clip">
+      <path d="M654 282h86c13 0 22 13 18 25l-77 232c-18 55 22 112 80 112h10c50 0 94-33 108-81l80-279-78-5c-18-1-25-24-11-35l130-101c12-9 29-3 33 12l44 160c4 16-14 28-27 18l-64-48-86 302c-25 88-106 149-198 149h-10c-116 0-198-114-162-224l94-221c5-10 15-16 30-16z"/>
+    </clipPath>
+  </defs>
+
+  <rect width="1600" height="900" fill="#ffffff"/>
+  <g filter="drop-shadow(0 18px 18px rgba(2, 20, 66, 0.18))">
+    <path fill="url(#unloan-blue)" d="M654 282h86c13 0 22 13 18 25l-77 232c-18 55 22 112 80 112h10c50 0 94-33 108-81l80-279-78-5c-18-1-25-24-11-35l130-101c12-9 29-3 33 12l44 160c4 16-14 28-27 18l-64-48-86 302c-25 88-106 149-198 149h-10c-116 0-198-114-162-224l94-221c5-10 15-16 30-16z"/>
+    <g clip-path="url(#arrow-clip)" fill="#ffffff" fill-opacity="0.15" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700">
+      <text x="620" y="325">₹ € $ £ ¥</text>
+      <text x="645" y="380">₹ $ ₿ € ₹</text>
+      <text x="615" y="435">£ ₹ € ¥ $</text>
+      <text x="600" y="490">₹ € $ ₹ £</text>
+      <text x="610" y="545">£ ₹ € $ ¥</text>
+      <text x="675" y="605">₹ $ £ ₹ €</text>
+      <text x="760" y="650">€ ₹ $ £ ¥</text>
+      <text x="885" y="340">₹ € $ £</text>
+      <text x="905" y="395">€ $ ₹ ¥</text>
+      <text x="875" y="450">₹ £ $ €</text>
+      <text x="855" y="505">₹ € ¥ $</text>
+    </g>
+  </g>
+
+  <text x="800" y="818" text-anchor="middle" fill="url(#wordmark-blue)" font-family="Montserrat, Poppins, Arial, Helvetica, sans-serif" font-size="118" font-weight="800" letter-spacing="22">UNLOAN</text>
+</svg>

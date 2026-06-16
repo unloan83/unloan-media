@@ -1,6 +1,11 @@
 {
   "brandName": "UNLOAN Media",
   "mission": "Build Wealth. Not Debt.",
+  "logo": {
+    "primary": "assets/logo.svg",
+    "description": "Blue upward U-shaped arrow with currency texture above the UNLOAN wordmark.",
+    "usage": "Use this attached UNLOAN logo as the default logo for all branding, visual briefs, Canva packages, metadata, and content packages."
+  },
   "voice": [
     "Simple",
     "Calm",

@@ -13,6 +13,7 @@ const OUTPUT_DIRS = {
 };
 
 const READINESS_STATUSES = ["Draft", "Ready", "Approved", "Published"];
+const PRIMARY_LOGO_PATH = "assets/logo.svg";
 
 const CATEGORY_TO_VISUAL_SYSTEM = {
   "Wealth Building": "Wealth Building",
@@ -189,7 +190,7 @@ function makeSceneBrief(topic) {
     "",
     "| Scene | Duration | Visual Direction | On-Screen Text | Production Notes |",
     "| --- | --- | --- | --- | --- |",
-    `| 1 | 0-3s | Open with a clean title card and one simple symbol. | ${makeThumbnail(topic)} | Keep text large and readable on mobile. |`,
+    `| 1 | 0-3s | Open with a clean title card, the UNLOAN logo, and one simple symbol. | ${makeThumbnail(topic)} | Use ${PRIMARY_LOGO_PATH}; keep text large and readable on mobile. |`,
     `| 2 | 3-10s | Show the concept as a simple diagram or two-column comparison. | What it means | Avoid broker screens, profit screenshots, or stock logos. |`,
     `| 3 | 10-25s | Use a beginner example with plain shapes, labels, and arrows. | Beginner example | Explain the concept without recommending action. |`,
     `| 4 | 25-35s | Show a caution card or checklist. | Remember the risk | Reinforce no guarantees and no buy/sell signal. |`,
@@ -213,12 +214,13 @@ function makeCanvaPackage(topic) {
     "",
     `Headline: ${makeThumbnail(topic)}`,
     `Format: 1080x1920 vertical short-form package`,
+    `Logo Asset: ${PRIMARY_LOGO_PATH}`,
     `Visual System: ${system.name}`,
     `CTA: ${topic.CTA}`,
     "",
     "## Slide Structure",
     "",
-    "1. Cover slide: topic headline, category tag, UNLOAN mark.",
+    `1. Cover slide: topic headline, category tag, and the logo from ${PRIMARY_LOGO_PATH}.`,
     "2. Definition slide: one plain-English meaning.",
     "3. Example slide: simple beginner scenario or analogy.",
     "4. Risk slide: what not to assume.",
@@ -227,6 +229,7 @@ function makeCanvaPackage(topic) {
     "## Branding Notes",
     "",
     "- Use UNLOAN navy as the dominant background.",
+    `- Use ${PRIMARY_LOGO_PATH} as the default logo asset.`,
     "- Use emerald for wealth-building confidence, amber for risk notes, cyan for tools, violet for behavior, and gold for vocabulary terms.",
     "- Keep layouts spacious with large mobile-readable headlines.",
     "- Keep all visuals educational, not promotional.",
@@ -242,6 +245,7 @@ function makeMetadata(topic, slug) {
     platform: topic.Platform,
     status: "Draft",
     allowedStatuses: READINESS_STATUSES,
+    logo: PRIMARY_LOGO_PATH,
     cta: topic.CTA,
     thumbnail: makeThumbnail(topic),
     keywords: makeKeywords(topic),
@@ -328,7 +332,7 @@ function statusCsv(topics) {
     topic.Category,
     topicSlug(topic),
     "Draft",
-    "Review scripts, visual brief, Canva package, metadata, and compliance notes.",
+    `Review scripts, visual brief, Canva package, metadata, ${PRIMARY_LOGO_PATH}, and compliance notes.`,
   ]);
   return [headers.join(","), ...rows.map((row) => row.map(csvEscape).join(","))].join("\n");
 }
@@ -367,6 +371,7 @@ async function main() {
         category: topic.Category,
         difficulty: topic.Difficulty,
         status: "Draft",
+        logo: PRIMARY_LOGO_PATH,
         packagePath: `content/weekly_packages/week-${String(week.weekNumber).padStart(2, "0")}/${slug}`,
       });
       await writeOutput(path.join(packageDir, "scripts.md"), topicPackage.scripts, args.dryRun, written);

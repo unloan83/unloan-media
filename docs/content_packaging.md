@@ -36,6 +36,8 @@ Each topic package contains:
 - `canva_package.md`
 - `metadata.json`
 
+All visual production packages should use `assets/logo.svg` as the default UNLOAN logo.
+
 Each weekly folder also includes:
 
 - `manifest.json`
