@@ -1131,7 +1131,11 @@ export function PortfolioDashboard({
                   <PortfolioMarketOpportunities matrix={expertMatrix} />
                 </section>
                 <ChangeDetection snapshot={decisionIntelligence?.snapshot} />
-                <PortfolioHoldingsAndSectors portfolio={selectedPortfolio} />
+                <PortfolioHoldingsAndSectors
+                  portfolio={selectedPortfolio}
+                  isLoading={isLoading}
+                  onUpdateInputs={(rows) => updatePortfolioInputs(selectedPortfolio, rows)}
+                />
                 <RecommendationReliability intelligence={decisionIntelligence} />
                 <PortfolioCommunicationCenter portfolio={selectedPortfolio} />
               </div>
@@ -3042,14 +3046,23 @@ function PortfolioCommunicationCenter({ portfolio }: { portfolio: ManagedPortfol
 
 function PortfolioHoldingsAndSectors({
   portfolio,
+  isLoading,
+  onUpdateInputs,
 }: {
   portfolio: ManagedPortfolio;
+  isLoading: boolean;
+  onUpdateInputs: (rows: PortfolioInputRow[]) => void | Promise<void>;
 }) {
   const metrics = calculatePortfolioMetrics(portfolio.positions);
 
   return (
     <section className="grid gap-4 xl:grid-cols-2">
-      <CurrentHoldingsCard portfolio={portfolio} metrics={metrics} />
+      <CurrentHoldingsCard
+        portfolio={portfolio}
+        metrics={metrics}
+        isLoading={isLoading}
+        onUpdateInputs={onUpdateInputs}
+      />
       <SectorAllocationCard metrics={metrics} />
     </section>
   );
@@ -3120,26 +3133,50 @@ function PortfolioMarketOpportunities({
 function CurrentHoldingsCard({
   portfolio,
   metrics,
+  isLoading,
+  onUpdateInputs,
 }: {
   portfolio: ManagedPortfolio;
   metrics: ReturnType<typeof calculatePortfolioMetrics>;
+  isLoading: boolean;
+  onUpdateInputs: (rows: PortfolioInputRow[]) => void | Promise<void>;
 }) {
-  const holdings = metrics.holdings
-    .sort((a, b) => b.marketValue - a.marketValue)
-    .slice(0, 5);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const sortedHoldings = [...metrics.holdings].sort(
+    (a, b) => b.marketValue - a.marketValue,
+  );
+  const holdings = isExpanded ? sortedHoldings : sortedHoldings.slice(0, 5);
+  const hasHiddenHoldings = sortedHoldings.length > 5;
 
   return (
     <section className="space-y-3 rounded-2xl border border-sky-300/20 bg-[#0F1B2D] p-5 shadow-xl">
       <div className="flex items-start justify-between gap-3">
         <SectionTitle
           title="Current Holdings"
-          subtitle="Top 5 positions by current value."
+          subtitle={isExpanded ? "All positions by current value." : "Top 5 positions by current value."}
           badge="LIVE"
           accent="blue"
         />
-        <Button type="button" variant="outline" size="sm">
-          View All
-        </Button>
+        <div className="flex flex-wrap justify-end gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setIsExpanded((value) => !value)}
+            disabled={!hasHiddenHoldings}
+          >
+            {isExpanded ? "Show Top 5" : "View All"}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setIsEditing((value) => !value)}
+          >
+            {isEditing ? "Close Edit" : "Edit Holdings"}
+          </Button>
+        </div>
       </div>
       <div className="overflow-x-auto rounded-xl border border-white/10">
         <Table>
@@ -3178,6 +3215,17 @@ function CurrentHoldingsCard({
           </TableBody>
         </Table>
       </div>
+      {isEditing ? (
+        <PortfolioDetailsEditor
+          portfolio={portfolio}
+          isLoading={isLoading}
+          positions={portfolio.positions}
+          onSave={(rows) => {
+            void onUpdateInputs(rows);
+            setIsEditing(false);
+          }}
+        />
+      ) : null}
       <SectionFooter text="Prices update through the existing quote refresh cycle." />
     </section>
   );
