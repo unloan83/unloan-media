@@ -1,12 +1,13 @@
 # UNLOAN Media Content Engine Workflow
 
-The initial content engine turns planned content topics into reviewable short-form content drafts.
+The content engine turns planned beginner-investor education topics into reviewable short-form content drafts.
 
-It currently generates:
+It generates:
 
 - Instagram Reel scripts in `content/reels`
 - YouTube Short scripts in `content/shorts`
-- Captions with hashtags in `content/captions`
+- Captions with hashtags and calls to action in `content/captions`
+- Thumbnail titles and visual direction in `content/thumbnails`
 
 Publishing APIs are intentionally out of scope for this version.
 
@@ -23,19 +24,19 @@ The engine reads:
 content_calendar/master_calendar.csv
 ```
 
-Required column:
+Calendar columns:
 
-- `topic`
+- `Date`
+- `Topic`
+- `Category`
+- `Difficulty`
+- `Platform`
+- `Status`
+- `Angle`
+- `Audience`
+- `CTA`
 
-Recommended columns:
-
-- `date`
-- `pillar`
-- `angle`
-- `audience`
-- `cta`
-
-The engine also accepts common aliases such as `publish_date`, `content_pillar`, `title`, `audience_segment`, and `call_to_action`.
+The engine also accepts older aliases such as `pillar`, `content_pillar`, `title`, `audience_segment`, and `call_to_action`.
 
 ## Generate Content
 
@@ -59,21 +60,22 @@ node automation/content_engine.mjs --calendar path/to/calendar.csv
 
 ## Output Structure
 
-For each usable calendar row, the engine writes three Markdown files:
+For each usable calendar row, the engine writes four Markdown files:
 
 ```text
 content/reels/{date}-{row-number}-{topic}.md
 content/shorts/{date}-{row-number}-{topic}.md
 content/captions/{date}-{row-number}-{topic}.md
+content/thumbnails/{date}-{row-number}-{topic}.md
 ```
 
 Each file includes:
 
 - Calendar metadata
-- A first-pass deterministic draft
-- The reusable prompt used for higher-quality AI-assisted generation
-
-The deterministic draft is meant to make the pipeline useful immediately. Editors can keep it, rewrite it, or paste the included prompt into an AI writing workflow.
+- Beginner-friendly draft content
+- Call to action
+- Compliance-safe disclaimer where applicable
+- Reusable prompt material
 
 ## Prompt Templates
 
@@ -89,32 +91,36 @@ Current templates:
 - `youtube_short_script.md`
 - `caption.md`
 - `hashtags.md`
+- `thumbnail_title.md`
 
 Supported placeholders:
 
 - `{{date}}`
-- `{{pillar}}`
+- `{{category}}`
 - `{{topic}}`
+- `{{difficulty}}`
+- `{{platform}}`
+- `{{status}}`
 - `{{angle}}`
 - `{{audience}}`
 - `{{cta}}`
+- `{{disclaimer}}`
 
 ## Editorial Guardrails
 
 UNLOAN content should stay aligned with:
 
 - Mission: Build Wealth. Not Debt.
-- Audience: young investors aged 20 to 35.
-- Tone: practical, calm, direct, and educational.
-- Compliance posture: no guaranteed returns, no stock tips, no exaggerated claims, and no personalized financial advice.
+- Audience: beginner investors and young wealth builders.
+- Tone: simple, practical, calm, direct, and educational.
+- Compliance posture: no guaranteed returns, no stock tips, no profit claims, no buy/sell recommendations, and no personalized financial advice.
 
 ## Future Extensions
 
 Good next additions:
 
-- AI provider adapter that consumes the prompt templates.
-- Editorial review status fields in the calendar.
+- Editorial review status fields and owner assignment.
 - Batch quality checks for missing CTAs, missing disclaimers, or overly long scripts.
-- Platform-specific export formats.
+- Manual analytics summaries from `analytics/tracking_template.csv`.
 
 Do not add scheduling or publishing APIs until the content generation workflow is stable.

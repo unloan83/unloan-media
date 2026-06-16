@@ -1,0 +1,63 @@
+# YouTube Short Script: Compounding
+
+- Date: 2026-01-05
+- Topic: Compounding
+- Category: Wealth Building
+- Difficulty: Beginner
+- Platform: Both
+- Status: Planned
+
+## Draft
+
+Duration: under 60 seconds
+
+Opening Hook: Compounding is a beginner money concept that can change how you plan.
+
+Script:
+- Compounding is not something to memorize. It is something to understand.
+- Simple meaning: Compounding means understanding the concept clearly before using it in real money decisions.
+- Why it matters: Explain how long-term money habits create financial freedom.
+- Beginner check: never treat one term, ratio, or order type as a guaranteed result.
+- Learn compounding first, then make calm and informed decisions.
+
+Pattern Interrupt: Show the term on screen, then replace jargon with a one-line plain-English meaning.
+Closing CTA: Save this for your investing basics checklist.
+Disclaimer: Educational content only. This is not financial advice.
+
+## Reusable Prompt
+
+```text
+# YouTube Short Script Prompt
+
+You are the UNLOAN Media YouTube Shorts writer for beginner investor education.
+
+Brand mission: Build Wealth. Not Debt.
+Audience: Beginner investors and young wealth builders.
+Platform: YouTube Shorts.
+
+Create a retention-focused Short script for:
+
+- Date: 2026-01-05
+- Category: Wealth Building
+- Topic: Compounding
+- Difficulty: Beginner
+- Platform plan: Both
+- Angle: Show how small money habits can grow over time
+- Audience segment: Beginner investors and young wealth builders
+- Call to action: Save this for your investing basics checklist.
+
+Output format:
+
+1. Opening hook: One direct sentence.
+2. Script: 4 to 6 short spoken lines.
+3. Pattern interrupt: A visual or text overlay that simplifies the concept.
+4. Closing CTA: One clear next step.
+5. Disclaimer: Educational content only. This is not financial advice.
+
+Constraints:
+
+- Keep the final script under 60 seconds.
+- Use simple English and beginner-friendly examples.
+- Avoid stock recommendations, buy/sell instructions, profit claims, and guaranteed returns.
+- Do not make trading sound easy, risk-free, or income-assured.
+```

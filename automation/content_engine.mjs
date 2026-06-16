@@ -9,24 +9,42 @@ const OUTPUT_DIRS = {
   reel: path.join(ROOT, "content", "reels"),
   short: path.join(ROOT, "content", "shorts"),
   caption: path.join(ROOT, "content", "captions"),
+  thumbnail: path.join(ROOT, "content", "thumbnails"),
 };
 
 const FIELD_ALIASES = {
   date: ["date", "publish_date", "scheduled_date"],
-  pillar: ["pillar", "content_pillar", "category"],
+  category: ["category", "pillar", "content_pillar"],
   topic: ["topic", "title", "content_topic", "idea"],
+  difficulty: ["difficulty", "level"],
+  platform: ["platform", "channel"],
+  status: ["status", "workflow_status"],
   angle: ["angle", "hook_angle", "creative_angle"],
   audience: ["audience", "audience_segment", "target_audience"],
   cta: ["cta", "call_to_action", "call_to-action"],
 };
 
+const CATEGORY_GUIDANCE = {
+  "Wealth Building": "Explain how long-term money habits create financial freedom.",
+  "Stock Market Basics": "Define the market concept in simple language with a beginner example.",
+  "Trading Basics": "Teach the trading concept without encouraging frequent trading or quick profits.",
+  "Trading Platform Features": "Explain what the order type does and when a learner should be careful.",
+  "Investor Terminology": "Decode the metric or term without making stock selection claims.",
+  "Behavioral Finance": "Show the emotion or bias and give a calmer decision rule.",
+};
+
 const DEFAULTS = {
   date: "unscheduled",
-  pillar: "Wealth Building",
+  category: "Wealth Building",
+  difficulty: "Beginner",
+  platform: "Both",
+  status: "Planned",
   angle: "Make the idea simple, practical, and memorable.",
-  audience: "Young investors aged 20 to 35",
-  cta: "Save this and follow UNLOAN for practical wealth-building ideas.",
+  audience: "Beginner investors and young wealth builders",
+  cta: "Save this and follow UNLOAN for beginner-friendly investing education.",
 };
+
+const DISCLAIMER = "Educational content only. This is not financial advice.";
 
 function parseArgs(argv) {
   const args = {
@@ -151,8 +169,11 @@ async function loadCalendar(calendarPath) {
       const contentTopic = {
         index: rowIndex + 1,
         date: firstPresent(row, "date"),
-        pillar: firstPresent(row, "pillar"),
+        category: firstPresent(row, "category"),
         topic,
+        difficulty: firstPresent(row, "difficulty"),
+        platform: firstPresent(row, "platform"),
+        status: firstPresent(row, "status"),
         angle: firstPresent(row, "angle"),
         audience: firstPresent(row, "audience"),
         cta: firstPresent(row, "cta"),
@@ -173,78 +194,131 @@ async function loadPrompt(name) {
 }
 
 function fillTemplate(template, topic) {
-  return template.replace(/\{\{(date|pillar|topic|angle|audience|cta)\}\}/g, (_match, key) => {
-    return topic[key];
-  });
+  return template.replace(
+    /\{\{(date|category|pillar|topic|difficulty|platform|status|angle|audience|cta|disclaimer)\}\}/g,
+    (_match, key) => {
+      if (key === "pillar") {
+        return topic.category;
+      }
+      if (key === "disclaimer") {
+        return DISCLAIMER;
+      }
+      return topic[key] ?? "";
+    },
+  );
 }
 
 function metadata(topic) {
   return [
     `- Date: ${topic.date}`,
-    `- Pillar: ${topic.pillar}`,
-    `- Audience: ${topic.audience}`,
-    `- Angle: ${topic.angle}`,
+    `- Topic: ${topic.topic}`,
+    `- Category: ${topic.category}`,
+    `- Difficulty: ${topic.difficulty}`,
+    `- Platform: ${topic.platform}`,
+    `- Status: ${topic.status}`,
   ].join("\n");
-}
-
-function makeHook(topic) {
-  const pillar = topic.pillar.toLowerCase();
-  const plainTopic = humanizeTopic(topic.topic);
-  if (pillar.includes("behaviour") || pillar.includes("behavior")) {
-    return `The biggest investing risk around ${plainTopic} may be your own reaction.`;
-  }
-  if (pillar.includes("freedom")) {
-    return `${topic.topic} is not about escaping work. It is about buying choices.`;
-  }
-  if (pillar.includes("fundamental") || pillar.includes("invest")) {
-    return `Before you act on ${plainTopic}, understand this first.`;
-  }
-  return `${topic.topic} matters more than most new investors think.`;
-}
-
-function makeTakeaway(topic) {
-  return `Build wealth with systems, patience, and clear rules around ${humanizeTopic(topic.topic)}.`;
 }
 
 function humanizeTopic(topic) {
   return topic.charAt(0).toLowerCase() + topic.slice(1);
 }
 
+function makeHook(topic) {
+  const category = topic.category.toLowerCase();
+  const plainTopic = humanizeTopic(topic.topic);
+  if (category.includes("trading platform")) {
+    return `${topic.topic} is a tool, not a shortcut to profit.`;
+  }
+  if (category.includes("trading basics")) {
+    return `Before trying ${plainTopic}, learn the risk first.`;
+  }
+  if (category.includes("terminology")) {
+    return `${topic.topic} sounds complex, but beginners can understand it in one minute.`;
+  }
+  if (category.includes("behavioral")) {
+    return `The hardest part of investing is often your own reaction.`;
+  }
+  if (category.includes("stock market")) {
+    return `If you are new to stocks, ${plainTopic} is one term you should know.`;
+  }
+  return `${topic.topic} is a beginner money concept that can change how you plan.`;
+}
+
+function makeSimpleDefinition(topic) {
+  return `${topic.topic} means understanding the concept clearly before using it in real money decisions.`;
+}
+
+function makeTakeaway(topic) {
+  return `Learn ${humanizeTopic(topic.topic)} first, then make calm and informed decisions.`;
+}
+
+function makeThumbnailTitle(topic) {
+  const cleanTopic = topic.topic.replace(/\s+/g, " ").trim();
+  if (cleanTopic.length <= 24) {
+    return `${cleanTopic}: Learn It Simply`;
+  }
+  return cleanTopic;
+}
+
 function makeCaption(topic) {
   return [
     makeHook(topic),
     "",
-    topic.angle,
+    CATEGORY_GUIDANCE[topic.category] ?? topic.angle,
     "",
-    "The goal is not to look rich for a weekend.",
-    "The goal is to make decisions your future self will thank you for.",
+    `Simple meaning: ${makeSimpleDefinition(topic)}`,
+    "",
+    "Beginner rule:",
+    "- Understand the term.",
+    "- Know the risk.",
+    "- Avoid decisions based on hype.",
     "",
     makeTakeaway(topic),
     "",
-    topic.cta,
+    `CTA: ${topic.cta}`,
     "",
-    "Educational content only. This is not investment advice.",
+    DISCLAIMER,
   ].join("\n");
 }
 
 function buildHashtags(topic) {
-  const stopWords = new Set(["a", "an", "and", "are", "before", "for", "from", "how", "the", "to", "why", "with", "your"]);
+  const stopWords = new Set([
+    "a",
+    "an",
+    "and",
+    "are",
+    "before",
+    "for",
+    "from",
+    "how",
+    "of",
+    "the",
+    "to",
+    "why",
+    "with",
+    "your",
+  ]);
   const topicTags = topic.topic
     .split(/[^a-zA-Z0-9]+/)
     .filter((word) => word && !stopWords.has(word.toLowerCase()))
     .slice(0, 5)
     .map((word) => `#${word.toLowerCase()}`);
+  const categoryTags = topic.category
+    .split(/[^a-zA-Z0-9]+/)
+    .filter((word) => word && !stopWords.has(word.toLowerCase()))
+    .slice(0, 3)
+    .map((word) => `#${word.toLowerCase()}`);
   const baseTags = [
     "#UNLOAN",
     "#BuildWealthNotDebt",
     "#UNLOANMedia",
+    "#BeginnerInvesting",
+    "#StockMarketBasics",
     "#PersonalFinance",
-    "#InvestingBasics",
-    "#WealthBuilding",
-    "#FinancialFreedom",
-    "#MoneyMindset",
+    "#InvestingEducation",
+    "#NoFinancialAdvice",
   ];
-  return [...new Set([...baseTags.slice(0, 3), ...topicTags, ...baseTags.slice(3)])].slice(0, 13);
+  return [...new Set([...baseTags.slice(0, 3), ...topicTags, ...categoryTags, ...baseTags.slice(3)])].slice(0, 15);
 }
 
 function fenced(content) {
@@ -259,16 +333,19 @@ async function buildReel(topic) {
     "",
     "## Draft",
     "",
+    "Duration: 30-45 seconds",
+    "",
     `Hook: ${makeHook(topic)}`,
     "",
     "Scene Plan:",
-    `1. Open with on-screen text: "${topic.topic}".`,
-    `2. Name the money mistake or opportunity: ${topic.angle}`,
-    "3. Break it into one simple wealth-building principle.",
-    "4. Give a practical example a young investor can recognize.",
+    `1. Open with on-screen text: "${makeThumbnailTitle(topic)}".`,
+    `2. Define the concept: ${makeSimpleDefinition(topic)}`,
+    `3. Beginner example: Use a simple daily-money or investing situation, without naming stocks.`,
+    "4. Risk reminder: Do not use this as a buy/sell signal or profit promise.",
     `5. Close with: "${makeTakeaway(topic)}"`,
     "",
     `CTA: ${topic.cta}`,
+    `Disclaimer: ${DISCLAIMER}`,
     "",
     "## Reusable Prompt",
     "",
@@ -284,17 +361,20 @@ async function buildShort(topic) {
     "",
     "## Draft",
     "",
+    "Duration: under 60 seconds",
+    "",
     `Opening Hook: ${makeHook(topic)}`,
     "",
     "Script:",
-    `- Most people hear "${topic.topic}" and make it complicated.`,
-    `- Here is the simpler lens: ${topic.angle}`,
-    "- Wealth is built by repeatable decisions, not one lucky move.",
-    "- Learn the rule, apply it calmly, and review it often.",
+    `- ${topic.topic} is not something to memorize. It is something to understand.`,
+    `- Simple meaning: ${makeSimpleDefinition(topic)}`,
+    `- Why it matters: ${CATEGORY_GUIDANCE[topic.category] ?? topic.angle}`,
+    "- Beginner check: never treat one term, ratio, or order type as a guaranteed result.",
     `- ${makeTakeaway(topic)}`,
     "",
-    "Pattern Interrupt: Show a before/after text overlay with the old belief crossed out.",
+    "Pattern Interrupt: Show the term on screen, then replace jargon with a one-line plain-English meaning.",
     `Closing CTA: ${topic.cta}`,
+    `Disclaimer: ${DISCLAIMER}`,
     "",
     "## Reusable Prompt",
     "",
@@ -316,6 +396,10 @@ async function buildCaption(topic) {
     "",
     buildHashtags(topic).join(" "),
     "",
+    "## Call To Action",
+    "",
+    topic.cta,
+    "",
     "## Reusable Caption Prompt",
     "",
     fenced(fillTemplate(await loadPrompt("caption.md"), topic)),
@@ -323,6 +407,36 @@ async function buildCaption(topic) {
     "## Reusable Hashtag Prompt",
     "",
     fenced(fillTemplate(await loadPrompt("hashtags.md"), topic)),
+  ].join("\n");
+}
+
+async function buildThumbnail(topic) {
+  return [
+    `# Thumbnail: ${topic.topic}`,
+    "",
+    metadata(topic),
+    "",
+    "## Thumbnail Title",
+    "",
+    makeThumbnailTitle(topic),
+    "",
+    "## Supporting Text",
+    "",
+    `${topic.difficulty} guide. No hype. No stock tips.`,
+    "",
+    "## Visual Direction",
+    "",
+    "- Use clear, high-contrast text.",
+    "- Show one concept only.",
+    "- Avoid profit screenshots, guaranteed-return language, or specific stock logos.",
+    "",
+    "## Call To Action",
+    "",
+    topic.cta,
+    "",
+    "## Reusable Prompt",
+    "",
+    fenced(fillTemplate(await loadPrompt("thumbnail_title.md"), topic)),
   ].join("\n");
 }
 
@@ -336,6 +450,7 @@ async function writeOutputs(topics, dryRun) {
     reel: buildReel,
     short: buildShort,
     caption: buildCaption,
+    thumbnail: buildThumbnail,
   };
 
   for (const topic of topics) {

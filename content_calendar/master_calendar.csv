@@ -1,4 +1,37 @@
-date,pillar,topic,angle,audience,cta
-2026-01-05,Wealth Building,The first investing habit before your first stock,"Automate saving before chasing returns",Young investors starting their wealth journey,Save this and follow UNLOAN for practical wealth-building ideas.
-2026-01-06,Investing Fundamentals,Why diversification protects your future self,"Explain concentration risk without jargon",Beginner investors learning portfolio basics,Share this with someone building their first portfolio.
-2026-01-07,Behavioural Finance,Why panic selling feels rational,"Show how emotion can override a long-term plan",Young professionals investing through market volatility,Comment PLAN if you want a simple investing checklist.
+Date,Topic,Category,Difficulty,Platform,Status,Angle,Audience,CTA
+2026-01-05,Compounding,Wealth Building,Beginner,Both,Planned,"Show how small money habits can grow over time",Beginner investors and young wealth builders,Save this for your investing basics checklist.
+2026-01-06,Rule of 72,Wealth Building,Beginner,Both,Planned,"Explain a simple mental model for estimating doubling time",Beginner investors and young wealth builders,Share this with someone learning money basics.
+2026-01-07,SIP,Wealth Building,Beginner,Both,Planned,"Explain disciplined investing without promising returns",Beginner investors and young wealth builders,Follow UNLOAN for simple investing education.
+2026-01-08,Inflation,Wealth Building,Beginner,Both,Planned,"Show why idle money can lose purchasing power",Beginner investors and young wealth builders,Save this before planning your next money goal.
+2026-01-09,Financial Freedom,Wealth Building,Beginner,Both,Planned,"Define freedom as choices built through disciplined money habits",Beginner investors and young wealth builders,Comment FREEDOM if you want more beginner money lessons.
+2026-01-10,Equity,Stock Market Basics,Beginner,Both,Planned,"Explain ownership in a company without stock recommendations",New stock market learners,Save this as your first stock market term.
+2026-01-11,Market Capitalization,Stock Market Basics,Beginner,Both,Planned,"Explain company size using large cap mid cap and small cap context",New stock market learners,Share this with a beginner investor.
+2026-01-12,Dividend,Stock Market Basics,Beginner,Both,Planned,"Explain profit sharing without implying guaranteed income",New stock market learners,Follow UNLOAN for one market term at a time.
+2026-01-13,Bonus Shares,Stock Market Basics,Beginner,Both,Planned,"Explain extra shares and why value does not magically increase",New stock market learners,Save this for your market basics folder.
+2026-01-14,Stock Split,Stock Market Basics,Beginner,Both,Planned,"Explain split shares using a simple pizza-slice analogy",New stock market learners,Share this with someone confused by stock splits.
+2026-01-15,Intraday Trading,Trading Basics,Beginner,Both,Planned,"Explain same-day trading and why risk control matters",Beginner investors curious about trading,Save this before trying any trading style.
+2026-01-16,Delivery Trading,Trading Basics,Beginner,Both,Planned,"Explain taking stock delivery without buy or sell advice",Beginner investors curious about trading,Follow UNLOAN for trading basics without hype.
+2026-01-17,Swing Trading,Trading Basics,Intermediate,Both,Planned,"Explain holding for short-term moves while respecting risk",Beginner investors curious about trading,Save this for your trading glossary.
+2026-01-18,Position Trading,Trading Basics,Intermediate,Both,Planned,"Explain longer holding periods compared with intraday or swing trades",Beginner investors curious about trading,Share this with someone comparing trading styles.
+2026-01-19,Risk Management,Trading Basics,Beginner,Both,Planned,"Show that survival matters more than being right once",Beginner investors curious about trading,Comment RISK if you want a simple trading checklist.
+2026-01-20,GTT Orders,Trading Platform Features,Beginner,Both,Planned,"Explain good till triggered orders as a platform feature not a profit tool",New trading platform users,Save this before using advanced order features.
+2026-01-21,Stop Loss,Trading Platform Features,Beginner,Both,Planned,"Explain loss limits without suggesting a specific price",New trading platform users,Share this with someone learning order types.
+2026-01-22,Trailing Stop Loss,Trading Platform Features,Intermediate,Both,Planned,"Explain a moving risk-control order in simple language",New trading platform users,Follow UNLOAN for simple platform education.
+2026-01-23,Limit Order,Trading Platform Features,Beginner,Both,Planned,"Explain price control and why execution is not guaranteed",New trading platform users,Save this for your order type checklist.
+2026-01-24,Market Order,Trading Platform Features,Beginner,Both,Planned,"Explain fast execution and slippage risk",New trading platform users,Share this with a new demat account user.
+2026-01-25,Bracket Order,Trading Platform Features,Intermediate,Both,Planned,"Explain entry target and stop-loss brackets without strategy claims",New trading platform users,Save this before using complex order types.
+2026-01-26,Cover Order,Trading Platform Features,Intermediate,Both,Planned,"Explain order plus compulsory stop loss in plain English",New trading platform users,Follow UNLOAN for more beginner platform guides.
+2026-01-27,PE Ratio,Investor Terminology,Beginner,Both,Planned,"Explain price versus earnings without stock-picking claims",Beginner investors learning market terms,Save this for your investing dictionary.
+2026-01-28,PB Ratio,Investor Terminology,Intermediate,Both,Planned,"Explain price versus book value and its limits",Beginner investors learning market terms,Share this with someone learning valuation terms.
+2026-01-29,ROE,Investor Terminology,Intermediate,Both,Planned,"Explain return on equity as a business efficiency metric",Beginner investors learning market terms,Follow UNLOAN for one investing term daily.
+2026-01-30,ROCE,Investor Terminology,Intermediate,Both,Planned,"Explain return on capital employed without ranking stocks",Beginner investors learning market terms,Save this for fundamental analysis basics.
+2026-01-31,EPS,Investor Terminology,Beginner,Both,Planned,"Explain earnings per share in simple terms",Beginner investors learning market terms,Share this with a market beginner.
+2026-02-01,CAGR,Investor Terminology,Beginner,Both,Planned,"Explain smoothed annual growth without guaranteed future returns",Beginner investors learning market terms,Save this before reading any return chart.
+2026-02-02,XIRR,Investor Terminology,Intermediate,Both,Planned,"Explain irregular cash-flow returns using SIP-like examples",Beginner investors learning market terms,Follow UNLOAN for simple return metrics.
+2026-02-03,ETF,Investor Terminology,Beginner,Both,Planned,"Explain basket-style investing without recommending any fund",Beginner investors learning market terms,Save this for your fund basics list.
+2026-02-04,IPO,Investor Terminology,Beginner,Both,Planned,"Explain a company going public without hype or listing gain claims",Beginner investors learning market terms,Share this with someone excited about IPOs.
+2026-02-05,FOMO,Behavioral Finance,Beginner,Both,Planned,"Show why fear of missing out can push rushed decisions",Beginner investors building emotional discipline,Save this before chasing market trends.
+2026-02-06,Panic Selling,Behavioral Finance,Beginner,Both,Planned,"Explain why fear can override a long-term plan",Beginner investors building emotional discipline,Comment CALM if you want more investor psychology lessons.
+2026-02-07,Greed,Behavioral Finance,Beginner,Both,Planned,"Show how wanting more can weaken risk discipline",Beginner investors building emotional discipline,Share this with someone who needs a trading pause.
+2026-02-08,Confirmation Bias,Behavioral Finance,Intermediate,Both,Planned,"Explain why investors search for evidence they already agree with",Beginner investors building emotional discipline,Save this as an investing behavior checklist.
+2026-02-09,Overtrading,Behavioral Finance,Beginner,Both,Planned,"Show how too many actions can create avoidable mistakes",Beginner investors building emotional discipline,Follow UNLOAN for calm investing habits.
