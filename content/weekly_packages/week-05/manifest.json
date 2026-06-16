@@ -4,6 +4,7 @@
     "category": "Investor Terminology",
     "difficulty": "Intermediate",
     "status": "Draft",
+    "logo": "assets/logo.svg",
     "packagePath": "content/weekly_packages/week-05/2026-01-29-25-roe"
   },
   {
@@ -11,6 +12,7 @@
     "category": "Investor Terminology",
     "difficulty": "Intermediate",
     "status": "Draft",
+    "logo": "assets/logo.svg",
     "packagePath": "content/weekly_packages/week-05/2026-01-30-26-roce"
   },
   {
@@ -18,6 +20,7 @@
     "category": "Investor Terminology",
     "difficulty": "Beginner",
     "status": "Draft",
+    "logo": "assets/logo.svg",
     "packagePath": "content/weekly_packages/week-05/2026-01-31-27-eps"
   },
   {
@@ -25,6 +28,7 @@
     "category": "Investor Terminology",
     "difficulty": "Beginner",
     "status": "Draft",
+    "logo": "assets/logo.svg",
     "packagePath": "content/weekly_packages/week-05/2026-02-01-28-cagr"
   },
   {
@@ -32,6 +36,7 @@
     "category": "Investor Terminology",
     "difficulty": "Intermediate",
     "status": "Draft",
+    "logo": "assets/logo.svg",
     "packagePath": "content/weekly_packages/week-05/2026-02-02-29-xirr"
   },
   {
@@ -39,6 +44,7 @@
     "category": "Investor Terminology",
     "difficulty": "Beginner",
     "status": "Draft",
+    "logo": "assets/logo.svg",
     "packagePath": "content/weekly_packages/week-05/2026-02-03-30-etf"
   }
 ]

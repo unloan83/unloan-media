@@ -10,6 +10,7 @@
     "Approved",
     "Published"
   ],
+  "logo": "assets/logo.svg",
   "cta": "Comment RISK if you want a simple trading checklist.",
   "thumbnail": "Risk Management Explained Simply",
   "keywords": [

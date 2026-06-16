@@ -10,6 +10,7 @@
     "Approved",
     "Published"
   ],
+  "logo": "assets/logo.svg",
   "cta": "Share this with someone confused by stock splits.",
   "thumbnail": "Stock Split Explained Simply",
   "keywords": [

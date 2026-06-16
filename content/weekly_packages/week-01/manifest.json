@@ -4,6 +4,7 @@
     "category": "Wealth Building",
     "difficulty": "Beginner",
     "status": "Draft",
+    "logo": "assets/logo.svg",
     "packagePath": "content/weekly_packages/week-01/2026-01-05-01-compounding"
   },
   {
@@ -11,6 +12,7 @@
     "category": "Wealth Building",
     "difficulty": "Beginner",
     "status": "Draft",
+    "logo": "assets/logo.svg",
     "packagePath": "content/weekly_packages/week-01/2026-01-06-02-rule-of-72"
   },
   {
@@ -18,6 +20,7 @@
     "category": "Wealth Building",
     "difficulty": "Beginner",
     "status": "Draft",
+    "logo": "assets/logo.svg",
     "packagePath": "content/weekly_packages/week-01/2026-01-07-03-sip"
   },
   {
@@ -25,6 +28,7 @@
     "category": "Wealth Building",
     "difficulty": "Beginner",
     "status": "Draft",
+    "logo": "assets/logo.svg",
     "packagePath": "content/weekly_packages/week-01/2026-01-08-04-inflation"
   },
   {
@@ -32,6 +36,7 @@
     "category": "Wealth Building",
     "difficulty": "Beginner",
     "status": "Draft",
+    "logo": "assets/logo.svg",
     "packagePath": "content/weekly_packages/week-01/2026-01-09-05-financial-freedom"
   },
   {
@@ -39,6 +44,7 @@
     "category": "Stock Market Basics",
     "difficulty": "Beginner",
     "status": "Draft",
+    "logo": "assets/logo.svg",
     "packagePath": "content/weekly_packages/week-01/2026-01-10-06-equity"
   }
 ]

@@ -10,6 +10,7 @@
     "Approved",
     "Published"
   ],
+  "logo": "assets/logo.svg",
   "cta": "Share this with someone excited about IPOs.",
   "thumbnail": "IPO Explained Simply",
   "keywords": [

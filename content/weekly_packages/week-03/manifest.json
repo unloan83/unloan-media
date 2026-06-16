@@ -4,6 +4,7 @@
     "category": "Trading Basics",
     "difficulty": "Intermediate",
     "status": "Draft",
+    "logo": "assets/logo.svg",
     "packagePath": "content/weekly_packages/week-03/2026-01-17-13-swing-trading"
   },
   {
@@ -11,6 +12,7 @@
     "category": "Trading Basics",
     "difficulty": "Intermediate",
     "status": "Draft",
+    "logo": "assets/logo.svg",
     "packagePath": "content/weekly_packages/week-03/2026-01-18-14-position-trading"
   },
   {
@@ -18,6 +20,7 @@
     "category": "Trading Basics",
     "difficulty": "Beginner",
     "status": "Draft",
+    "logo": "assets/logo.svg",
     "packagePath": "content/weekly_packages/week-03/2026-01-19-15-risk-management"
   },
   {
@@ -25,6 +28,7 @@
     "category": "Trading Platform Features",
     "difficulty": "Beginner",
     "status": "Draft",
+    "logo": "assets/logo.svg",
     "packagePath": "content/weekly_packages/week-03/2026-01-20-16-gtt-orders"
   },
   {
@@ -32,6 +36,7 @@
     "category": "Trading Platform Features",
     "difficulty": "Beginner",
     "status": "Draft",
+    "logo": "assets/logo.svg",
     "packagePath": "content/weekly_packages/week-03/2026-01-21-17-stop-loss"
   },
   {
@@ -39,6 +44,7 @@
     "category": "Trading Platform Features",
     "difficulty": "Intermediate",
     "status": "Draft",
+    "logo": "assets/logo.svg",
     "packagePath": "content/weekly_packages/week-03/2026-01-22-18-trailing-stop-loss"
   }
 ]
