@@ -77,6 +77,23 @@ readiness tracking, and weekly production packages.
 
 Use `assets/logo.svg` as the default UNLOAN logo for all branding and content packages.
 
+Phase 5 local operations:
+
+```bash
+node automation/phase5_ops.mjs
+```
+
+This creates approval-based schedule files, safe publisher payload previews,
+manual analytics templates, local performance reports, alerts, and automation
+logs under `data` and `logs`.
+
+Phase 5 docs:
+
+* `docs/phase5_operations.md`
+* `docs/platform_integrations.md`
+* `docs/scheduling_workflow.md`
+* `docs/performance_dashboard.md`
+
 Publishing integrations are intentionally excluded. Do not connect to,
 authenticate with, or modify Instagram, Meta Business Suite, Facebook, YouTube,
 Google APIs, Canva APIs, or third-party publishing tools from this version of the repo.

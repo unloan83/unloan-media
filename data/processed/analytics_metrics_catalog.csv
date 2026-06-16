@@ -1,0 +1,17 @@
+Platform,Metric,Source,Required
+Instagram,Views,Manual import or future API collector,Yes
+Instagram,Likes,Manual import or future API collector,Yes
+Instagram,Comments,Manual import or future API collector,Yes
+Instagram,Shares,Manual import or future API collector,Yes
+Instagram,Saves,Manual import or future API collector,Yes
+Instagram,Reach,Manual import or future API collector,Yes
+Instagram,ProfileVisits,Manual import or future API collector,Yes
+Instagram,FollowerCount,Manual import or future API collector,Yes
+YouTube,Views,Manual import or future API collector,Yes
+YouTube,Likes,Manual import or future API collector,Yes
+YouTube,Comments,Manual import or future API collector,Yes
+YouTube,Shares,Manual import or future API collector,Yes
+YouTube,WatchTimeMinutes,Manual import or future API collector,Yes
+YouTube,Impressions,Manual import or future API collector,Yes
+YouTube,CTR,Manual import or future API collector,Yes
+YouTube,SubscriberCount,Manual import or future API collector,Yes

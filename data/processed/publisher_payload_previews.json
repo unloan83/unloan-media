@@ -1,0 +1,302 @@
+[
+  {
+    "validation": {
+      "platform": "Instagram",
+      "package": "2026-01-05-01-compounding",
+      "approved": false,
+      "publishEligible": false,
+      "status": "Draft",
+      "reason": "Package is blocked until approval is recorded."
+    },
+    "payloadPreview": {
+      "platform": "Instagram",
+      "contentType": "Reel",
+      "package": "2026-01-05-01-compounding",
+      "topic": "Compounding",
+      "captionSource": "content/weekly_packages/.../2026-01-05-01-compounding/caption_and_hashtags.md",
+      "thumbnailSource": "content/thumbnails/2026-01-05-01-compounding.md",
+      "status": "Draft",
+      "publishMode": "disabled-local-preview-only"
+    },
+    "credentialStatus": {
+      "INSTAGRAM_ACCESS_TOKEN": "missing",
+      "INSTAGRAM_ACCOUNT_ID": "missing"
+    }
+  },
+  {
+    "validation": {
+      "platform": "YouTube",
+      "package": "2026-01-05-01-compounding",
+      "approved": false,
+      "publishEligible": false,
+      "status": "Draft",
+      "reason": "Package is blocked until approval is recorded."
+    },
+    "payloadPreview": {
+      "platform": "YouTube",
+      "contentType": "Short",
+      "package": "2026-01-05-01-compounding",
+      "topic": "Compounding",
+      "titleSource": "content/weekly_packages/.../2026-01-05-01-compounding/thumbnail_titles.md",
+      "descriptionSource": "content/weekly_packages/.../2026-01-05-01-compounding/caption_and_hashtags.md",
+      "thumbnailSource": "content/thumbnails/2026-01-05-01-compounding.md",
+      "status": "Draft",
+      "publishMode": "disabled-local-preview-only"
+    },
+    "credentialStatus": {
+      "YOUTUBE_CLIENT_ID": "missing",
+      "YOUTUBE_CLIENT_SECRET": "missing",
+      "YOUTUBE_REFRESH_TOKEN": "missing"
+    }
+  },
+  {
+    "validation": {
+      "platform": "Instagram",
+      "package": "2026-01-06-02-rule-of-72",
+      "approved": false,
+      "publishEligible": false,
+      "status": "Draft",
+      "reason": "Package is blocked until approval is recorded."
+    },
+    "payloadPreview": {
+      "platform": "Instagram",
+      "contentType": "Reel",
+      "package": "2026-01-06-02-rule-of-72",
+      "topic": "Rule of 72",
+      "captionSource": "content/weekly_packages/.../2026-01-06-02-rule-of-72/caption_and_hashtags.md",
+      "thumbnailSource": "content/thumbnails/2026-01-06-02-rule-of-72.md",
+      "status": "Draft",
+      "publishMode": "disabled-local-preview-only"
+    },
+    "credentialStatus": {
+      "INSTAGRAM_ACCESS_TOKEN": "missing",
+      "INSTAGRAM_ACCOUNT_ID": "missing"
+    }
+  },
+  {
+    "validation": {
+      "platform": "YouTube",
+      "package": "2026-01-06-02-rule-of-72",
+      "approved": false,
+      "publishEligible": false,
+      "status": "Draft",
+      "reason": "Package is blocked until approval is recorded."
+    },
+    "payloadPreview": {
+      "platform": "YouTube",
+      "contentType": "Short",
+      "package": "2026-01-06-02-rule-of-72",
+      "topic": "Rule of 72",
+      "titleSource": "content/weekly_packages/.../2026-01-06-02-rule-of-72/thumbnail_titles.md",
+      "descriptionSource": "content/weekly_packages/.../2026-01-06-02-rule-of-72/caption_and_hashtags.md",
+      "thumbnailSource": "content/thumbnails/2026-01-06-02-rule-of-72.md",
+      "status": "Draft",
+      "publishMode": "disabled-local-preview-only"
+    },
+    "credentialStatus": {
+      "YOUTUBE_CLIENT_ID": "missing",
+      "YOUTUBE_CLIENT_SECRET": "missing",
+      "YOUTUBE_REFRESH_TOKEN": "missing"
+    }
+  },
+  {
+    "validation": {
+      "platform": "Instagram",
+      "package": "2026-01-07-03-sip",
+      "approved": false,
+      "publishEligible": false,
+      "status": "Draft",
+      "reason": "Package is blocked until approval is recorded."
+    },
+    "payloadPreview": {
+      "platform": "Instagram",
+      "contentType": "Reel",
+      "package": "2026-01-07-03-sip",
+      "topic": "SIP",
+      "captionSource": "content/weekly_packages/.../2026-01-07-03-sip/caption_and_hashtags.md",
+      "thumbnailSource": "content/thumbnails/2026-01-07-03-sip.md",
+      "status": "Draft",
+      "publishMode": "disabled-local-preview-only"
+    },
+    "credentialStatus": {
+      "INSTAGRAM_ACCESS_TOKEN": "missing",
+      "INSTAGRAM_ACCOUNT_ID": "missing"
+    }
+  },
+  {
+    "validation": {
+      "platform": "YouTube",
+      "package": "2026-01-07-03-sip",
+      "approved": false,
+      "publishEligible": false,
+      "status": "Draft",
+      "reason": "Package is blocked until approval is recorded."
+    },
+    "payloadPreview": {
+      "platform": "YouTube",
+      "contentType": "Short",
+      "package": "2026-01-07-03-sip",
+      "topic": "SIP",
+      "titleSource": "content/weekly_packages/.../2026-01-07-03-sip/thumbnail_titles.md",
+      "descriptionSource": "content/weekly_packages/.../2026-01-07-03-sip/caption_and_hashtags.md",
+      "thumbnailSource": "content/thumbnails/2026-01-07-03-sip.md",
+      "status": "Draft",
+      "publishMode": "disabled-local-preview-only"
+    },
+    "credentialStatus": {
+      "YOUTUBE_CLIENT_ID": "missing",
+      "YOUTUBE_CLIENT_SECRET": "missing",
+      "YOUTUBE_REFRESH_TOKEN": "missing"
+    }
+  },
+  {
+    "validation": {
+      "platform": "Instagram",
+      "package": "2026-01-08-04-inflation",
+      "approved": false,
+      "publishEligible": false,
+      "status": "Draft",
+      "reason": "Package is blocked until approval is recorded."
+    },
+    "payloadPreview": {
+      "platform": "Instagram",
+      "contentType": "Reel",
+      "package": "2026-01-08-04-inflation",
+      "topic": "Inflation",
+      "captionSource": "content/weekly_packages/.../2026-01-08-04-inflation/caption_and_hashtags.md",
+      "thumbnailSource": "content/thumbnails/2026-01-08-04-inflation.md",
+      "status": "Draft",
+      "publishMode": "disabled-local-preview-only"
+    },
+    "credentialStatus": {
+      "INSTAGRAM_ACCESS_TOKEN": "missing",
+      "INSTAGRAM_ACCOUNT_ID": "missing"
+    }
+  },
+  {
+    "validation": {
+      "platform": "YouTube",
+      "package": "2026-01-08-04-inflation",
+      "approved": false,
+      "publishEligible": false,
+      "status": "Draft",
+      "reason": "Package is blocked until approval is recorded."
+    },
+    "payloadPreview": {
+      "platform": "YouTube",
+      "contentType": "Short",
+      "package": "2026-01-08-04-inflation",
+      "topic": "Inflation",
+      "titleSource": "content/weekly_packages/.../2026-01-08-04-inflation/thumbnail_titles.md",
+      "descriptionSource": "content/weekly_packages/.../2026-01-08-04-inflation/caption_and_hashtags.md",
+      "thumbnailSource": "content/thumbnails/2026-01-08-04-inflation.md",
+      "status": "Draft",
+      "publishMode": "disabled-local-preview-only"
+    },
+    "credentialStatus": {
+      "YOUTUBE_CLIENT_ID": "missing",
+      "YOUTUBE_CLIENT_SECRET": "missing",
+      "YOUTUBE_REFRESH_TOKEN": "missing"
+    }
+  },
+  {
+    "validation": {
+      "platform": "Instagram",
+      "package": "2026-01-09-05-financial-freedom",
+      "approved": false,
+      "publishEligible": false,
+      "status": "Draft",
+      "reason": "Package is blocked until approval is recorded."
+    },
+    "payloadPreview": {
+      "platform": "Instagram",
+      "contentType": "Reel",
+      "package": "2026-01-09-05-financial-freedom",
+      "topic": "Financial Freedom",
+      "captionSource": "content/weekly_packages/.../2026-01-09-05-financial-freedom/caption_and_hashtags.md",
+      "thumbnailSource": "content/thumbnails/2026-01-09-05-financial-freedom.md",
+      "status": "Draft",
+      "publishMode": "disabled-local-preview-only"
+    },
+    "credentialStatus": {
+      "INSTAGRAM_ACCESS_TOKEN": "missing",
+      "INSTAGRAM_ACCOUNT_ID": "missing"
+    }
+  },
+  {
+    "validation": {
+      "platform": "YouTube",
+      "package": "2026-01-09-05-financial-freedom",
+      "approved": false,
+      "publishEligible": false,
+      "status": "Draft",
+      "reason": "Package is blocked until approval is recorded."
+    },
+    "payloadPreview": {
+      "platform": "YouTube",
+      "contentType": "Short",
+      "package": "2026-01-09-05-financial-freedom",
+      "topic": "Financial Freedom",
+      "titleSource": "content/weekly_packages/.../2026-01-09-05-financial-freedom/thumbnail_titles.md",
+      "descriptionSource": "content/weekly_packages/.../2026-01-09-05-financial-freedom/caption_and_hashtags.md",
+      "thumbnailSource": "content/thumbnails/2026-01-09-05-financial-freedom.md",
+      "status": "Draft",
+      "publishMode": "disabled-local-preview-only"
+    },
+    "credentialStatus": {
+      "YOUTUBE_CLIENT_ID": "missing",
+      "YOUTUBE_CLIENT_SECRET": "missing",
+      "YOUTUBE_REFRESH_TOKEN": "missing"
+    }
+  },
+  {
+    "validation": {
+      "platform": "Instagram",
+      "package": "2026-01-10-06-equity",
+      "approved": false,
+      "publishEligible": false,
+      "status": "Draft",
+      "reason": "Package is blocked until approval is recorded."
+    },
+    "payloadPreview": {
+      "platform": "Instagram",
+      "contentType": "Reel",
+      "package": "2026-01-10-06-equity",
+      "topic": "Equity",
+      "captionSource": "content/weekly_packages/.../2026-01-10-06-equity/caption_and_hashtags.md",
+      "thumbnailSource": "content/thumbnails/2026-01-10-06-equity.md",
+      "status": "Draft",
+      "publishMode": "disabled-local-preview-only"
+    },
+    "credentialStatus": {
+      "INSTAGRAM_ACCESS_TOKEN": "missing",
+      "INSTAGRAM_ACCOUNT_ID": "missing"
+    }
+  },
+  {
+    "validation": {
+      "platform": "YouTube",
+      "package": "2026-01-10-06-equity",
+      "approved": false,
+      "publishEligible": false,
+      "status": "Draft",
+      "reason": "Package is blocked until approval is recorded."
+    },
+    "payloadPreview": {
+      "platform": "YouTube",
+      "contentType": "Short",
+      "package": "2026-01-10-06-equity",
+      "topic": "Equity",
+      "titleSource": "content/weekly_packages/.../2026-01-10-06-equity/thumbnail_titles.md",
+      "descriptionSource": "content/weekly_packages/.../2026-01-10-06-equity/caption_and_hashtags.md",
+      "thumbnailSource": "content/thumbnails/2026-01-10-06-equity.md",
+      "status": "Draft",
+      "publishMode": "disabled-local-preview-only"
+    },
+    "credentialStatus": {
+      "YOUTUBE_CLIENT_ID": "missing",
+      "YOUTUBE_CLIENT_SECRET": "missing",
+      "YOUTUBE_REFRESH_TOKEN": "missing"
+    }
+  }
+]

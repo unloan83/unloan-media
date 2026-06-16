@@ -1,0 +1,39 @@
+platforms:
+  instagram:
+    enabled: false
+    access_token: ${INSTAGRAM_ACCESS_TOKEN}
+    account_id: ${INSTAGRAM_ACCOUNT_ID}
+    publish_requires_approval: true
+  youtube:
+    enabled: false
+    client_id: ${YOUTUBE_CLIENT_ID}
+    client_secret: ${YOUTUBE_CLIENT_SECRET}
+    refresh_token: ${YOUTUBE_REFRESH_TOKEN}
+    publish_requires_approval: true
+
+workflow:
+  timezone: Asia/Kolkata
+  default_status: Draft
+  approval_required: true
+  publish_without_approval: false
+  prevent_duplicate_scheduling: true
+
+analytics:
+  local_only: true
+  report_frequency:
+    - weekly
+    - monthly
+  growth_thresholds:
+    high: 80
+    medium: 30
+
+notifications:
+  enabled: true
+  local_alerts_only: true
+  email_enabled: false
+  weekly_summary_enabled: false
+
+security:
+  secrets_source: GitHub Secrets or environment variables
+  never_commit_credentials: true
+  log_sensitive_values: false
