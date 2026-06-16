@@ -4,7 +4,7 @@
     "category": "Stock Market Basics",
     "difficulty": "Beginner",
     "status": "Draft",
-    "logo": "assets/logo.svg",
+    "logo": "assets/logo.png",
     "packagePath": "content/weekly_packages/week-02/2026-01-11-07-market-capitalization"
   },
   {
@@ -12,7 +12,7 @@
     "category": "Stock Market Basics",
     "difficulty": "Beginner",
     "status": "Draft",
-    "logo": "assets/logo.svg",
+    "logo": "assets/logo.png",
     "packagePath": "content/weekly_packages/week-02/2026-01-12-08-dividend"
   },
   {
@@ -20,7 +20,7 @@
     "category": "Stock Market Basics",
     "difficulty": "Beginner",
     "status": "Draft",
-    "logo": "assets/logo.svg",
+    "logo": "assets/logo.png",
     "packagePath": "content/weekly_packages/week-02/2026-01-13-09-bonus-shares"
   },
   {
@@ -28,7 +28,7 @@
     "category": "Stock Market Basics",
     "difficulty": "Beginner",
     "status": "Draft",
-    "logo": "assets/logo.svg",
+    "logo": "assets/logo.png",
     "packagePath": "content/weekly_packages/week-02/2026-01-14-10-stock-split"
   },
   {
@@ -36,7 +36,7 @@
     "category": "Trading Basics",
     "difficulty": "Beginner",
     "status": "Draft",
-    "logo": "assets/logo.svg",
+    "logo": "assets/logo.png",
     "packagePath": "content/weekly_packages/week-02/2026-01-15-11-intraday-trading"
   },
   {
@@ -44,7 +44,7 @@
     "category": "Trading Basics",
     "difficulty": "Beginner",
     "status": "Draft",
-    "logo": "assets/logo.svg",
+    "logo": "assets/logo.png",
     "packagePath": "content/weekly_packages/week-02/2026-01-16-12-delivery-trading"
   }
 ]

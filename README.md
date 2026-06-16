@@ -75,7 +75,7 @@ node automation/package_engine.mjs
 This creates visual briefs, Canva-ready specs, topic metadata, publishing
 readiness tracking, and weekly production packages.
 
-Use `assets/logo.svg` as the default UNLOAN logo for all branding and content packages.
+Use `assets/logo.png` as the default UNLOAN logo for all branding and content packages.
 
 Phase 5 local operations:
 

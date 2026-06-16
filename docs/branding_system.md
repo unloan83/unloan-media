@@ -7,10 +7,10 @@ assets/colors.json
 assets/typography.json
 assets/branding.json
 assets/logo_guidelines.md
-assets/logo.svg
+assets/logo.png
 ```
 
-Use `assets/logo.svg` as the default logo for all UNLOAN Media branding and content packages.
+Use `assets/logo.png` as the default logo for all UNLOAN Media branding and content packages.
 
 ## Brand Voice
 

@@ -4,7 +4,7 @@
     "category": "Trading Platform Features",
     "difficulty": "Beginner",
     "status": "Draft",
-    "logo": "assets/logo.svg",
+    "logo": "assets/logo.png",
     "packagePath": "content/weekly_packages/week-04/2026-01-23-19-limit-order"
   },
   {
@@ -12,7 +12,7 @@
     "category": "Trading Platform Features",
     "difficulty": "Beginner",
     "status": "Draft",
-    "logo": "assets/logo.svg",
+    "logo": "assets/logo.png",
     "packagePath": "content/weekly_packages/week-04/2026-01-24-20-market-order"
   },
   {
@@ -20,7 +20,7 @@
     "category": "Trading Platform Features",
     "difficulty": "Intermediate",
     "status": "Draft",
-    "logo": "assets/logo.svg",
+    "logo": "assets/logo.png",
     "packagePath": "content/weekly_packages/week-04/2026-01-25-21-bracket-order"
   },
   {
@@ -28,7 +28,7 @@
     "category": "Trading Platform Features",
     "difficulty": "Intermediate",
     "status": "Draft",
-    "logo": "assets/logo.svg",
+    "logo": "assets/logo.png",
     "packagePath": "content/weekly_packages/week-04/2026-01-26-22-cover-order"
   },
   {
@@ -36,7 +36,7 @@
     "category": "Investor Terminology",
     "difficulty": "Beginner",
     "status": "Draft",
-    "logo": "assets/logo.svg",
+    "logo": "assets/logo.png",
     "packagePath": "content/weekly_packages/week-04/2026-01-27-23-pe-ratio"
   },
   {
@@ -44,7 +44,7 @@
     "category": "Investor Terminology",
     "difficulty": "Intermediate",
     "status": "Draft",
-    "logo": "assets/logo.svg",
+    "logo": "assets/logo.png",
     "packagePath": "content/weekly_packages/week-04/2026-01-28-24-pb-ratio"
   }
 ]

@@ -4,7 +4,7 @@
     "category": "Investor Terminology",
     "difficulty": "Beginner",
     "status": "Draft",
-    "logo": "assets/logo.svg",
+    "logo": "assets/logo.png",
     "packagePath": "content/weekly_packages/week-06/2026-02-04-31-ipo"
   },
   {
@@ -12,7 +12,7 @@
     "category": "Behavioral Finance",
     "difficulty": "Beginner",
     "status": "Draft",
-    "logo": "assets/logo.svg",
+    "logo": "assets/logo.png",
     "packagePath": "content/weekly_packages/week-06/2026-02-05-32-fomo"
   },
   {
@@ -20,7 +20,7 @@
     "category": "Behavioral Finance",
     "difficulty": "Beginner",
     "status": "Draft",
-    "logo": "assets/logo.svg",
+    "logo": "assets/logo.png",
     "packagePath": "content/weekly_packages/week-06/2026-02-06-33-panic-selling"
   },
   {
@@ -28,7 +28,7 @@
     "category": "Behavioral Finance",
     "difficulty": "Beginner",
     "status": "Draft",
-    "logo": "assets/logo.svg",
+    "logo": "assets/logo.png",
     "packagePath": "content/weekly_packages/week-06/2026-02-07-34-greed"
   },
   {
@@ -36,7 +36,7 @@
     "category": "Behavioral Finance",
     "difficulty": "Intermediate",
     "status": "Draft",
-    "logo": "assets/logo.svg",
+    "logo": "assets/logo.png",
     "packagePath": "content/weekly_packages/week-06/2026-02-08-35-confirmation-bias"
   },
   {
@@ -44,7 +44,7 @@
     "category": "Behavioral Finance",
     "difficulty": "Beginner",
     "status": "Draft",
-    "logo": "assets/logo.svg",
+    "logo": "assets/logo.png",
     "packagePath": "content/weekly_packages/week-06/2026-02-09-36-overtrading"
   }
 ]

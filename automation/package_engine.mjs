@@ -13,7 +13,7 @@ const OUTPUT_DIRS = {
 };
 
 const READINESS_STATUSES = ["Draft", "Ready", "Approved", "Published"];
-const PRIMARY_LOGO_PATH = "assets/logo.svg";
+const PRIMARY_LOGO_PATH = "assets/logo.png";
 
 const CATEGORY_TO_VISUAL_SYSTEM = {
   "Wealth Building": "Wealth Building",

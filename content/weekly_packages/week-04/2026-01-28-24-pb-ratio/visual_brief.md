@@ -9,7 +9,7 @@ Primary Icon Language: Book, label, magnifier, definition card
 
 | Scene | Duration | Visual Direction | On-Screen Text | Production Notes |
 | --- | --- | --- | --- | --- |
-| 1 | 0-3s | Open with a clean title card, the UNLOAN logo, and one simple symbol. | PB Ratio Explained Simply | Use assets/logo.svg; keep text large and readable on mobile. |
+| 1 | 0-3s | Open with a clean title card, the UNLOAN logo, and one simple symbol. | PB Ratio Explained Simply | Use assets/logo.png; keep text large and readable on mobile. |
 | 2 | 3-10s | Show the concept as a simple diagram or two-column comparison. | What it means | Avoid broker screens, profit screenshots, or stock logos. |
 | 3 | 10-25s | Use a beginner example with plain shapes, labels, and arrows. | Beginner example | Explain the concept without recommending action. |
 | 4 | 25-35s | Show a caution card or checklist. | Remember the risk | Reinforce no guarantees and no buy/sell signal. |

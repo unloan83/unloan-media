@@ -1,6 +1,6 @@
 # Logo Guidelines
 
-Use `assets/logo.svg` as the primary UNLOAN logo for all branding and content production.
+Use `assets/logo.png` as the primary UNLOAN logo for all branding and content production.
 
 The logo is a blue upward U-shaped arrow with subtle currency symbols and the UNLOAN wordmark.
 
