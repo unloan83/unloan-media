@@ -122,5 +122,6 @@ Good next additions:
 - Editorial review status fields and owner assignment.
 - Batch quality checks for missing CTAs, missing disclaimers, or overly long scripts.
 - Manual analytics summaries from `analytics/tracking_template.csv`.
+- Phase 3 operations through `node automation/content_ops.mjs`.
 
 Do not add scheduling or publishing APIs until the content generation workflow is stable.

@@ -57,6 +57,15 @@ Workflow documentation:
 
 Analytics preparation lives in `analytics/tracking_template.csv`.
 
+Phase 3 operations:
+
+```bash
+node automation/content_ops.mjs
+```
+
+This creates weekly plans, reusable hooks, thumbnail title options, CTA libraries,
+topic scores, category performance summaries, and future-topic recommendations.
+
 Publishing integrations are intentionally excluded. Do not connect to,
 authenticate with, or modify Instagram, Meta Business Suite, Facebook, YouTube,
 Google APIs, or third-party publishing tools from this version of the repo.
