@@ -1137,7 +1137,19 @@ export function PortfolioDashboard({
                   onUpdateInputs={(rows) => updatePortfolioInputs(selectedPortfolio, rows)}
                 />
                 <RecommendationReliability intelligence={decisionIntelligence} />
-                <PortfolioCommunicationCenter portfolio={selectedPortfolio} />
+                <PortfolioCommunicationCenter
+                  portfolio={selectedPortfolio}
+                  onPortfolioPinChanged={(pinHash, updatedAt) => {
+                    setPinHashes((items) => ({
+                      ...items,
+                      [selectedPortfolio.id]: pinHash,
+                    }));
+                    setPinUpdatedAt((items) => ({
+                      ...items,
+                      [selectedPortfolio.id]: updatedAt,
+                    }));
+                  }}
+                />
               </div>
             ) : null}
           </section>
@@ -2807,7 +2819,13 @@ function PortfolioDiagnostics({
   );
 }
 
-function PortfolioCommunicationCenter({ portfolio }: { portfolio: ManagedPortfolio }) {
+function PortfolioCommunicationCenter({
+  portfolio,
+  onPortfolioPinChanged,
+}: {
+  portfolio: ManagedPortfolio;
+  onPortfolioPinChanged: (pinHash: string, updatedAt: string) => void;
+}) {
   const [settings, setSettings] = useState<CommunicationSettings>({
     portfolioId: portfolio.id,
     telegramEnabled: false,
@@ -2827,6 +2845,10 @@ function PortfolioCommunicationCenter({ portfolio }: { portfolio: ManagedPortfol
   const [priority, setPriority] = useState("Medium");
   const [status, setStatus] = useState<string | null>(null);
   const [history, setHistory] = useState<NotificationHistoryRow[]>([]);
+  const [currentPortfolioPin, setCurrentPortfolioPin] = useState("");
+  const [newPortfolioPin, setNewPortfolioPin] = useState("");
+  const [confirmPortfolioPin, setConfirmPortfolioPin] = useState("");
+  const [isChangingPin, setIsChangingPin] = useState(false);
 
   const loadCommunication = useCallback(async () => {
     try {
@@ -2911,6 +2933,55 @@ function PortfolioCommunicationCenter({ portfolio }: { portfolio: ManagedPortfol
       setStatus("Request sent to admin.");
     } else {
       setStatus("Unable to send request.");
+    }
+  }
+
+  async function changePortfolioPin() {
+    const currentPin = normalizePinInput(currentPortfolioPin);
+    const newPin = normalizePinInput(newPortfolioPin);
+    const confirmPin = normalizePinInput(confirmPortfolioPin);
+
+    if (!/^\d{4}$/u.test(currentPin) || !/^\d{4}$/u.test(newPin)) {
+      setStatus("Current PIN and new PIN must be 4 digits.");
+      return;
+    }
+
+    if (newPin !== confirmPin) {
+      setStatus("New PIN and confirmation PIN do not match.");
+      return;
+    }
+
+    setIsChangingPin(true);
+    try {
+      const response = await fetch("/api/portfolio-pins/user", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          portfolioId: portfolio.id,
+          currentPin,
+          newPin,
+        }),
+      });
+      const payload = (await response.json()) as {
+        error?: string;
+        pinHash?: string;
+        updatedAt?: string;
+      };
+
+      if (!response.ok || !payload.pinHash) {
+        setStatus(payload.error ?? "Unable to update portfolio PIN.");
+        return;
+      }
+
+      onPortfolioPinChanged(payload.pinHash, payload.updatedAt ?? new Date().toISOString());
+      setCurrentPortfolioPin("");
+      setNewPortfolioPin("");
+      setConfirmPortfolioPin("");
+      setStatus("Portfolio PIN updated.");
+    } catch {
+      setStatus("Unable to update portfolio PIN.");
+    } finally {
+      setIsChangingPin(false);
     }
   }
 
@@ -3025,6 +3096,79 @@ function PortfolioCommunicationCenter({ portfolio }: { portfolio: ManagedPortfol
           <Button type="button" className="mt-2" onClick={submitRequest}>Send</Button>
         </section>
       </div>
+      <section className="rounded-xl border border-white/10 bg-[#16263D] p-4">
+        <h3 className="text-sm font-semibold text-white">Edit Portfolio PIN</h3>
+        <div className="mt-3 grid gap-2 sm:grid-cols-3">
+          <input
+            value={currentPortfolioPin}
+            onChange={(event) =>
+              setCurrentPortfolioPin(normalizePinInput(event.target.value))
+            }
+            onPaste={(event) => {
+              event.preventDefault();
+              setCurrentPortfolioPin(
+                normalizePinInput(event.clipboardData.getData("text")),
+              );
+            }}
+            placeholder="Current PIN"
+            type="password"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            maxLength={4}
+            autoComplete="off"
+            name={`current-portfolio-pin-${portfolio.id}`}
+            className="h-10 rounded-md border border-white/10 bg-[#08121F] px-3 text-sm text-white outline-none"
+          />
+          <input
+            value={newPortfolioPin}
+            onChange={(event) =>
+              setNewPortfolioPin(normalizePinInput(event.target.value))
+            }
+            onPaste={(event) => {
+              event.preventDefault();
+              setNewPortfolioPin(
+                normalizePinInput(event.clipboardData.getData("text")),
+              );
+            }}
+            placeholder="New PIN"
+            type="password"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            maxLength={4}
+            autoComplete="new-password"
+            name={`new-portfolio-pin-${portfolio.id}`}
+            className="h-10 rounded-md border border-white/10 bg-[#08121F] px-3 text-sm text-white outline-none"
+          />
+          <input
+            value={confirmPortfolioPin}
+            onChange={(event) =>
+              setConfirmPortfolioPin(normalizePinInput(event.target.value))
+            }
+            onPaste={(event) => {
+              event.preventDefault();
+              setConfirmPortfolioPin(
+                normalizePinInput(event.clipboardData.getData("text")),
+              );
+            }}
+            placeholder="Confirm New PIN"
+            type="password"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            maxLength={4}
+            autoComplete="new-password"
+            name={`confirm-portfolio-pin-${portfolio.id}`}
+            className="h-10 rounded-md border border-white/10 bg-[#08121F] px-3 text-sm text-white outline-none"
+          />
+        </div>
+        <Button
+          type="button"
+          className="mt-3"
+          onClick={changePortfolioPin}
+          disabled={isChangingPin}
+        >
+          {isChangingPin ? "Updating PIN" : "Update PIN"}
+        </Button>
+      </section>
       <section className="rounded-xl border border-white/10 bg-[#16263D] p-4">
         <h3 className="text-sm font-semibold text-white">Notification History</h3>
         <div className="mt-3 grid gap-2">
