@@ -47,3 +47,7 @@ The engine reads `content_calendar/master_calendar.csv` and writes drafts to:
 Reusable prompt templates live in `templates/prompts`.
 
 Workflow documentation: `docs/content_engine_workflow.md`
+
+Publishing integrations are intentionally excluded. Do not connect to,
+authenticate with, or modify Instagram, Meta Business Suite, Facebook, YouTube,
+Google APIs, or third-party publishing tools from this version of the repo.

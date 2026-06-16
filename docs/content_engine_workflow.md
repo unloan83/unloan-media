@@ -10,6 +10,11 @@ It currently generates:
 
 Publishing APIs are intentionally out of scope for this version.
 
+Do not connect to, authenticate with, or modify any external service, including
+Instagram, Meta Business Suite, Facebook, YouTube, Google APIs, or third-party
+publishing tools. All work in this version must stay limited to files and code
+within this repository.
+
 ## Source Calendar
 
 The engine reads:
