@@ -1,0 +1,84 @@
+{
+  "topic": "Inflation",
+  "category": "Wealth Building",
+  "hook": "What would you do differently if your next ₹10,000 had a clear job?",
+  "thumbnail": "Inflation: Learn It Simply",
+  "slides": [
+    {
+      "screen": "Intro Screen",
+      "scene": 1,
+      "purpose": "Hook",
+      "text": "What would you do differently if your next ₹10,000 had a clear job?",
+      "visual": "Use assets/logos/logo.png exactly as supplied, topic title, and one clean visual cue.",
+      "thumbnailContext": "Inflation: Learn It Simply",
+      "format": "1080x1920 vertical"
+    },
+    {
+      "screen": "Content Screen",
+      "scene": 2,
+      "purpose": "Real-Life Problem",
+      "text": "You have ₹10,000 available, but you are split between spending it, saving it, starting a SIP, or keeping it for emergencies.",
+      "visual": "Show a relatable young investor decision with simple labels and large mobile-readable text.",
+      "thumbnailContext": "Inflation: Learn It Simply",
+      "format": "1080x1920 vertical"
+    },
+    {
+      "screen": "Content Screen",
+      "scene": 3,
+      "purpose": "Simple Explanation",
+      "text": "Inflation helps you give money a purpose instead of reacting emotionally to every choice.",
+      "visual": "Use a plain-English explainer card with one idea only.",
+      "thumbnailContext": "Inflation: Learn It Simply",
+      "format": "1080x1920 vertical"
+    },
+    {
+      "screen": "Content Screen",
+      "scene": 4,
+      "purpose": "Practical Example",
+      "text": "If you receive ₹10,000, you might split it between emergency cash, a SIP, and a goal-based bucket. The point is not excitement; it is direction.",
+      "visual": "Use a practical example card with portfolio, SIP, risk, or Rs 10,000 decision framing.",
+      "thumbnailContext": "Inflation: Learn It Simply",
+      "format": "1080x1920 vertical"
+    },
+    {
+      "screen": "Content Screen",
+      "scene": 5,
+      "purpose": "Key Takeaway",
+      "text": "Use inflation as a decision filter, not as a shortcut.",
+      "visual": "Use a strong one-line takeaway with accent highlight.",
+      "thumbnailContext": "Inflation: Learn It Simply",
+      "format": "1080x1920 vertical"
+    },
+    {
+      "screen": "Outro Screen",
+      "scene": 6,
+      "purpose": "CTA + Logo",
+      "text": "Save this before planning your next money goal.",
+      "visual": "Show CTA, disclaimer, tagline \"Build Wealth. Not Debt.\", and assets/logos/logo.png without editing the logo.",
+      "thumbnailContext": "Inflation: Learn It Simply",
+      "format": "1080x1920 vertical"
+    }
+  ],
+  "cta": "Save this before planning your next money goal.",
+  "logo": "assets/logos/logo.png",
+  "brand": {
+    "name": "UNLOAN",
+    "tagline": "Build Wealth. Not Debt.",
+    "audience": "Young Investors (20-35)",
+    "language": "English"
+  },
+  "compliance": {
+    "disclaimer": "Educational content only. This is not financial advice.",
+    "noStockRecommendations": true,
+    "noReturnGuarantees": true,
+    "noProfitClaims": true
+  },
+  "productionStatus": {
+    "packageReady": true,
+    "storyboardReady": true,
+    "thumbnailReady": true,
+    "canvaReady": false,
+    "videoProduced": false,
+    "published": false
+  }
+}

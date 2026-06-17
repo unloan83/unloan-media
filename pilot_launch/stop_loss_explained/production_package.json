@@ -1,0 +1,84 @@
+{
+  "topic": "Stop Loss Explained",
+  "category": "Investor Toolkit",
+  "hook": "One wrong order click can change your risk before you even notice it.",
+  "thumbnail": "Stop Loss: Learn It Simply",
+  "slides": [
+    {
+      "screen": "Intro Screen",
+      "scene": 1,
+      "purpose": "Hook",
+      "text": "One wrong order click can change your risk before you even notice it.",
+      "visual": "Use assets/logos/logo.png exactly as supplied, topic title, and one clean visual cue.",
+      "thumbnailContext": "Stop Loss: Learn It Simply",
+      "format": "1080x1920 vertical"
+    },
+    {
+      "screen": "Content Screen",
+      "scene": 2,
+      "purpose": "Real-Life Problem",
+      "text": "A young investor sees a fast-moving price, enters quickly, and only later asks, \"How much could I lose here?\"",
+      "visual": "Show a relatable young investor decision with simple labels and large mobile-readable text.",
+      "thumbnailContext": "Stop Loss: Learn It Simply",
+      "format": "1080x1920 vertical"
+    },
+    {
+      "screen": "Content Screen",
+      "scene": 3,
+      "purpose": "Simple Explanation",
+      "text": "Stop Loss is a feature that helps you control how an order behaves, but it still needs a clear plan and risk limit.",
+      "visual": "Use a plain-English explainer card with one idea only.",
+      "thumbnailContext": "Stop Loss: Learn It Simply",
+      "format": "1080x1920 vertical"
+    },
+    {
+      "screen": "Content Screen",
+      "scene": 4,
+      "purpose": "Practical Example",
+      "text": "If you are placing an order worth ₹10,000, decide the entry, exit, and maximum loss before using the feature. The tool should follow your plan, not replace it.",
+      "visual": "Use a practical example card with portfolio, SIP, risk, or Rs 10,000 decision framing.",
+      "thumbnailContext": "Stop Loss: Learn It Simply",
+      "format": "1080x1920 vertical"
+    },
+    {
+      "screen": "Content Screen",
+      "scene": 5,
+      "purpose": "Key Takeaway",
+      "text": "Use stop Loss as a decision filter, not as a shortcut.",
+      "visual": "Use a strong one-line takeaway with accent highlight.",
+      "thumbnailContext": "Stop Loss: Learn It Simply",
+      "format": "1080x1920 vertical"
+    },
+    {
+      "screen": "Outro Screen",
+      "scene": 6,
+      "purpose": "CTA + Logo",
+      "text": "Share this with someone learning order types.",
+      "visual": "Show CTA, disclaimer, tagline \"Build Wealth. Not Debt.\", and assets/logos/logo.png without editing the logo.",
+      "thumbnailContext": "Stop Loss: Learn It Simply",
+      "format": "1080x1920 vertical"
+    }
+  ],
+  "cta": "Share this with someone learning order types.",
+  "logo": "assets/logos/logo.png",
+  "brand": {
+    "name": "UNLOAN",
+    "tagline": "Build Wealth. Not Debt.",
+    "audience": "Young Investors (20-35)",
+    "language": "English"
+  },
+  "compliance": {
+    "disclaimer": "Educational content only. This is not financial advice.",
+    "noStockRecommendations": true,
+    "noReturnGuarantees": true,
+    "noProfitClaims": true
+  },
+  "productionStatus": {
+    "packageReady": true,
+    "storyboardReady": true,
+    "thumbnailReady": true,
+    "canvaReady": false,
+    "videoProduced": false,
+    "published": false
+  }
+}

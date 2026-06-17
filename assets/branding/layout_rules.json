@@ -1,0 +1,8 @@
+{
+  "format": "1080x1920 vertical",
+  "safeArea": "Keep key text and logo inside central mobile-safe zones with generous padding.",
+  "logo": "assets/logos/logo.png",
+  "introScreen": "Hook, category, and official logo.",
+  "contentScreens": "One idea per screen, large text, clear hierarchy.",
+  "outroScreen": "CTA, disclaimer, tagline, and official logo."
+}

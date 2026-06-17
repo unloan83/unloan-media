@@ -1,0 +1,84 @@
+{
+  "topic": "Stock Split",
+  "category": "Investor Terminology",
+  "hook": "Before you buy your first stock, know what this term is really telling you.",
+  "thumbnail": "Stock Split: Learn It Simply",
+  "slides": [
+    {
+      "screen": "Intro Screen",
+      "scene": 1,
+      "purpose": "Hook",
+      "text": "Before you buy your first stock, know what this term is really telling you.",
+      "visual": "Use assets/logos/logo.png exactly as supplied, topic title, and one clean visual cue.",
+      "thumbnailContext": "Stock Split: Learn It Simply",
+      "format": "1080x1920 vertical"
+    },
+    {
+      "screen": "Content Screen",
+      "scene": 2,
+      "purpose": "Real-Life Problem",
+      "text": "You see stock Split on an app, a post, or a portfolio screenshot, but you are not sure whether it actually helps your decision.",
+      "visual": "Show a relatable young investor decision with simple labels and large mobile-readable text.",
+      "thumbnailContext": "Stock Split: Learn It Simply",
+      "format": "1080x1920 vertical"
+    },
+    {
+      "screen": "Content Screen",
+      "scene": 3,
+      "purpose": "Simple Explanation",
+      "text": "Stock Split is a lens for understanding a business or market idea, not a green signal to buy anything.",
+      "visual": "Use a plain-English explainer card with one idea only.",
+      "thumbnailContext": "Stock Split: Learn It Simply",
+      "format": "1080x1920 vertical"
+    },
+    {
+      "screen": "Content Screen",
+      "scene": 4,
+      "purpose": "Practical Example",
+      "text": "If two companies are in your watchlist, do not use one metric alone. Combine it with debt, growth, cash flow, and your overall portfolio risk.",
+      "visual": "Use a practical example card with portfolio, SIP, risk, or Rs 10,000 decision framing.",
+      "thumbnailContext": "Stock Split: Learn It Simply",
+      "format": "1080x1920 vertical"
+    },
+    {
+      "screen": "Content Screen",
+      "scene": 5,
+      "purpose": "Key Takeaway",
+      "text": "Use stock Split as a decision filter, not as a shortcut.",
+      "visual": "Use a strong one-line takeaway with accent highlight.",
+      "thumbnailContext": "Stock Split: Learn It Simply",
+      "format": "1080x1920 vertical"
+    },
+    {
+      "screen": "Outro Screen",
+      "scene": 6,
+      "purpose": "CTA + Logo",
+      "text": "Share this with someone confused by stock splits.",
+      "visual": "Show CTA, disclaimer, tagline \"Build Wealth. Not Debt.\", and assets/logos/logo.png without editing the logo.",
+      "thumbnailContext": "Stock Split: Learn It Simply",
+      "format": "1080x1920 vertical"
+    }
+  ],
+  "cta": "Share this with someone confused by stock splits.",
+  "logo": "assets/logos/logo.png",
+  "brand": {
+    "name": "UNLOAN",
+    "tagline": "Build Wealth. Not Debt.",
+    "audience": "Young Investors (20-35)",
+    "language": "English"
+  },
+  "compliance": {
+    "disclaimer": "Educational content only. This is not financial advice.",
+    "noStockRecommendations": true,
+    "noReturnGuarantees": true,
+    "noProfitClaims": true
+  },
+  "productionStatus": {
+    "packageReady": true,
+    "storyboardReady": true,
+    "thumbnailReady": true,
+    "canvaReady": false,
+    "videoProduced": false,
+    "published": false
+  }
+}

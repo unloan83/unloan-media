@@ -1,0 +1,84 @@
+{
+  "topic": "Intraday Trading",
+  "category": "Trading Basics",
+  "hook": "Most trading mistakes start before the trade is placed.",
+  "thumbnail": "Intraday Trading: Learn It Simply",
+  "slides": [
+    {
+      "screen": "Intro Screen",
+      "scene": 1,
+      "purpose": "Hook",
+      "text": "Most trading mistakes start before the trade is placed.",
+      "visual": "Use assets/logos/logo.png exactly as supplied, topic title, and one clean visual cue.",
+      "thumbnailContext": "Intraday Trading: Learn It Simply",
+      "format": "1080x1920 vertical"
+    },
+    {
+      "screen": "Content Screen",
+      "scene": 2,
+      "purpose": "Real-Life Problem",
+      "text": "A young investor sees a fast-moving price, enters quickly, and only later asks, \"How much could I lose here?\"",
+      "visual": "Show a relatable young investor decision with simple labels and large mobile-readable text.",
+      "thumbnailContext": "Intraday Trading: Learn It Simply",
+      "format": "1080x1920 vertical"
+    },
+    {
+      "screen": "Content Screen",
+      "scene": 3,
+      "purpose": "Simple Explanation",
+      "text": "Intraday Trading is about deciding the risk before thinking about the possible reward.",
+      "visual": "Use a plain-English explainer card with one idea only.",
+      "thumbnailContext": "Intraday Trading: Learn It Simply",
+      "format": "1080x1920 vertical"
+    },
+    {
+      "screen": "Content Screen",
+      "scene": 4,
+      "purpose": "Practical Example",
+      "text": "If a ₹10,000 trade can lose ₹500, ask whether the possible reward is worth that risk before entering. If the answer is unclear, the trade is unclear.",
+      "visual": "Use a practical example card with portfolio, SIP, risk, or Rs 10,000 decision framing.",
+      "thumbnailContext": "Intraday Trading: Learn It Simply",
+      "format": "1080x1920 vertical"
+    },
+    {
+      "screen": "Content Screen",
+      "scene": 5,
+      "purpose": "Key Takeaway",
+      "text": "Use intraday Trading as a decision filter, not as a shortcut.",
+      "visual": "Use a strong one-line takeaway with accent highlight.",
+      "thumbnailContext": "Intraday Trading: Learn It Simply",
+      "format": "1080x1920 vertical"
+    },
+    {
+      "screen": "Outro Screen",
+      "scene": 6,
+      "purpose": "CTA + Logo",
+      "text": "Save this before trying any trading style.",
+      "visual": "Show CTA, disclaimer, tagline \"Build Wealth. Not Debt.\", and assets/logos/logo.png without editing the logo.",
+      "thumbnailContext": "Intraday Trading: Learn It Simply",
+      "format": "1080x1920 vertical"
+    }
+  ],
+  "cta": "Save this before trying any trading style.",
+  "logo": "assets/logos/logo.png",
+  "brand": {
+    "name": "UNLOAN",
+    "tagline": "Build Wealth. Not Debt.",
+    "audience": "Young Investors (20-35)",
+    "language": "English"
+  },
+  "compliance": {
+    "disclaimer": "Educational content only. This is not financial advice.",
+    "noStockRecommendations": true,
+    "noReturnGuarantees": true,
+    "noProfitClaims": true
+  },
+  "productionStatus": {
+    "packageReady": true,
+    "storyboardReady": true,
+    "thumbnailReady": true,
+    "canvaReady": false,
+    "videoProduced": false,
+    "published": false
+  }
+}

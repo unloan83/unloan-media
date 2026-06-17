@@ -1,0 +1,84 @@
+{
+  "topic": "PE Ratio",
+  "category": "Investor Terminology",
+  "hook": "This one number can look smart, but mislead beginners fast.",
+  "thumbnail": "PE Ratio: Learn It Simply",
+  "slides": [
+    {
+      "screen": "Intro Screen",
+      "scene": 1,
+      "purpose": "Hook",
+      "text": "This one number can look smart, but mislead beginners fast.",
+      "visual": "Use assets/logos/logo.png exactly as supplied, topic title, and one clean visual cue.",
+      "thumbnailContext": "PE Ratio: Learn It Simply",
+      "format": "1080x1920 vertical"
+    },
+    {
+      "screen": "Content Screen",
+      "scene": 2,
+      "purpose": "Real-Life Problem",
+      "text": "You see pE Ratio on an app, a post, or a portfolio screenshot, but you are not sure whether it actually helps your decision.",
+      "visual": "Show a relatable young investor decision with simple labels and large mobile-readable text.",
+      "thumbnailContext": "PE Ratio: Learn It Simply",
+      "format": "1080x1920 vertical"
+    },
+    {
+      "screen": "Content Screen",
+      "scene": 3,
+      "purpose": "Simple Explanation",
+      "text": "PE Ratio is a lens for understanding a business or market idea, not a green signal to buy anything.",
+      "visual": "Use a plain-English explainer card with one idea only.",
+      "thumbnailContext": "PE Ratio: Learn It Simply",
+      "format": "1080x1920 vertical"
+    },
+    {
+      "screen": "Content Screen",
+      "scene": 4,
+      "purpose": "Practical Example",
+      "text": "If two companies are in your watchlist, do not use one metric alone. Combine it with debt, growth, cash flow, and your overall portfolio risk.",
+      "visual": "Use a practical example card with portfolio, SIP, risk, or Rs 10,000 decision framing.",
+      "thumbnailContext": "PE Ratio: Learn It Simply",
+      "format": "1080x1920 vertical"
+    },
+    {
+      "screen": "Content Screen",
+      "scene": 5,
+      "purpose": "Key Takeaway",
+      "text": "Use pE Ratio as a decision filter, not as a shortcut.",
+      "visual": "Use a strong one-line takeaway with accent highlight.",
+      "thumbnailContext": "PE Ratio: Learn It Simply",
+      "format": "1080x1920 vertical"
+    },
+    {
+      "screen": "Outro Screen",
+      "scene": 6,
+      "purpose": "CTA + Logo",
+      "text": "Save this for your investing dictionary.",
+      "visual": "Show CTA, disclaimer, tagline \"Build Wealth. Not Debt.\", and assets/logos/logo.png without editing the logo.",
+      "thumbnailContext": "PE Ratio: Learn It Simply",
+      "format": "1080x1920 vertical"
+    }
+  ],
+  "cta": "Save this for your investing dictionary.",
+  "logo": "assets/logos/logo.png",
+  "brand": {
+    "name": "UNLOAN",
+    "tagline": "Build Wealth. Not Debt.",
+    "audience": "Young Investors (20-35)",
+    "language": "English"
+  },
+  "compliance": {
+    "disclaimer": "Educational content only. This is not financial advice.",
+    "noStockRecommendations": true,
+    "noReturnGuarantees": true,
+    "noProfitClaims": true
+  },
+  "productionStatus": {
+    "packageReady": true,
+    "storyboardReady": true,
+    "thumbnailReady": true,
+    "canvaReady": false,
+    "videoProduced": false,
+    "published": false
+  }
+}

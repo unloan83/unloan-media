@@ -1,0 +1,100 @@
+[
+  {
+    "topic": "Risk Management",
+    "category": "Trading Basics",
+    "path": "production/week_02/2026-01-19-15-risk-management",
+    "logo": "assets/logos/logo.png",
+    "status": "Ready for Canva creation"
+  },
+  {
+    "topic": "GTT Orders",
+    "category": "Investor Toolkit",
+    "path": "production/week_02/2026-01-20-16-gtt-orders",
+    "logo": "assets/logos/logo.png",
+    "status": "Ready for Canva creation"
+  },
+  {
+    "topic": "Stop Loss",
+    "category": "Investor Toolkit",
+    "path": "production/week_02/2026-01-21-17-stop-loss",
+    "logo": "assets/logos/logo.png",
+    "status": "Ready for Canva creation"
+  },
+  {
+    "topic": "Trailing Stop Loss",
+    "category": "Investor Toolkit",
+    "path": "production/week_02/2026-01-22-18-trailing-stop-loss",
+    "logo": "assets/logos/logo.png",
+    "status": "Ready for Canva creation"
+  },
+  {
+    "topic": "Limit Order",
+    "category": "Investor Toolkit",
+    "path": "production/week_02/2026-01-23-19-limit-order",
+    "logo": "assets/logos/logo.png",
+    "status": "Ready for Canva creation"
+  },
+  {
+    "topic": "Market Order",
+    "category": "Investor Toolkit",
+    "path": "production/week_02/2026-01-24-20-market-order",
+    "logo": "assets/logos/logo.png",
+    "status": "Ready for Canva creation"
+  },
+  {
+    "topic": "Bracket Order",
+    "category": "Investor Toolkit",
+    "path": "production/week_02/2026-01-25-21-bracket-order",
+    "logo": "assets/logos/logo.png",
+    "status": "Ready for Canva creation"
+  },
+  {
+    "topic": "Cover Order",
+    "category": "Investor Toolkit",
+    "path": "production/week_02/2026-01-26-22-cover-order",
+    "logo": "assets/logos/logo.png",
+    "status": "Ready for Canva creation"
+  },
+  {
+    "topic": "PE Ratio",
+    "category": "Investor Terminology",
+    "path": "production/week_02/2026-01-27-23-pe-ratio",
+    "logo": "assets/logos/logo.png",
+    "status": "Ready for Canva creation"
+  },
+  {
+    "topic": "PB Ratio",
+    "category": "Investor Terminology",
+    "path": "production/week_02/2026-01-28-24-pb-ratio",
+    "logo": "assets/logos/logo.png",
+    "status": "Ready for Canva creation"
+  },
+  {
+    "topic": "ROE",
+    "category": "Investor Terminology",
+    "path": "production/week_02/2026-01-29-25-roe",
+    "logo": "assets/logos/logo.png",
+    "status": "Ready for Canva creation"
+  },
+  {
+    "topic": "ROCE",
+    "category": "Investor Terminology",
+    "path": "production/week_02/2026-01-30-26-roce",
+    "logo": "assets/logos/logo.png",
+    "status": "Ready for Canva creation"
+  },
+  {
+    "topic": "EPS",
+    "category": "Investor Terminology",
+    "path": "production/week_02/2026-01-31-27-eps",
+    "logo": "assets/logos/logo.png",
+    "status": "Ready for Canva creation"
+  },
+  {
+    "topic": "CAGR",
+    "category": "Investor Terminology",
+    "path": "production/week_02/2026-02-01-28-cagr",
+    "logo": "assets/logos/logo.png",
+    "status": "Ready for Canva creation"
+  }
+]

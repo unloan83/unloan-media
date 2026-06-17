@@ -1,0 +1,10 @@
+{
+  "primary": "#0F172A",
+  "secondary": "#FFFFFF",
+  "accent": "#D4AF37",
+  "usage": {
+    "primary": "Backgrounds, headers, high-contrast title screens",
+    "secondary": "Text on dark backgrounds and clean content panels",
+    "accent": "Highlights, CTA accents, key terms, and separators"
+  }
+}

@@ -1,0 +1,42 @@
+[
+  {
+    "topic": "Rule of 72",
+    "sourceTopic": "Rule of 72",
+    "category": "Wealth Building",
+    "path": "pilot_launch/rule_of_72",
+    "logo": "assets/logos/logo.png",
+    "status": "Ready for first video creation test"
+  },
+  {
+    "topic": "What is GTT Order",
+    "sourceTopic": "GTT Orders",
+    "category": "Investor Toolkit",
+    "path": "pilot_launch/what_is_gtt_order",
+    "logo": "assets/logos/logo.png",
+    "status": "Ready for first video creation test"
+  },
+  {
+    "topic": "Stop Loss Explained",
+    "sourceTopic": "Stop Loss",
+    "category": "Investor Toolkit",
+    "path": "pilot_launch/stop_loss_explained",
+    "logo": "assets/logos/logo.png",
+    "status": "Ready for first video creation test"
+  },
+  {
+    "topic": "ROE",
+    "sourceTopic": "ROE",
+    "category": "Investor Terminology",
+    "path": "pilot_launch/roe",
+    "logo": "assets/logos/logo.png",
+    "status": "Ready for first video creation test"
+  },
+  {
+    "topic": "ETF",
+    "sourceTopic": "ETF",
+    "category": "Investor Terminology",
+    "path": "pilot_launch/etf",
+    "logo": "assets/logos/logo.png",
+    "status": "Ready for first video creation test"
+  }
+]
