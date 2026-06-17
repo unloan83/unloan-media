@@ -1,0 +1,19 @@
+Visual Brief: Rule of 72
+
+Logo: assets/logos/logo.png
+Logo rule: Use the official UNLOAN logo exactly as supplied. Do not modify, redraw, recolor, crop, replace, reinterpret, or recreate it.
+Brand tagline: Build Wealth. Not Debt.
+Format: 1080x1920 vertical video for Instagram Reels and YouTube Shorts.
+
+Scene 1: Clean title frame with the official logo in a safe corner and the topic headline.
+On-screen text: Rule of 72
+
+Scene 2: Simple visual explanation of: It estimates doubling time.
+
+Scene 3: Beginner example showing: Use 72 divided by rate.
+
+Scene 4: Checklist card: It is only a rough learning tool.
+
+Scene 5: Risk note card: Real returns are never fixed or guaranteed.
+
+Final frame: Official logo, tagline, CTA, and educational disclaimer.

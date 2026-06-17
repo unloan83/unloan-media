@@ -110,6 +110,15 @@ Phase 6 docs:
 * `docs/competitor_intelligence.md`
 * `docs/monetization_readiness.md`
 
+Launch Pack v1:
+
+```bash
+node automation/launch_pack_v1.mjs
+```
+
+This creates 20 ready-to-publish Instagram Reels and YouTube Shorts packages in
+`launch_pack`, using the official logo from `assets/logos/logo.png`.
+
 Publishing integrations are intentionally excluded. Do not connect to,
 authenticate with, or modify Instagram, Meta Business Suite, Facebook, YouTube,
 Google APIs, Canva APIs, or third-party publishing tools from this version of the repo.

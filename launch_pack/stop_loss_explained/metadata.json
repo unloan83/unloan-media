@@ -1,0 +1,27 @@
+{
+  "topic": "Stop Loss Explained",
+  "category": "Investor Toolkit",
+  "brand": "UNLOAN",
+  "brandTagline": "Build Wealth. Not Debt.",
+  "targetAudience": "Young Investors (20-35)",
+  "language": "English",
+  "platforms": [
+    "Instagram Reels",
+    "YouTube Shorts"
+  ],
+  "status": "Ready",
+  "logo": "assets/logos/logo.png",
+  "logoRules": "Use the official UNLOAN logo exactly as supplied. Do not modify, redraw, recolor, crop, replace, reinterpret, or recreate it.",
+  "thumbnailTitle": "Stop Loss Explained",
+  "disclaimer": "Educational content only. This is not financial advice.",
+  "noStockRecommendations": true,
+  "noReturnGuarantees": true,
+  "files": {
+    "reelScript": "reel_script.md",
+    "shortScript": "short_script.md",
+    "caption": "caption.txt",
+    "hashtags": "hashtags.txt",
+    "thumbnail": "thumbnail.txt",
+    "visualBrief": "visual_brief.txt"
+  }
+}
