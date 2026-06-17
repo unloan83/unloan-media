@@ -94,6 +94,22 @@ Phase 5 docs:
 * `docs/scheduling_workflow.md`
 * `docs/performance_dashboard.md`
 
+Phase 6 growth intelligence:
+
+```bash
+node automation/phase6_growth.mjs
+```
+
+This creates competitor intelligence, trend discovery, content gap analysis,
+A/B testing variants, growth scores, monetization readiness data, weekly
+recommendations, and a monthly strategy report.
+
+Phase 6 docs:
+
+* `docs/growth_engine.md`
+* `docs/competitor_intelligence.md`
+* `docs/monetization_readiness.md`
+
 Publishing integrations are intentionally excluded. Do not connect to,
 authenticate with, or modify Instagram, Meta Business Suite, Facebook, YouTube,
 Google APIs, Canva APIs, or third-party publishing tools from this version of the repo.

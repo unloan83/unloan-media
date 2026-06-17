@@ -12,6 +12,8 @@ export const PATHS = {
   rawData: path.join(ROOT, "data", "raw"),
   processedData: path.join(ROOT, "data", "processed"),
   reports: path.join(ROOT, "data", "reports"),
+  growthData: path.join(ROOT, "data", "growth"),
+  marketIntelligence: path.join(ROOT, "market_intelligence"),
   logs: path.join(ROOT, "logs"),
 };
 
