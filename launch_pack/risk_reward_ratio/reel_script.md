@@ -6,18 +6,24 @@ Audience: Young Investors (20-35)
 
 ## Script
 
-Hook: Risk Reward Ratio sounds complicated, but the beginner idea is simple.
+1. Attention-Grabbing Hook (first 3 seconds)
+The trade is not the risky part. The missing plan is.
 
-Scene 1: Explain risk before reward.
+2. Real-Life Problem
+You see a price moving fast, enter a trade, and only then think about loss, exit, and position size.
 
-Scene 2: Risk is what you may lose.
+3. Simple Explanation
+Risk Reward Ratio helps you make a calmer investing decision by turning confusion into a simple rule: risk is what you may lose.
 
-Scene 3: Reward is what you may gain.
+4. Practical Example
+Before risking ₹10,000 in a trade, write the entry, exit, possible loss, and reason. If that is missing, the setup is not ready.
 
-Scene 4: The ratio helps plan before entering.
+5. Key Takeaway
+Risk Reward Ratio is useful when it improves your decision, not when it makes you feel overconfident.
+
+6. CTA
+Save this and share it with someone who is learning investing without the jargon.
 
 Risk note: A ratio does not guarantee success.
 
-CTA: Save this lesson and follow UNLOAN for simple investing education.
-
-Disclaimer: Educational content only. This is not financial advice.
+Compliance note: Educational content only. This is not financial advice.

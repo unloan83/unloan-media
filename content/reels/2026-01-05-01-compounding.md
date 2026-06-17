@@ -11,17 +11,26 @@
 
 Duration: 30-45 seconds
 
-Hook: Compounding is a beginner money concept that can change how you plan.
+1. Attention-Grabbing Hook (0-3s)
+Voiceover: What would you do differently if your next ₹10,000 had a clear job?
+On-screen text: Compounding: Learn It Simply
 
-Scene Plan:
-1. Open with on-screen text: "Compounding: Learn It Simply".
-2. Define the concept: Compounding means understanding the concept clearly before using it in real money decisions.
-3. Beginner example: Use a simple daily-money or investing situation, without naming stocks.
-4. Risk reminder: Do not use this as a buy/sell signal or profit promise.
-5. Close with: "Learn compounding first, then make calm and informed decisions."
+2. Real-Life Problem
+Voiceover: You have ₹10,000 available, but you are split between spending it, saving it, starting a SIP, or keeping it for emergencies.
 
-CTA: Save this for your investing basics checklist.
-Disclaimer: Educational content only. This is not financial advice.
+3. Simple Explanation
+Voiceover: Compounding helps you give money a purpose instead of reacting emotionally to every choice.
+
+4. Practical Example
+Voiceover: If you receive ₹10,000, you might split it between emergency cash, a SIP, and a goal-based bucket. The point is not excitement; it is direction.
+
+5. Key Takeaway
+Voiceover: Use compounding as a decision filter, not as a shortcut.
+
+6. CTA
+Voiceover: Save this for your investing basics checklist.
+
+Compliance Note: Educational content only. This is not financial advice.
 
 ## Reusable Prompt
 
@@ -47,16 +56,18 @@ Create a 30-45 second educational reel script for:
 
 Output format:
 
-1. Hook: One simple curiosity line without hype.
-2. Scene plan: 3 to 5 beats with visual direction and voiceover.
-3. Beginner explanation: Define the concept in plain English.
-4. Risk note: Explain the limitation or common mistake.
-5. CTA: A natural save, share, comment, or follow action.
-6. Disclaimer: Educational content only. This is not financial advice.
+1. Attention-Grabbing Hook: First 3 seconds, curiosity-driven, conversational, not textbook.
+2. Real-Life Problem: A relatable young investor situation.
+3. Simple Explanation: Plain English with no jargon dump.
+4. Practical Example: Use relatable numbers such as ₹10,000, SIPs, portfolio decisions, risk, or common investing choices.
+5. Key Takeaway: One memorable line.
+6. CTA: A natural save, share, comment, or follow action.
+7. Compliance Note: Educational content only. This is not financial advice.
 
 Constraints:
 
 - Use simple English.
+- Do not use a generic complexity-based opener or textbook framing.
 - Avoid stock recommendations, buy/sell signals, profit claims, and return guarantees.
 - Do not mention any specific stock as an opportunity.
 - Keep the tone practical, calm, educational, and beginner friendly.

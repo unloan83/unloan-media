@@ -6,18 +6,24 @@ Audience: Young Investors (20-35)
 
 ## Script
 
-Hook: Portfolio Diversification sounds complicated, but the beginner idea is simple.
+1. Attention-Grabbing Hook (first 3 seconds)
+One small setting in your investing app can change how much risk you take.
 
-Scene 1: Explain not depending on one idea.
+2. Real-Life Problem
+You open your broker app and see tools like GTT, stop loss, watchlists, and orders, but it is not clear which tool solves which problem.
 
-Scene 2: Spread exposure.
+3. Simple Explanation
+Portfolio Diversification helps you make a calmer investing decision by turning confusion into a simple rule: spread exposure.
 
-Scene 3: Reduce single-stock dependence.
+4. Practical Example
+If your portfolio has ₹10,000 in one idea, use tools like watchlists, order types, or stop loss rules to plan risk before emotion takes over.
 
-Scene 4: Balance across goals and risk.
+5. Key Takeaway
+Portfolio Diversification is useful when it improves your decision, not when it makes you feel overconfident.
+
+6. CTA
+Save this and share it with someone who is learning investing without the jargon.
 
 Risk note: Diversification cannot eliminate all risk.
 
-CTA: Save this lesson and follow UNLOAN for simple investing education.
-
-Disclaimer: Educational content only. This is not financial advice.
+Compliance note: Educational content only. This is not financial advice.

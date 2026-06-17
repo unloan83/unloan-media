@@ -15,17 +15,26 @@
 
 Duration: 30-45 seconds
 
-Hook: PB Ratio sounds complex, but beginners can understand it in one minute.
+1. Attention-Grabbing Hook (0-3s)
+Voiceover: This one number can look smart, but mislead beginners fast.
+On-screen text: PB Ratio: Learn It Simply
 
-Scene Plan:
-1. Open with on-screen text: "PB Ratio: Learn It Simply".
-2. Define the concept: PB Ratio means understanding the concept clearly before using it in real money decisions.
-3. Beginner example: Use a simple daily-money or investing situation, without naming stocks.
-4. Risk reminder: Do not use this as a buy/sell signal or profit promise.
-5. Close with: "Learn pB Ratio first, then make calm and informed decisions."
+2. Real-Life Problem
+Voiceover: You see pB Ratio on an app, a post, or a portfolio screenshot, but you are not sure whether it actually helps your decision.
 
-CTA: Share this with someone learning valuation terms.
-Disclaimer: Educational content only. This is not financial advice.
+3. Simple Explanation
+Voiceover: PB Ratio is a lens for understanding a business or market idea, not a green signal to buy anything.
+
+4. Practical Example
+Voiceover: If two companies are in your watchlist, do not use one metric alone. Combine it with debt, growth, cash flow, and your overall portfolio risk.
+
+5. Key Takeaway
+Voiceover: Use pB Ratio as a decision filter, not as a shortcut.
+
+6. CTA
+Voiceover: Share this with someone learning valuation terms.
+
+Compliance Note: Educational content only. This is not financial advice.
 
 ## Reusable Prompt
 
@@ -51,16 +60,18 @@ Create a 30-45 second educational reel script for:
 
 Output format:
 
-1. Hook: One simple curiosity line without hype.
-2. Scene plan: 3 to 5 beats with visual direction and voiceover.
-3. Beginner explanation: Define the concept in plain English.
-4. Risk note: Explain the limitation or common mistake.
-5. CTA: A natural save, share, comment, or follow action.
-6. Disclaimer: Educational content only. This is not financial advice.
+1. Attention-Grabbing Hook: First 3 seconds, curiosity-driven, conversational, not textbook.
+2. Real-Life Problem: A relatable young investor situation.
+3. Simple Explanation: Plain English with no jargon dump.
+4. Practical Example: Use relatable numbers such as ₹10,000, SIPs, portfolio decisions, risk, or common investing choices.
+5. Key Takeaway: One memorable line.
+6. CTA: A natural save, share, comment, or follow action.
+7. Compliance Note: Educational content only. This is not financial advice.
 
 Constraints:
 
 - Use simple English.
+- Do not use a generic complexity-based opener or textbook framing.
 - Avoid stock recommendations, buy/sell signals, profit claims, and return guarantees.
 - Do not mention any specific stock as an opportunity.
 - Keep the tone practical, calm, educational, and beginner friendly.
@@ -82,18 +93,25 @@ Constraints:
 
 Duration: under 60 seconds
 
-Opening Hook: PB Ratio sounds complex, but beginners can understand it in one minute.
+1. Attention-Grabbing Hook (0-3s)
+This one number can look smart, but mislead beginners fast.
 
-Script:
-- PB Ratio is not something to memorize. It is something to understand.
-- Simple meaning: PB Ratio means understanding the concept clearly before using it in real money decisions.
-- Why it matters: Decode the metric or term without making stock selection claims.
-- Beginner check: never treat one term, ratio, or order type as a guaranteed result.
-- Learn pB Ratio first, then make calm and informed decisions.
+2. Real-Life Problem
+You see pB Ratio on an app, a post, or a portfolio screenshot, but you are not sure whether it actually helps your decision.
 
-Pattern Interrupt: Show the term on screen, then replace jargon with a one-line plain-English meaning.
-Closing CTA: Share this with someone learning valuation terms.
-Disclaimer: Educational content only. This is not financial advice.
+3. Simple Explanation
+PB Ratio is a lens for understanding a business or market idea, not a green signal to buy anything.
+
+4. Practical Example
+If two companies are in your watchlist, do not use one metric alone. Combine it with debt, growth, cash flow, and your overall portfolio risk.
+
+5. Key Takeaway
+Use pB Ratio as a decision filter, not as a shortcut.
+
+6. CTA
+Share this with someone learning valuation terms.
+
+Compliance Note: Educational content only. This is not financial advice.
 
 ## Reusable Prompt
 
@@ -119,16 +137,19 @@ Create a retention-focused Short script for:
 
 Output format:
 
-1. Opening hook: One direct sentence.
-2. Script: 4 to 6 short spoken lines.
-3. Pattern interrupt: A visual or text overlay that simplifies the concept.
-4. Closing CTA: One clear next step.
-5. Disclaimer: Educational content only. This is not financial advice.
+1. Attention-Grabbing Hook: First 3 seconds, curiosity-driven, conversational, not textbook.
+2. Real-Life Problem: A relatable young investor situation.
+3. Simple Explanation: Plain English with no jargon dump.
+4. Practical Example: Use relatable numbers such as ₹10,000, SIPs, portfolio decisions, risk, or common investing choices.
+5. Key Takeaway: One memorable line.
+6. CTA: One clear next step.
+7. Compliance Note: Educational content only. This is not financial advice.
 
 Constraints:
 
 - Keep the final script under 60 seconds.
 - Use simple English and beginner-friendly examples.
+- Do not use a generic complexity-based opener or textbook framing.
 - Avoid stock recommendations, buy/sell instructions, profit claims, and guaranteed returns.
 - Do not make trading sound easy, risk-free, or income-assured.
 ```

@@ -6,16 +6,24 @@ Audience: Young Investors (20-35)
 
 ## Script
 
-Opening: Here is Intraday vs Delivery in plain English.
+1. Attention-Grabbing Hook (first 3 seconds)
+The trade is not the risky part. The missing plan is.
 
-Point 1: Intraday closes the same day.
+2. Real-Life Problem
+You see a price moving fast, enter a trade, and only then think about loss, exit, and position size.
 
-Point 2: Delivery carries positions forward.
+3. Simple Explanation
+Intraday vs Delivery helps you make a calmer investing decision by turning confusion into a simple rule: intraday closes the same day.
 
-Point 3: Risk and mindset are different.
+4. Practical Example
+Before risking ₹10,000 in a trade, write the entry, exit, possible loss, and reason. If that is missing, the setup is not ready.
 
-Remember: Trading can lead to losses and needs strong risk control.
+5. Key Takeaway
+Intraday vs Delivery is useful when it improves your decision, not when it makes you feel overconfident.
 
-Close: Build Wealth. Not Debt.
+6. CTA
+Save this Short and follow UNLOAN for beginner-friendly investing lessons.
 
-Disclaimer: Educational content only. This is not financial advice.
+Risk note: Trading can lead to losses and needs strong risk control.
+
+Compliance note: Educational content only. This is not financial advice.

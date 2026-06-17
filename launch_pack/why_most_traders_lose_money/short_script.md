@@ -6,16 +6,24 @@ Audience: Young Investors (20-35)
 
 ## Script
 
-Opening: Here is Why Most Traders Lose Money in plain English.
+1. Attention-Grabbing Hook (first 3 seconds)
+The trade is not the risky part. The missing plan is.
 
-Point 1: Overtrading hurts discipline.
+2. Real-Life Problem
+You see a price moving fast, enter a trade, and only then think about loss, exit, and position size.
 
-Point 2: No stop loss increases damage.
+3. Simple Explanation
+Why Most Traders Lose Money helps you make a calmer investing decision by turning confusion into a simple rule: overtrading hurts discipline.
 
-Point 3: Emotions can override plans.
+4. Practical Example
+Before risking ₹10,000 in a trade, write the entry, exit, possible loss, and reason. If that is missing, the setup is not ready.
 
-Remember: This is risk education, not trading advice.
+5. Key Takeaway
+Why Most Traders Lose Money is useful when it improves your decision, not when it makes you feel overconfident.
 
-Close: Build Wealth. Not Debt.
+6. CTA
+Save this Short and follow UNLOAN for beginner-friendly investing lessons.
 
-Disclaimer: Educational content only. This is not financial advice.
+Risk note: This is risk education, not trading advice.
+
+Compliance note: Educational content only. This is not financial advice.

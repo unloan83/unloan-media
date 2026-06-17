@@ -1,8 +1,12 @@
-ROE in simple English.
+This market term looks simple, but beginners often use it the wrong way.
 
-Explain return on equity in beginner language.
+You are checking a stock, see terms like PE, ROE, ROCE, ETF, or market cap, and wonder if one number is enough to decide.
 
-Remember: ROE needs business and balance sheet context.
+ROE helps you make a calmer investing decision by turning confusion into a simple rule: roe shows profit relative to shareholder equity.
+
+If you compare two portfolio ideas, do not use ROE alone. Combine it with business quality, debt, cash flow, and your own risk comfort.
+
+ROE is useful when it improves your decision, not when it makes you feel overconfident.
 
 Save this for later and share it with a young investor who is learning the basics.
 

@@ -9,18 +9,15 @@
 
 ## Draft Caption
 
-Before trying intraday Trading, learn the risk first.
+Most trading mistakes start before the trade is placed.
 
-Teach the trading concept without encouraging frequent trading or quick profits.
+A young investor sees a fast-moving price, enters quickly, and only later asks, "How much could I lose here?"
 
-Simple meaning: Intraday Trading means understanding the concept clearly before using it in real money decisions.
+Simple explanation: Intraday Trading is about deciding the risk before thinking about the possible reward.
 
-Beginner rule:
-- Understand the term.
-- Know the risk.
-- Avoid decisions based on hype.
+Example: If a ₹10,000 trade can lose ₹500, ask whether the possible reward is worth that risk before entering. If the answer is unclear, the trade is unclear.
 
-Learn intraday Trading first, then make calm and informed decisions.
+Use intraday Trading as a decision filter, not as a shortcut.
 
 CTA: Save this before trying any trading style.
 

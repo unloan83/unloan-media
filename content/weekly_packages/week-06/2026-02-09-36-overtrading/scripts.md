@@ -15,17 +15,26 @@
 
 Duration: 30-45 seconds
 
-Hook: The hardest part of investing is often your own reaction.
+1. Attention-Grabbing Hook (0-3s)
+Voiceover: Your portfolio is not the only thing moving. Your emotions are too.
+On-screen text: Overtrading: Learn It Simply
 
-Scene Plan:
-1. Open with on-screen text: "Overtrading: Learn It Simply".
-2. Define the concept: Overtrading means understanding the concept clearly before using it in real money decisions.
-3. Beginner example: Use a simple daily-money or investing situation, without naming stocks.
-4. Risk reminder: Do not use this as a buy/sell signal or profit promise.
-5. Close with: "Learn overtrading first, then make calm and informed decisions."
+2. Real-Life Problem
+Voiceover: Your SIP is running, your portfolio is red for a week, and suddenly every social media post makes you doubt your plan.
 
-CTA: Follow UNLOAN for calm investing habits.
-Disclaimer: Educational content only. This is not financial advice.
+3. Simple Explanation
+Voiceover: Overtrading is a behavior pattern that can push investors into rushed decisions.
+
+4. Practical Example
+Voiceover: If your ₹10,000 SIP falls for a month, pause before stopping it. Ask whether your goal changed, or only your mood changed.
+
+5. Key Takeaway
+Voiceover: Use overtrading as a decision filter, not as a shortcut.
+
+6. CTA
+Voiceover: Follow UNLOAN for calm investing habits.
+
+Compliance Note: Educational content only. This is not financial advice.
 
 ## Reusable Prompt
 
@@ -51,16 +60,18 @@ Create a 30-45 second educational reel script for:
 
 Output format:
 
-1. Hook: One simple curiosity line without hype.
-2. Scene plan: 3 to 5 beats with visual direction and voiceover.
-3. Beginner explanation: Define the concept in plain English.
-4. Risk note: Explain the limitation or common mistake.
-5. CTA: A natural save, share, comment, or follow action.
-6. Disclaimer: Educational content only. This is not financial advice.
+1. Attention-Grabbing Hook: First 3 seconds, curiosity-driven, conversational, not textbook.
+2. Real-Life Problem: A relatable young investor situation.
+3. Simple Explanation: Plain English with no jargon dump.
+4. Practical Example: Use relatable numbers such as ₹10,000, SIPs, portfolio decisions, risk, or common investing choices.
+5. Key Takeaway: One memorable line.
+6. CTA: A natural save, share, comment, or follow action.
+7. Compliance Note: Educational content only. This is not financial advice.
 
 Constraints:
 
 - Use simple English.
+- Do not use a generic complexity-based opener or textbook framing.
 - Avoid stock recommendations, buy/sell signals, profit claims, and return guarantees.
 - Do not mention any specific stock as an opportunity.
 - Keep the tone practical, calm, educational, and beginner friendly.
@@ -82,18 +93,25 @@ Constraints:
 
 Duration: under 60 seconds
 
-Opening Hook: The hardest part of investing is often your own reaction.
+1. Attention-Grabbing Hook (0-3s)
+Your portfolio is not the only thing moving. Your emotions are too.
 
-Script:
-- Overtrading is not something to memorize. It is something to understand.
-- Simple meaning: Overtrading means understanding the concept clearly before using it in real money decisions.
-- Why it matters: Show the emotion or bias and give a calmer decision rule.
-- Beginner check: never treat one term, ratio, or order type as a guaranteed result.
-- Learn overtrading first, then make calm and informed decisions.
+2. Real-Life Problem
+Your SIP is running, your portfolio is red for a week, and suddenly every social media post makes you doubt your plan.
 
-Pattern Interrupt: Show the term on screen, then replace jargon with a one-line plain-English meaning.
-Closing CTA: Follow UNLOAN for calm investing habits.
-Disclaimer: Educational content only. This is not financial advice.
+3. Simple Explanation
+Overtrading is a behavior pattern that can push investors into rushed decisions.
+
+4. Practical Example
+If your ₹10,000 SIP falls for a month, pause before stopping it. Ask whether your goal changed, or only your mood changed.
+
+5. Key Takeaway
+Use overtrading as a decision filter, not as a shortcut.
+
+6. CTA
+Follow UNLOAN for calm investing habits.
+
+Compliance Note: Educational content only. This is not financial advice.
 
 ## Reusable Prompt
 
@@ -119,16 +137,19 @@ Create a retention-focused Short script for:
 
 Output format:
 
-1. Opening hook: One direct sentence.
-2. Script: 4 to 6 short spoken lines.
-3. Pattern interrupt: A visual or text overlay that simplifies the concept.
-4. Closing CTA: One clear next step.
-5. Disclaimer: Educational content only. This is not financial advice.
+1. Attention-Grabbing Hook: First 3 seconds, curiosity-driven, conversational, not textbook.
+2. Real-Life Problem: A relatable young investor situation.
+3. Simple Explanation: Plain English with no jargon dump.
+4. Practical Example: Use relatable numbers such as ₹10,000, SIPs, portfolio decisions, risk, or common investing choices.
+5. Key Takeaway: One memorable line.
+6. CTA: One clear next step.
+7. Compliance Note: Educational content only. This is not financial advice.
 
 Constraints:
 
 - Keep the final script under 60 seconds.
 - Use simple English and beginner-friendly examples.
+- Do not use a generic complexity-based opener or textbook framing.
 - Avoid stock recommendations, buy/sell instructions, profit claims, and guaranteed returns.
 - Do not make trading sound easy, risk-free, or income-assured.
 ```

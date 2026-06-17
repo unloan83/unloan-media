@@ -6,16 +6,24 @@ Audience: Young Investors (20-35)
 
 ## Script
 
-Opening: Here is ROCE in plain English.
+1. Attention-Grabbing Hook (first 3 seconds)
+This market term looks simple, but beginners often use it the wrong way.
 
-Point 1: ROCE looks at capital efficiency.
+2. Real-Life Problem
+You are checking a stock, see terms like PE, ROE, ROCE, ETF, or market cap, and wonder if one number is enough to decide.
 
-Point 2: It helps compare capital-heavy businesses.
+3. Simple Explanation
+ROCE helps you make a calmer investing decision by turning confusion into a simple rule: roce looks at capital efficiency.
 
-Point 3: Consistency matters.
+4. Practical Example
+If you compare two portfolio ideas, do not use ROCE alone. Combine it with business quality, debt, cash flow, and your own risk comfort.
 
-Remember: ROCE is educational, not a stock selection shortcut.
+5. Key Takeaway
+ROCE is useful when it improves your decision, not when it makes you feel overconfident.
 
-Close: Build Wealth. Not Debt.
+6. CTA
+Save this Short and follow UNLOAN for beginner-friendly investing lessons.
 
-Disclaimer: Educational content only. This is not financial advice.
+Risk note: ROCE is educational, not a stock selection shortcut.
+
+Compliance note: Educational content only. This is not financial advice.

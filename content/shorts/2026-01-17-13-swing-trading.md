@@ -11,18 +11,25 @@
 
 Duration: under 60 seconds
 
-Opening Hook: Before trying swing Trading, learn the risk first.
+1. Attention-Grabbing Hook (0-3s)
+Most trading mistakes start before the trade is placed.
 
-Script:
-- Swing Trading is not something to memorize. It is something to understand.
-- Simple meaning: Swing Trading means understanding the concept clearly before using it in real money decisions.
-- Why it matters: Teach the trading concept without encouraging frequent trading or quick profits.
-- Beginner check: never treat one term, ratio, or order type as a guaranteed result.
-- Learn swing Trading first, then make calm and informed decisions.
+2. Real-Life Problem
+A young investor sees a fast-moving price, enters quickly, and only later asks, "How much could I lose here?"
 
-Pattern Interrupt: Show the term on screen, then replace jargon with a one-line plain-English meaning.
-Closing CTA: Save this for your trading glossary.
-Disclaimer: Educational content only. This is not financial advice.
+3. Simple Explanation
+Swing Trading is about deciding the risk before thinking about the possible reward.
+
+4. Practical Example
+If a ₹10,000 trade can lose ₹500, ask whether the possible reward is worth that risk before entering. If the answer is unclear, the trade is unclear.
+
+5. Key Takeaway
+Use swing Trading as a decision filter, not as a shortcut.
+
+6. CTA
+Save this for your trading glossary.
+
+Compliance Note: Educational content only. This is not financial advice.
 
 ## Reusable Prompt
 
@@ -48,16 +55,19 @@ Create a retention-focused Short script for:
 
 Output format:
 
-1. Opening hook: One direct sentence.
-2. Script: 4 to 6 short spoken lines.
-3. Pattern interrupt: A visual or text overlay that simplifies the concept.
-4. Closing CTA: One clear next step.
-5. Disclaimer: Educational content only. This is not financial advice.
+1. Attention-Grabbing Hook: First 3 seconds, curiosity-driven, conversational, not textbook.
+2. Real-Life Problem: A relatable young investor situation.
+3. Simple Explanation: Plain English with no jargon dump.
+4. Practical Example: Use relatable numbers such as ₹10,000, SIPs, portfolio decisions, risk, or common investing choices.
+5. Key Takeaway: One memorable line.
+6. CTA: One clear next step.
+7. Compliance Note: Educational content only. This is not financial advice.
 
 Constraints:
 
 - Keep the final script under 60 seconds.
 - Use simple English and beginner-friendly examples.
+- Do not use a generic complexity-based opener or textbook framing.
 - Avoid stock recommendations, buy/sell instructions, profit claims, and guaranteed returns.
 - Do not make trading sound easy, risk-free, or income-assured.
 ```

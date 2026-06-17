@@ -6,18 +6,24 @@ Audience: Young Investors (20-35)
 
 ## Script
 
-Hook: Position Sizing Basics sounds complicated, but the beginner idea is simple.
+1. Attention-Grabbing Hook (first 3 seconds)
+The trade is not the risky part. The missing plan is.
 
-Scene 1: Explain why trade size matters.
+2. Real-Life Problem
+You see a price moving fast, enter a trade, and only then think about loss, exit, and position size.
 
-Scene 2: Size controls damage.
+3. Simple Explanation
+Position Sizing Basics helps you make a calmer investing decision by turning confusion into a simple rule: size controls damage.
 
-Scene 3: Small losses are easier to recover from.
+4. Practical Example
+Before risking ₹10,000 in a trade, write the entry, exit, possible loss, and reason. If that is missing, the setup is not ready.
 
-Scene 4: Risk per trade should be planned.
+5. Key Takeaway
+Position Sizing Basics is useful when it improves your decision, not when it makes you feel overconfident.
+
+6. CTA
+Save this and share it with someone who is learning investing without the jargon.
 
 Risk note: Position size should match personal risk capacity.
 
-CTA: Save this lesson and follow UNLOAN for simple investing education.
-
-Disclaimer: Educational content only. This is not financial advice.
+Compliance note: Educational content only. This is not financial advice.

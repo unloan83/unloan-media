@@ -9,18 +9,15 @@
 
 ## Draft Caption
 
-CAGR sounds complex, but beginners can understand it in one minute.
+This one number can look smart, but mislead beginners fast.
 
-Decode the metric or term without making stock selection claims.
+You see cAGR on an app, a post, or a portfolio screenshot, but you are not sure whether it actually helps your decision.
 
-Simple meaning: CAGR means understanding the concept clearly before using it in real money decisions.
+Simple explanation: CAGR is a lens for understanding a business or market idea, not a green signal to buy anything.
 
-Beginner rule:
-- Understand the term.
-- Know the risk.
-- Avoid decisions based on hype.
+Example: If two companies are in your watchlist, do not use one metric alone. Combine it with debt, growth, cash flow, and your overall portfolio risk.
 
-Learn cAGR first, then make calm and informed decisions.
+Use cAGR as a decision filter, not as a shortcut.
 
 CTA: Save this before reading any return chart.
 

@@ -6,18 +6,24 @@ Audience: Young Investors (20-35)
 
 ## Script
 
-Hook: Emergency Fund sounds complicated, but the beginner idea is simple.
+1. Attention-Grabbing Hook (first 3 seconds)
+Your next ₹10,000 can either disappear quietly or start working with a plan.
 
-Scene 1: Why a cash buffer comes before aggressive money moves.
+2. Real-Life Problem
+You get ₹10,000 and wonder: spend it, keep it idle, start a SIP, or build a safety buffer?
 
-Scene 2: It covers unexpected expenses.
+3. Simple Explanation
+Emergency Fund helps you make a calmer investing decision by turning confusion into a simple rule: it covers unexpected expenses.
 
-Scene 3: It reduces panic decisions.
+4. Practical Example
+If you have ₹10,000, decide its job first: emergency money, SIP money, or short-term goal money. Emergency Fund helps you avoid random decisions.
 
-Scene 4: It supports financial confidence.
+5. Key Takeaway
+Emergency Fund is useful when it improves your decision, not when it makes you feel overconfident.
+
+6. CTA
+Save this and share it with someone who is learning investing without the jargon.
 
 Risk note: The right amount depends on personal responsibilities.
 
-CTA: Save this lesson and follow UNLOAN for simple investing education.
-
-Disclaimer: Educational content only. This is not financial advice.
+Compliance note: Educational content only. This is not financial advice.

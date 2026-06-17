@@ -6,16 +6,24 @@ Audience: Young Investors (20-35)
 
 ## Script
 
-Opening: Here is Market Order vs Limit Order in plain English.
+1. Attention-Grabbing Hook (first 3 seconds)
+The trade is not the risky part. The missing plan is.
 
-Point 1: Market orders prioritize execution.
+2. Real-Life Problem
+You see a price moving fast, enter a trade, and only then think about loss, exit, and position size.
 
-Point 2: Limit orders set a price boundary.
+3. Simple Explanation
+Market Order vs Limit Order helps you make a calmer investing decision by turning confusion into a simple rule: market orders prioritize execution.
 
-Point 3: Each has trade-offs.
+4. Practical Example
+Before risking ₹10,000 in a trade, write the entry, exit, possible loss, and reason. If that is missing, the setup is not ready.
 
-Remember: Fast markets can behave differently than expected.
+5. Key Takeaway
+Market Order vs Limit Order is useful when it improves your decision, not when it makes you feel overconfident.
 
-Close: Build Wealth. Not Debt.
+6. CTA
+Save this Short and follow UNLOAN for beginner-friendly investing lessons.
 
-Disclaimer: Educational content only. This is not financial advice.
+Risk note: Fast markets can behave differently than expected.
+
+Compliance note: Educational content only. This is not financial advice.

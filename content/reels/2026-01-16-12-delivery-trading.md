@@ -11,17 +11,26 @@
 
 Duration: 30-45 seconds
 
-Hook: Before trying delivery Trading, learn the risk first.
+1. Attention-Grabbing Hook (0-3s)
+Voiceover: Most trading mistakes start before the trade is placed.
+On-screen text: Delivery Trading: Learn It Simply
 
-Scene Plan:
-1. Open with on-screen text: "Delivery Trading: Learn It Simply".
-2. Define the concept: Delivery Trading means understanding the concept clearly before using it in real money decisions.
-3. Beginner example: Use a simple daily-money or investing situation, without naming stocks.
-4. Risk reminder: Do not use this as a buy/sell signal or profit promise.
-5. Close with: "Learn delivery Trading first, then make calm and informed decisions."
+2. Real-Life Problem
+Voiceover: A young investor sees a fast-moving price, enters quickly, and only later asks, "How much could I lose here?"
 
-CTA: Follow UNLOAN for trading basics without hype.
-Disclaimer: Educational content only. This is not financial advice.
+3. Simple Explanation
+Voiceover: Delivery Trading is about deciding the risk before thinking about the possible reward.
+
+4. Practical Example
+Voiceover: If a ₹10,000 trade can lose ₹500, ask whether the possible reward is worth that risk before entering. If the answer is unclear, the trade is unclear.
+
+5. Key Takeaway
+Voiceover: Use delivery Trading as a decision filter, not as a shortcut.
+
+6. CTA
+Voiceover: Follow UNLOAN for trading basics without hype.
+
+Compliance Note: Educational content only. This is not financial advice.
 
 ## Reusable Prompt
 
@@ -47,16 +56,18 @@ Create a 30-45 second educational reel script for:
 
 Output format:
 
-1. Hook: One simple curiosity line without hype.
-2. Scene plan: 3 to 5 beats with visual direction and voiceover.
-3. Beginner explanation: Define the concept in plain English.
-4. Risk note: Explain the limitation or common mistake.
-5. CTA: A natural save, share, comment, or follow action.
-6. Disclaimer: Educational content only. This is not financial advice.
+1. Attention-Grabbing Hook: First 3 seconds, curiosity-driven, conversational, not textbook.
+2. Real-Life Problem: A relatable young investor situation.
+3. Simple Explanation: Plain English with no jargon dump.
+4. Practical Example: Use relatable numbers such as ₹10,000, SIPs, portfolio decisions, risk, or common investing choices.
+5. Key Takeaway: One memorable line.
+6. CTA: A natural save, share, comment, or follow action.
+7. Compliance Note: Educational content only. This is not financial advice.
 
 Constraints:
 
 - Use simple English.
+- Do not use a generic complexity-based opener or textbook framing.
 - Avoid stock recommendations, buy/sell signals, profit claims, and return guarantees.
 - Do not mention any specific stock as an opportunity.
 - Keep the tone practical, calm, educational, and beginner friendly.

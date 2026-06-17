@@ -227,29 +227,75 @@ function makeHook(topic) {
   const category = topic.category.toLowerCase();
   const plainTopic = humanizeTopic(topic.topic);
   if (category.includes("trading platform")) {
-    return `${topic.topic} is a tool, not a shortcut to profit.`;
+    return `One wrong order click can change your risk before you even notice it.`;
   }
   if (category.includes("trading basics")) {
-    return `Before trying ${plainTopic}, learn the risk first.`;
+    return `Most trading mistakes start before the trade is placed.`;
   }
   if (category.includes("terminology")) {
-    return `${topic.topic} sounds complex, but beginners can understand it in one minute.`;
+    return `This one number can look smart, but mislead beginners fast.`;
   }
   if (category.includes("behavioral")) {
-    return `The hardest part of investing is often your own reaction.`;
+    return `Your portfolio is not the only thing moving. Your emotions are too.`;
   }
   if (category.includes("stock market")) {
-    return `If you are new to stocks, ${plainTopic} is one term you should know.`;
+    return `Before you buy your first stock, know what this term is really telling you.`;
   }
-  return `${topic.topic} is a beginner money concept that can change how you plan.`;
+  return `What would you do differently if your next ₹10,000 had a clear job?`;
 }
 
-function makeSimpleDefinition(topic) {
-  return `${topic.topic} means understanding the concept clearly before using it in real money decisions.`;
+function makeRealLifeProblem(topic) {
+  const category = topic.category.toLowerCase();
+  const plainTopic = humanizeTopic(topic.topic);
+  if (category.includes("trading")) {
+    return `A young investor sees a fast-moving price, enters quickly, and only later asks, "How much could I lose here?"`;
+  }
+  if (category.includes("terminology") || category.includes("stock market")) {
+    return `You see ${plainTopic} on an app, a post, or a portfolio screenshot, but you are not sure whether it actually helps your decision.`;
+  }
+  if (category.includes("behavioral")) {
+    return `Your SIP is running, your portfolio is red for a week, and suddenly every social media post makes you doubt your plan.`;
+  }
+  return `You have ₹10,000 available, but you are split between spending it, saving it, starting a SIP, or keeping it for emergencies.`;
+}
+
+function makeSimpleExplanation(topic) {
+  const category = topic.category.toLowerCase();
+  const plainTopic = humanizeTopic(topic.topic);
+  if (category.includes("trading platform")) {
+    return `${topic.topic} is a feature that helps you control how an order behaves, but it still needs a clear plan and risk limit.`;
+  }
+  if (category.includes("trading basics")) {
+    return `${topic.topic} is about deciding the risk before thinking about the possible reward.`;
+  }
+  if (category.includes("terminology") || category.includes("stock market")) {
+    return `${topic.topic} is a lens for understanding a business or market idea, not a green signal to buy anything.`;
+  }
+  if (category.includes("behavioral")) {
+    return `${topic.topic} is a behavior pattern that can push investors into rushed decisions.`;
+  }
+  return `${topic.topic} helps you give money a purpose instead of reacting emotionally to every choice.`;
+}
+
+function makePracticalExample(topic) {
+  const category = topic.category.toLowerCase();
+  if (category.includes("trading platform")) {
+    return `If you are placing an order worth ₹10,000, decide the entry, exit, and maximum loss before using the feature. The tool should follow your plan, not replace it.`;
+  }
+  if (category.includes("trading basics")) {
+    return `If a ₹10,000 trade can lose ₹500, ask whether the possible reward is worth that risk before entering. If the answer is unclear, the trade is unclear.`;
+  }
+  if (category.includes("terminology") || category.includes("stock market")) {
+    return `If two companies are in your watchlist, do not use one metric alone. Combine it with debt, growth, cash flow, and your overall portfolio risk.`;
+  }
+  if (category.includes("behavioral")) {
+    return `If your ₹10,000 SIP falls for a month, pause before stopping it. Ask whether your goal changed, or only your mood changed.`;
+  }
+  return `If you receive ₹10,000, you might split it between emergency cash, a SIP, and a goal-based bucket. The point is not excitement; it is direction.`;
 }
 
 function makeTakeaway(topic) {
-  return `Learn ${humanizeTopic(topic.topic)} first, then make calm and informed decisions.`;
+  return `Use ${humanizeTopic(topic.topic)} as a decision filter, not as a shortcut.`;
 }
 
 function makeThumbnailTitle(topic) {
@@ -264,14 +310,11 @@ function makeCaption(topic) {
   return [
     makeHook(topic),
     "",
-    CATEGORY_GUIDANCE[topic.category] ?? topic.angle,
+    makeRealLifeProblem(topic),
     "",
-    `Simple meaning: ${makeSimpleDefinition(topic)}`,
+    `Simple explanation: ${makeSimpleExplanation(topic)}`,
     "",
-    "Beginner rule:",
-    "- Understand the term.",
-    "- Know the risk.",
-    "- Avoid decisions based on hype.",
+    `Example: ${makePracticalExample(topic)}`,
     "",
     makeTakeaway(topic),
     "",
@@ -335,17 +378,26 @@ async function buildReel(topic) {
     "",
     "Duration: 30-45 seconds",
     "",
-    `Hook: ${makeHook(topic)}`,
+    "1. Attention-Grabbing Hook (0-3s)",
+    `Voiceover: ${makeHook(topic)}`,
+    `On-screen text: ${makeThumbnailTitle(topic)}`,
     "",
-    "Scene Plan:",
-    `1. Open with on-screen text: "${makeThumbnailTitle(topic)}".`,
-    `2. Define the concept: ${makeSimpleDefinition(topic)}`,
-    `3. Beginner example: Use a simple daily-money or investing situation, without naming stocks.`,
-    "4. Risk reminder: Do not use this as a buy/sell signal or profit promise.",
-    `5. Close with: "${makeTakeaway(topic)}"`,
+    "2. Real-Life Problem",
+    `Voiceover: ${makeRealLifeProblem(topic)}`,
     "",
-    `CTA: ${topic.cta}`,
-    `Disclaimer: ${DISCLAIMER}`,
+    "3. Simple Explanation",
+    `Voiceover: ${makeSimpleExplanation(topic)}`,
+    "",
+    "4. Practical Example",
+    `Voiceover: ${makePracticalExample(topic)}`,
+    "",
+    "5. Key Takeaway",
+    `Voiceover: ${makeTakeaway(topic)}`,
+    "",
+    "6. CTA",
+    `Voiceover: ${topic.cta}`,
+    "",
+    `Compliance Note: ${DISCLAIMER}`,
     "",
     "## Reusable Prompt",
     "",
@@ -363,18 +415,25 @@ async function buildShort(topic) {
     "",
     "Duration: under 60 seconds",
     "",
-    `Opening Hook: ${makeHook(topic)}`,
+    "1. Attention-Grabbing Hook (0-3s)",
+    makeHook(topic),
     "",
-    "Script:",
-    `- ${topic.topic} is not something to memorize. It is something to understand.`,
-    `- Simple meaning: ${makeSimpleDefinition(topic)}`,
-    `- Why it matters: ${CATEGORY_GUIDANCE[topic.category] ?? topic.angle}`,
-    "- Beginner check: never treat one term, ratio, or order type as a guaranteed result.",
-    `- ${makeTakeaway(topic)}`,
+    "2. Real-Life Problem",
+    makeRealLifeProblem(topic),
     "",
-    "Pattern Interrupt: Show the term on screen, then replace jargon with a one-line plain-English meaning.",
-    `Closing CTA: ${topic.cta}`,
-    `Disclaimer: ${DISCLAIMER}`,
+    "3. Simple Explanation",
+    makeSimpleExplanation(topic),
+    "",
+    "4. Practical Example",
+    makePracticalExample(topic),
+    "",
+    "5. Key Takeaway",
+    makeTakeaway(topic),
+    "",
+    "6. CTA",
+    topic.cta,
+    "",
+    `Compliance Note: ${DISCLAIMER}`,
     "",
     "## Reusable Prompt",
     "",

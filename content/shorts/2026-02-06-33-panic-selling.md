@@ -11,18 +11,25 @@
 
 Duration: under 60 seconds
 
-Opening Hook: The hardest part of investing is often your own reaction.
+1. Attention-Grabbing Hook (0-3s)
+Your portfolio is not the only thing moving. Your emotions are too.
 
-Script:
-- Panic Selling is not something to memorize. It is something to understand.
-- Simple meaning: Panic Selling means understanding the concept clearly before using it in real money decisions.
-- Why it matters: Show the emotion or bias and give a calmer decision rule.
-- Beginner check: never treat one term, ratio, or order type as a guaranteed result.
-- Learn panic Selling first, then make calm and informed decisions.
+2. Real-Life Problem
+Your SIP is running, your portfolio is red for a week, and suddenly every social media post makes you doubt your plan.
 
-Pattern Interrupt: Show the term on screen, then replace jargon with a one-line plain-English meaning.
-Closing CTA: Comment CALM if you want more investor psychology lessons.
-Disclaimer: Educational content only. This is not financial advice.
+3. Simple Explanation
+Panic Selling is a behavior pattern that can push investors into rushed decisions.
+
+4. Practical Example
+If your ₹10,000 SIP falls for a month, pause before stopping it. Ask whether your goal changed, or only your mood changed.
+
+5. Key Takeaway
+Use panic Selling as a decision filter, not as a shortcut.
+
+6. CTA
+Comment CALM if you want more investor psychology lessons.
+
+Compliance Note: Educational content only. This is not financial advice.
 
 ## Reusable Prompt
 
@@ -48,16 +55,19 @@ Create a retention-focused Short script for:
 
 Output format:
 
-1. Opening hook: One direct sentence.
-2. Script: 4 to 6 short spoken lines.
-3. Pattern interrupt: A visual or text overlay that simplifies the concept.
-4. Closing CTA: One clear next step.
-5. Disclaimer: Educational content only. This is not financial advice.
+1. Attention-Grabbing Hook: First 3 seconds, curiosity-driven, conversational, not textbook.
+2. Real-Life Problem: A relatable young investor situation.
+3. Simple Explanation: Plain English with no jargon dump.
+4. Practical Example: Use relatable numbers such as ₹10,000, SIPs, portfolio decisions, risk, or common investing choices.
+5. Key Takeaway: One memorable line.
+6. CTA: One clear next step.
+7. Compliance Note: Educational content only. This is not financial advice.
 
 Constraints:
 
 - Keep the final script under 60 seconds.
 - Use simple English and beginner-friendly examples.
+- Do not use a generic complexity-based opener or textbook framing.
 - Avoid stock recommendations, buy/sell instructions, profit claims, and guaranteed returns.
 - Do not make trading sound easy, risk-free, or income-assured.
 ```

@@ -1,8 +1,12 @@
-PE Ratio in simple English.
+This market term looks simple, but beginners often use it the wrong way.
 
-Decode price compared to earnings.
+You are checking a stock, see terms like PE, ROE, ROCE, ETF, or market cap, and wonder if one number is enough to decide.
 
-Remember: Never judge a stock using one metric alone.
+PE Ratio helps you make a calmer investing decision by turning confusion into a simple rule: pe compares price and earnings.
+
+If you compare two portfolio ideas, do not use PE Ratio alone. Combine it with business quality, debt, cash flow, and your own risk comfort.
+
+PE Ratio is useful when it improves your decision, not when it makes you feel overconfident.
 
 Save this for later and share it with a young investor who is learning the basics.
 

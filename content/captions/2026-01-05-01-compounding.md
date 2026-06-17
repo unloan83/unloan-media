@@ -9,18 +9,15 @@
 
 ## Draft Caption
 
-Compounding is a beginner money concept that can change how you plan.
+What would you do differently if your next ₹10,000 had a clear job?
 
-Explain how long-term money habits create financial freedom.
+You have ₹10,000 available, but you are split between spending it, saving it, starting a SIP, or keeping it for emergencies.
 
-Simple meaning: Compounding means understanding the concept clearly before using it in real money decisions.
+Simple explanation: Compounding helps you give money a purpose instead of reacting emotionally to every choice.
 
-Beginner rule:
-- Understand the term.
-- Know the risk.
-- Avoid decisions based on hype.
+Example: If you receive ₹10,000, you might split it between emergency cash, a SIP, and a goal-based bucket. The point is not excitement; it is direction.
 
-Learn compounding first, then make calm and informed decisions.
+Use compounding as a decision filter, not as a shortcut.
 
 CTA: Save this for your investing basics checklist.
 

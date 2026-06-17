@@ -189,6 +189,53 @@ function thumbnailTitle(item) {
   return shortTitles[item.topic] ?? item.topic;
 }
 
+function hook(item) {
+  if (item.category === "Wealth Building") {
+    return "Your next ₹10,000 can either disappear quietly or start working with a plan.";
+  }
+  if (item.category === "Trading Basics") {
+    return "The trade is not the risky part. The missing plan is.";
+  }
+  if (item.category === "Investor Toolkit") {
+    return "One small setting in your investing app can change how much risk you take.";
+  }
+  return "This market term looks simple, but beginners often use it the wrong way.";
+}
+
+function realLifeProblem(item) {
+  if (item.category === "Wealth Building") {
+    return "You get ₹10,000 and wonder: spend it, keep it idle, start a SIP, or build a safety buffer?";
+  }
+  if (item.category === "Trading Basics") {
+    return "You see a price moving fast, enter a trade, and only then think about loss, exit, and position size.";
+  }
+  if (item.category === "Investor Toolkit") {
+    return "You open your broker app and see tools like GTT, stop loss, watchlists, and orders, but it is not clear which tool solves which problem.";
+  }
+  return "You are checking a stock, see terms like PE, ROE, ROCE, ETF, or market cap, and wonder if one number is enough to decide.";
+}
+
+function simpleExplanation(item) {
+  return `${item.topic} helps you make a calmer investing decision by turning confusion into a simple rule: ${item.keyPoints[0].toLowerCase()}.`;
+}
+
+function practicalExample(item) {
+  if (item.category === "Wealth Building") {
+    return `If you have ₹10,000, decide its job first: emergency money, SIP money, or short-term goal money. ${item.topic} helps you avoid random decisions.`;
+  }
+  if (item.category === "Trading Basics") {
+    return `Before risking ₹10,000 in a trade, write the entry, exit, possible loss, and reason. If that is missing, the setup is not ready.`;
+  }
+  if (item.category === "Investor Toolkit") {
+    return `If your portfolio has ₹10,000 in one idea, use tools like watchlists, order types, or stop loss rules to plan risk before emotion takes over.`;
+  }
+  return `If you compare two portfolio ideas, do not use ${item.topic} alone. Combine it with business quality, debt, cash flow, and your own risk comfort.`;
+}
+
+function keyTakeaway(item) {
+  return `${item.topic} is useful when it improves your decision, not when it makes you feel overconfident.`;
+}
+
 function buildReelScript(item) {
   return [
     `# Reel Script: ${item.topic}`,
@@ -199,21 +246,27 @@ function buildReelScript(item) {
     "",
     "## Script",
     "",
-    `Hook: ${item.topic} sounds complicated, but the beginner idea is simple.`,
+    "1. Attention-Grabbing Hook (first 3 seconds)",
+    hook(item),
     "",
-    `Scene 1: ${item.angle}`,
+    "2. Real-Life Problem",
+    realLifeProblem(item),
     "",
-    `Scene 2: ${item.keyPoints[0]}.`,
+    "3. Simple Explanation",
+    simpleExplanation(item),
     "",
-    `Scene 3: ${item.keyPoints[1]}.`,
+    "4. Practical Example",
+    practicalExample(item),
     "",
-    `Scene 4: ${item.keyPoints[2]}.`,
+    "5. Key Takeaway",
+    keyTakeaway(item),
+    "",
+    "6. CTA",
+    "Save this and share it with someone who is learning investing without the jargon.",
     "",
     `Risk note: ${item.caution}`,
     "",
-    `CTA: Save this lesson and follow UNLOAN for simple investing education.`,
-    "",
-    `Disclaimer: ${DISCLAIMER}`,
+    `Compliance note: ${DISCLAIMER}`,
   ].join("\n");
 }
 
@@ -227,29 +280,41 @@ function buildShortScript(item) {
     "",
     "## Script",
     "",
-    `Opening: Here is ${item.topic} in plain English.`,
+    "1. Attention-Grabbing Hook (first 3 seconds)",
+    hook(item),
     "",
-    `Point 1: ${item.keyPoints[0]}.`,
+    "2. Real-Life Problem",
+    realLifeProblem(item),
     "",
-    `Point 2: ${item.keyPoints[1]}.`,
+    "3. Simple Explanation",
+    simpleExplanation(item),
     "",
-    `Point 3: ${item.keyPoints[2]}.`,
+    "4. Practical Example",
+    practicalExample(item),
     "",
-    `Remember: ${item.caution}`,
+    "5. Key Takeaway",
+    keyTakeaway(item),
     "",
-    `Close: ${BRAND_TAGLINE}`,
+    "6. CTA",
+    "Save this Short and follow UNLOAN for beginner-friendly investing lessons.",
     "",
-    `Disclaimer: ${DISCLAIMER}`,
+    `Risk note: ${item.caution}`,
+    "",
+    `Compliance note: ${DISCLAIMER}`,
   ].join("\n");
 }
 
 function buildCaption(item) {
   return [
-    `${item.topic} in simple English.`,
+    hook(item),
     "",
-    item.angle,
+    realLifeProblem(item),
     "",
-    `Remember: ${item.caution}`,
+    simpleExplanation(item),
+    "",
+    practicalExample(item),
+    "",
+    keyTakeaway(item),
     "",
     "Save this for later and share it with a young investor who is learning the basics.",
     "",

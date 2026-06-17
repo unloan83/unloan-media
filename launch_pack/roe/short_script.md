@@ -6,16 +6,24 @@ Audience: Young Investors (20-35)
 
 ## Script
 
-Opening: Here is ROE in plain English.
+1. Attention-Grabbing Hook (first 3 seconds)
+This market term looks simple, but beginners often use it the wrong way.
 
-Point 1: ROE shows profit relative to shareholder equity.
+2. Real-Life Problem
+You are checking a stock, see terms like PE, ROE, ROCE, ETF, or market cap, and wonder if one number is enough to decide.
 
-Point 2: It can indicate efficiency.
+3. Simple Explanation
+ROE helps you make a calmer investing decision by turning confusion into a simple rule: roe shows profit relative to shareholder equity.
 
-Point 3: Debt can distort interpretation.
+4. Practical Example
+If you compare two portfolio ideas, do not use ROE alone. Combine it with business quality, debt, cash flow, and your own risk comfort.
 
-Remember: ROE needs business and balance sheet context.
+5. Key Takeaway
+ROE is useful when it improves your decision, not when it makes you feel overconfident.
 
-Close: Build Wealth. Not Debt.
+6. CTA
+Save this Short and follow UNLOAN for beginner-friendly investing lessons.
 
-Disclaimer: Educational content only. This is not financial advice.
+Risk note: ROE needs business and balance sheet context.
+
+Compliance note: Educational content only. This is not financial advice.

@@ -1,8 +1,12 @@
-Watchlist Management in simple English.
+One small setting in your investing app can change how much risk you take.
 
-Teach how to keep a cleaner tracking list.
+You open your broker app and see tools like GTT, stop loss, watchlists, and orders, but it is not clear which tool solves which problem.
 
-Remember: A watchlist is not a recommendation list.
+Watchlist Management helps you make a calmer investing decision by turning confusion into a simple rule: group by purpose.
+
+If your portfolio has ₹10,000 in one idea, use tools like watchlists, order types, or stop loss rules to plan risk before emotion takes over.
+
+Watchlist Management is useful when it improves your decision, not when it makes you feel overconfident.
 
 Save this for later and share it with a young investor who is learning the basics.
 

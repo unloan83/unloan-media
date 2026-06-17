@@ -6,18 +6,24 @@ Audience: Young Investors (20-35)
 
 ## Script
 
-Hook: SIP vs Saving Account sounds complicated, but the beginner idea is simple.
+1. Attention-Grabbing Hook (first 3 seconds)
+Your next ₹10,000 can either disappear quietly or start working with a plan.
 
-Scene 1: Explain purpose, risk, and behavior difference.
+2. Real-Life Problem
+You get ₹10,000 and wonder: spend it, keep it idle, start a SIP, or build a safety buffer?
 
-Scene 2: Savings accounts are for access and safety.
+3. Simple Explanation
+SIP vs Saving Account helps you make a calmer investing decision by turning confusion into a simple rule: savings accounts are for access and safety.
 
-Scene 3: SIPs are market-linked investing routes.
+4. Practical Example
+If you have ₹10,000, decide its job first: emergency money, SIP money, or short-term goal money. SIP vs Saving Account helps you avoid random decisions.
 
-Scene 4: Both can serve different goals.
+5. Key Takeaway
+SIP vs Saving Account is useful when it improves your decision, not when it makes you feel overconfident.
+
+6. CTA
+Save this and share it with someone who is learning investing without the jargon.
 
 Risk note: Market-linked investing can go up and down.
 
-CTA: Save this lesson and follow UNLOAN for simple investing education.
-
-Disclaimer: Educational content only. This is not financial advice.
+Compliance note: Educational content only. This is not financial advice.

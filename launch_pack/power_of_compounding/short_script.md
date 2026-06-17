@@ -6,16 +6,24 @@ Audience: Young Investors (20-35)
 
 ## Script
 
-Opening: Here is Power of Compounding in plain English.
+1. Attention-Grabbing Hook (first 3 seconds)
+Your next ₹10,000 can either disappear quietly or start working with a plan.
 
-Point 1: Growth can earn growth.
+2. Real-Life Problem
+You get ₹10,000 and wonder: spend it, keep it idle, start a SIP, or build a safety buffer?
 
-Point 2: Time matters more than excitement.
+3. Simple Explanation
+Power of Compounding helps you make a calmer investing decision by turning confusion into a simple rule: growth can earn growth.
 
-Point 3: Consistency beats prediction.
+4. Practical Example
+If you have ₹10,000, decide its job first: emergency money, SIP money, or short-term goal money. Power of Compounding helps you avoid random decisions.
 
-Remember: Compounding depends on time, discipline, and market reality.
+5. Key Takeaway
+Power of Compounding is useful when it improves your decision, not when it makes you feel overconfident.
 
-Close: Build Wealth. Not Debt.
+6. CTA
+Save this Short and follow UNLOAN for beginner-friendly investing lessons.
 
-Disclaimer: Educational content only. This is not financial advice.
+Risk note: Compounding depends on time, discipline, and market reality.
+
+Compliance note: Educational content only. This is not financial advice.

@@ -1,8 +1,12 @@
-Stop Loss Explained in simple English.
+One small setting in your investing app can change how much risk you take.
 
-Show stop loss as a risk-control tool.
+You open your broker app and see tools like GTT, stop loss, watchlists, and orders, but it is not clear which tool solves which problem.
 
-Remember: Stop loss does not remove all risk.
+Stop Loss Explained helps you make a calmer investing decision by turning confusion into a simple rule: it defines an exit level.
+
+If your portfolio has ₹10,000 in one idea, use tools like watchlists, order types, or stop loss rules to plan risk before emotion takes over.
+
+Stop Loss Explained is useful when it improves your decision, not when it makes you feel overconfident.
 
 Save this for later and share it with a young investor who is learning the basics.
 

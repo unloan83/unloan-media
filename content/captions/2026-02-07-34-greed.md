@@ -9,18 +9,15 @@
 
 ## Draft Caption
 
-The hardest part of investing is often your own reaction.
+Your portfolio is not the only thing moving. Your emotions are too.
 
-Show the emotion or bias and give a calmer decision rule.
+Your SIP is running, your portfolio is red for a week, and suddenly every social media post makes you doubt your plan.
 
-Simple meaning: Greed means understanding the concept clearly before using it in real money decisions.
+Simple explanation: Greed is a behavior pattern that can push investors into rushed decisions.
 
-Beginner rule:
-- Understand the term.
-- Know the risk.
-- Avoid decisions based on hype.
+Example: If your ₹10,000 SIP falls for a month, pause before stopping it. Ask whether your goal changed, or only your mood changed.
 
-Learn greed first, then make calm and informed decisions.
+Use greed as a decision filter, not as a shortcut.
 
 CTA: Share this with someone who needs a trading pause.
 

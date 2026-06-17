@@ -11,18 +11,25 @@
 
 Duration: under 60 seconds
 
-Opening Hook: Market Order is a tool, not a shortcut to profit.
+1. Attention-Grabbing Hook (0-3s)
+One wrong order click can change your risk before you even notice it.
 
-Script:
-- Market Order is not something to memorize. It is something to understand.
-- Simple meaning: Market Order means understanding the concept clearly before using it in real money decisions.
-- Why it matters: Explain what the order type does and when a learner should be careful.
-- Beginner check: never treat one term, ratio, or order type as a guaranteed result.
-- Learn market Order first, then make calm and informed decisions.
+2. Real-Life Problem
+A young investor sees a fast-moving price, enters quickly, and only later asks, "How much could I lose here?"
 
-Pattern Interrupt: Show the term on screen, then replace jargon with a one-line plain-English meaning.
-Closing CTA: Share this with a new demat account user.
-Disclaimer: Educational content only. This is not financial advice.
+3. Simple Explanation
+Market Order is a feature that helps you control how an order behaves, but it still needs a clear plan and risk limit.
+
+4. Practical Example
+If you are placing an order worth ₹10,000, decide the entry, exit, and maximum loss before using the feature. The tool should follow your plan, not replace it.
+
+5. Key Takeaway
+Use market Order as a decision filter, not as a shortcut.
+
+6. CTA
+Share this with a new demat account user.
+
+Compliance Note: Educational content only. This is not financial advice.
 
 ## Reusable Prompt
 
@@ -48,16 +55,19 @@ Create a retention-focused Short script for:
 
 Output format:
 
-1. Opening hook: One direct sentence.
-2. Script: 4 to 6 short spoken lines.
-3. Pattern interrupt: A visual or text overlay that simplifies the concept.
-4. Closing CTA: One clear next step.
-5. Disclaimer: Educational content only. This is not financial advice.
+1. Attention-Grabbing Hook: First 3 seconds, curiosity-driven, conversational, not textbook.
+2. Real-Life Problem: A relatable young investor situation.
+3. Simple Explanation: Plain English with no jargon dump.
+4. Practical Example: Use relatable numbers such as ₹10,000, SIPs, portfolio decisions, risk, or common investing choices.
+5. Key Takeaway: One memorable line.
+6. CTA: One clear next step.
+7. Compliance Note: Educational content only. This is not financial advice.
 
 Constraints:
 
 - Keep the final script under 60 seconds.
 - Use simple English and beginner-friendly examples.
+- Do not use a generic complexity-based opener or textbook framing.
 - Avoid stock recommendations, buy/sell instructions, profit claims, and guaranteed returns.
 - Do not make trading sound easy, risk-free, or income-assured.
 ```

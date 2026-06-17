@@ -6,18 +6,24 @@ Audience: Young Investors (20-35)
 
 ## Script
 
-Hook: ROE sounds complicated, but the beginner idea is simple.
+1. Attention-Grabbing Hook (first 3 seconds)
+This market term looks simple, but beginners often use it the wrong way.
 
-Scene 1: Explain return on equity in beginner language.
+2. Real-Life Problem
+You are checking a stock, see terms like PE, ROE, ROCE, ETF, or market cap, and wonder if one number is enough to decide.
 
-Scene 2: ROE shows profit relative to shareholder equity.
+3. Simple Explanation
+ROE helps you make a calmer investing decision by turning confusion into a simple rule: roe shows profit relative to shareholder equity.
 
-Scene 3: It can indicate efficiency.
+4. Practical Example
+If you compare two portfolio ideas, do not use ROE alone. Combine it with business quality, debt, cash flow, and your own risk comfort.
 
-Scene 4: Debt can distort interpretation.
+5. Key Takeaway
+ROE is useful when it improves your decision, not when it makes you feel overconfident.
+
+6. CTA
+Save this and share it with someone who is learning investing without the jargon.
 
 Risk note: ROE needs business and balance sheet context.
 
-CTA: Save this lesson and follow UNLOAN for simple investing education.
-
-Disclaimer: Educational content only. This is not financial advice.
+Compliance note: Educational content only. This is not financial advice.

@@ -6,18 +6,24 @@ Audience: Young Investors (20-35)
 
 ## Script
 
-Hook: Rule of 72 sounds complicated, but the beginner idea is simple.
+1. Attention-Grabbing Hook (first 3 seconds)
+Your next ₹10,000 can either disappear quietly or start working with a plan.
 
-Scene 1: A simple shortcut to understand how compounding time works.
+2. Real-Life Problem
+You get ₹10,000 and wonder: spend it, keep it idle, start a SIP, or build a safety buffer?
 
-Scene 2: It estimates doubling time.
+3. Simple Explanation
+Rule of 72 helps you make a calmer investing decision by turning confusion into a simple rule: it estimates doubling time.
 
-Scene 3: Use 72 divided by rate.
+4. Practical Example
+If you have ₹10,000, decide its job first: emergency money, SIP money, or short-term goal money. Rule of 72 helps you avoid random decisions.
 
-Scene 4: It is only a rough learning tool.
+5. Key Takeaway
+Rule of 72 is useful when it improves your decision, not when it makes you feel overconfident.
+
+6. CTA
+Save this and share it with someone who is learning investing without the jargon.
 
 Risk note: Real returns are never fixed or guaranteed.
 
-CTA: Save this lesson and follow UNLOAN for simple investing education.
-
-Disclaimer: Educational content only. This is not financial advice.
+Compliance note: Educational content only. This is not financial advice.

@@ -9,18 +9,15 @@
 
 ## Draft Caption
 
-The hardest part of investing is often your own reaction.
+Your portfolio is not the only thing moving. Your emotions are too.
 
-Show the emotion or bias and give a calmer decision rule.
+Your SIP is running, your portfolio is red for a week, and suddenly every social media post makes you doubt your plan.
 
-Simple meaning: Confirmation Bias means understanding the concept clearly before using it in real money decisions.
+Simple explanation: Confirmation Bias is a behavior pattern that can push investors into rushed decisions.
 
-Beginner rule:
-- Understand the term.
-- Know the risk.
-- Avoid decisions based on hype.
+Example: If your ₹10,000 SIP falls for a month, pause before stopping it. Ask whether your goal changed, or only your mood changed.
 
-Learn confirmation Bias first, then make calm and informed decisions.
+Use confirmation Bias as a decision filter, not as a shortcut.
 
 CTA: Save this as an investing behavior checklist.
 

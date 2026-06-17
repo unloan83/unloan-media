@@ -6,16 +6,24 @@ Audience: Young Investors (20-35)
 
 ## Script
 
-Opening: Here is PE Ratio in plain English.
+1. Attention-Grabbing Hook (first 3 seconds)
+This market term looks simple, but beginners often use it the wrong way.
 
-Point 1: PE compares price and earnings.
+2. Real-Life Problem
+You are checking a stock, see terms like PE, ROE, ROCE, ETF, or market cap, and wonder if one number is enough to decide.
 
-Point 2: High or low needs context.
+3. Simple Explanation
+PE Ratio helps you make a calmer investing decision by turning confusion into a simple rule: pe compares price and earnings.
 
-Point 3: It is not a standalone buy signal.
+4. Practical Example
+If you compare two portfolio ideas, do not use PE Ratio alone. Combine it with business quality, debt, cash flow, and your own risk comfort.
 
-Remember: Never judge a stock using one metric alone.
+5. Key Takeaway
+PE Ratio is useful when it improves your decision, not when it makes you feel overconfident.
 
-Close: Build Wealth. Not Debt.
+6. CTA
+Save this Short and follow UNLOAN for beginner-friendly investing lessons.
 
-Disclaimer: Educational content only. This is not financial advice.
+Risk note: Never judge a stock using one metric alone.
+
+Compliance note: Educational content only. This is not financial advice.

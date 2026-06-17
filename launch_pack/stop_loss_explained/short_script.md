@@ -6,16 +6,24 @@ Audience: Young Investors (20-35)
 
 ## Script
 
-Opening: Here is Stop Loss Explained in plain English.
+1. Attention-Grabbing Hook (first 3 seconds)
+One small setting in your investing app can change how much risk you take.
 
-Point 1: It defines an exit level.
+2. Real-Life Problem
+You open your broker app and see tools like GTT, stop loss, watchlists, and orders, but it is not clear which tool solves which problem.
 
-Point 2: It limits emotional hesitation.
+3. Simple Explanation
+Stop Loss Explained helps you make a calmer investing decision by turning confusion into a simple rule: it defines an exit level.
 
-Point 3: It is part of planning.
+4. Practical Example
+If your portfolio has ₹10,000 in one idea, use tools like watchlists, order types, or stop loss rules to plan risk before emotion takes over.
 
-Remember: Stop loss does not remove all risk.
+5. Key Takeaway
+Stop Loss Explained is useful when it improves your decision, not when it makes you feel overconfident.
 
-Close: Build Wealth. Not Debt.
+6. CTA
+Save this Short and follow UNLOAN for beginner-friendly investing lessons.
 
-Disclaimer: Educational content only. This is not financial advice.
+Risk note: Stop loss does not remove all risk.
+
+Compliance note: Educational content only. This is not financial advice.

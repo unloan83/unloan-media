@@ -9,18 +9,15 @@
 
 ## Draft Caption
 
-If you are new to stocks, stock Split is one term you should know.
+Before you buy your first stock, know what this term is really telling you.
 
-Define the market concept in simple language with a beginner example.
+You see stock Split on an app, a post, or a portfolio screenshot, but you are not sure whether it actually helps your decision.
 
-Simple meaning: Stock Split means understanding the concept clearly before using it in real money decisions.
+Simple explanation: Stock Split is a lens for understanding a business or market idea, not a green signal to buy anything.
 
-Beginner rule:
-- Understand the term.
-- Know the risk.
-- Avoid decisions based on hype.
+Example: If two companies are in your watchlist, do not use one metric alone. Combine it with debt, growth, cash flow, and your overall portfolio risk.
 
-Learn stock Split first, then make calm and informed decisions.
+Use stock Split as a decision filter, not as a shortcut.
 
 CTA: Share this with someone confused by stock splits.
 

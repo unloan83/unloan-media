@@ -9,18 +9,15 @@
 
 ## Draft Caption
 
-Market Order is a tool, not a shortcut to profit.
+One wrong order click can change your risk before you even notice it.
 
-Explain what the order type does and when a learner should be careful.
+A young investor sees a fast-moving price, enters quickly, and only later asks, "How much could I lose here?"
 
-Simple meaning: Market Order means understanding the concept clearly before using it in real money decisions.
+Simple explanation: Market Order is a feature that helps you control how an order behaves, but it still needs a clear plan and risk limit.
 
-Beginner rule:
-- Understand the term.
-- Know the risk.
-- Avoid decisions based on hype.
+Example: If you are placing an order worth ₹10,000, decide the entry, exit, and maximum loss before using the feature. The tool should follow your plan, not replace it.
 
-Learn market Order first, then make calm and informed decisions.
+Use market Order as a decision filter, not as a shortcut.
 
 CTA: Share this with a new demat account user.
 
