@@ -1,0 +1,62 @@
+name: Render Batch Videos
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_dir:
+        description: "Folder containing production_package.json files"
+        required: true
+        default: "pilot_launch"
+      limit:
+        description: "Optional max package count"
+        required: false
+        default: ""
+
+jobs:
+  render-batch:
+    name: Render batch artifact
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          ffmpeg -version
+
+      - name: Render package batch
+        run: |
+          mkdir -p publish_ready
+          if [ -n "${{ inputs.limit }}" ]; then
+            node video_engine/render_batch.mjs \
+              --source "${{ inputs.source_dir }}" \
+              --out-root publish_ready \
+              --limit "${{ inputs.limit }}"
+          else
+            node video_engine/render_batch.mjs \
+              --source "${{ inputs.source_dir }}" \
+              --out-root publish_ready
+          fi
+
+      - name: Verify rendered batch outputs
+        run: |
+          test -d publish_ready
+          find publish_ready -name video.mp4 -print -quit | grep -q video.mp4
+          find publish_ready -name thumbnail.png -print -quit | grep -q thumbnail.png
+          find publish_ready -name caption.txt -print -quit | grep -q caption.txt
+
+      - name: Upload rendered batch artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: unloan-render-batch
+          path: publish_ready
+          if-no-files-found: error
+          retention-days: 14

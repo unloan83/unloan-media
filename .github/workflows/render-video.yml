@@ -1,0 +1,64 @@
+name: Render Single Video
+
+on:
+  workflow_dispatch:
+    inputs:
+      package_path:
+        description: "Path to production_package.json"
+        required: true
+        default: "production/topics/2026-01-06-02-rule-of-72/production_package.json"
+      output_name:
+        description: "Output folder name inside publish_ready"
+        required: false
+        default: "single_render"
+      duration:
+        description: "Seconds per scene"
+        required: false
+        default: "3.5"
+      fps:
+        description: "Frames per second"
+        required: false
+        default: "30"
+
+jobs:
+  render:
+    name: Render video artifact
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          ffmpeg -version
+
+      - name: Validate package and render video
+        run: |
+          mkdir -p publish_ready
+          node video_engine/render.mjs \
+            --input "${{ inputs.package_path }}" \
+            --out "publish_ready/${{ inputs.output_name }}" \
+            --duration "${{ inputs.duration }}" \
+            --fps "${{ inputs.fps }}"
+
+      - name: Verify rendered outputs
+        run: |
+          test -f "publish_ready/${{ inputs.output_name }}/video.mp4"
+          test -f "publish_ready/${{ inputs.output_name }}/thumbnail.png"
+          test -f "publish_ready/${{ inputs.output_name }}/caption.txt"
+
+      - name: Upload rendered video artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: unloan-render-${{ inputs.output_name }}
+          path: publish_ready/${{ inputs.output_name }}
+          if-no-files-found: error
+          retention-days: 14
