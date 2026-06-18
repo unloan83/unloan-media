@@ -1,4 +1,4 @@
-import { readdir, stat } from "node:fs/promises";
+import { readFile, readdir, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { ROOT } from "./config.mjs";
 import { spawn } from "node:child_process";
@@ -37,6 +37,44 @@ async function findPackages(dir) {
   return packages;
 }
 
+function batchSummaryMarkdown(summary) {
+  const failedTopics = summary.failedTopics.length
+    ? summary.failedTopics.map((item) => `- ${item.topic}: ${item.score}/100 - ${item.status}`).join("\n")
+    : "- None";
+  const reasons = summary.commonFailureReasons.length
+    ? summary.commonFailureReasons.map((item) => `- ${item.reason}: ${item.count}`).join("\n")
+    : "- None";
+  const rows = summary.videos
+    .map((item) => `| ${item.topic} | ${item.score} | ${item.status} | ${item.ratingBand} |`)
+    .join("\n");
+
+  return `# UNLOAN Batch Readability Summary
+
+## Results
+
+- Total videos rendered: ${summary.totalVideosRendered}
+- Production-ready videos: ${summary.productionReadyVideos}
+- Not-ready videos: ${summary.notReadyVideos}
+- Preview-only videos: ${summary.previewOnlyVideos}
+- Average score: ${summary.averageScore}
+- Lowest score: ${summary.lowestScore}
+
+## Videos
+
+| Topic | Score | Status | Rating Band |
+| --- | ---: | --- | --- |
+${rows}
+
+## Failed Topics
+
+${failedTopics}
+
+## Common Failure Reasons
+
+${reasons}
+`;
+}
+
 async function main() {
   const source = path.resolve(ROOT, argValue("--source", "production/topics"));
   const outRoot = path.resolve(ROOT, argValue("--out-root", "publish_ready"));
@@ -46,6 +84,7 @@ async function main() {
   const limit = limitInput ? Number(limitInput) : packages.length;
   const dryRun = hasFlag("--dry-run");
   const mode = argValue("--mode", "production");
+  const reports = [];
 
   for (const packagePath of packages.slice(0, limit)) {
     const relative = path.relative(ROOT, packagePath);
@@ -54,9 +93,45 @@ async function main() {
     const args = ["video_engine/render.mjs", "--input", relative, "--out", path.relative(ROOT, outDir), "--mode", mode];
     if (dryRun) args.push("--dry-run");
     await runNode(args);
+    const report = JSON.parse(await readFile(path.join(outDir, "readability_report.json"), "utf8"));
+    reports.push({
+      topic: JSON.parse(await readFile(packagePath, "utf8")).topic,
+      score: report.score,
+      status: report.status,
+      ratingBand: report.ratingBand,
+      productionReady: report.productionReady,
+      hardFailures: report.hardFailures,
+      failedChecks: report.failedChecks,
+      report: path.relative(ROOT, path.join(outDir, "readability_report.json")).replace(/\\/g, "/"),
+    });
   }
 
-  console.log(`Processed ${Math.min(limit, packages.length)} production package(s).`);
+  const failureCounts = new Map();
+  for (const report of reports.filter((item) => item.status === "Not Production Ready")) {
+    for (const reason of [...report.hardFailures, ...report.failedChecks.map((item) => item.label)]) {
+      failureCounts.set(reason, (failureCounts.get(reason) ?? 0) + 1);
+    }
+  }
+  const scores = reports.map((report) => report.score);
+  const summary = {
+    mode,
+    totalVideosRendered: reports.length,
+    productionReadyVideos: reports.filter((report) => report.status === "Production Ready").length,
+    notReadyVideos: reports.filter((report) => report.status === "Not Production Ready").length,
+    previewOnlyVideos: reports.filter((report) => report.status === "Preview Only").length,
+    averageScore: scores.length ? Math.round((scores.reduce((total, score) => total + score, 0) / scores.length) * 10) / 10 : 0,
+    lowestScore: scores.length ? Math.min(...scores) : 0,
+    failedTopics: reports.filter((report) => report.status === "Not Production Ready"),
+    commonFailureReasons: [...failureCounts.entries()]
+      .map(([reason, count]) => ({ reason, count }))
+      .sort((first, second) => second.count - first.count || first.reason.localeCompare(second.reason)),
+    videos: reports,
+  };
+  await writeFile(path.join(outRoot, "batch_summary.json"), `${JSON.stringify(summary, null, 2)}\n`, "utf8");
+  await writeFile(path.join(outRoot, "batch_summary.md"), `${batchSummaryMarkdown(summary).trimEnd()}\n`, "utf8");
+
+  console.log(`Processed ${reports.length} production package(s).`);
+  console.log(`Batch average: ${summary.averageScore}/100. Production ready: ${summary.productionReadyVideos}. Not ready: ${summary.notReadyVideos}. Preview only: ${summary.previewOnlyVideos}.`);
 }
 
 main().catch((error) => {

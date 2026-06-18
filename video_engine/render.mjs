@@ -13,14 +13,17 @@ import {
   loadPreset,
 } from "./config.mjs";
 import {
-  printValidationReport,
   validatePackageStructure,
   validateReadableScenes,
 } from "./validation/readability.mjs";
 import {
+  calculateReadabilityScore,
+  printScoreSummary,
+  readabilityReportMarkdown,
+} from "./validation/readability_score.mjs";
+import {
   buildTextHierarchy,
   normalizeText,
-  textWords,
   wrapByWordCount,
 } from "./utils/text_hierarchy.mjs";
 
@@ -269,10 +272,24 @@ async function renderPackage(inputPath, options) {
   const pkg = JSON.parse(await readFile(packagePath, "utf8"));
   const preset = loadPreset(options.mode);
   const structureReport = validatePackageStructure(pkg);
-  printValidationReport(structureReport);
+  for (const warning of structureReport.warnings) console.warn(`PACKAGE WARNING: ${warning}`);
+  const fatalStructureErrors = structureReport.errors.filter((error) => !error.startsWith("Logo path must be exactly"));
+  if (fatalStructureErrors.length > 0) {
+    throw new Error(`Invalid production package:\n- ${fatalStructureErrors.join("\n- ")}`);
+  }
   const scenes = buildScenes(pkg, options.duration);
   const readabilityReport = validateReadableScenes(scenes, DESIGN_TOKENS, preset);
-  printValidationReport(readabilityReport);
+  const scoreReport = calculateReadabilityScore({
+    pkg,
+    scenes,
+    tokens: DESIGN_TOKENS,
+    preset,
+    validation: {
+      errors: [...structureReport.errors, ...readabilityReport.errors],
+      warnings: [...structureReport.warnings, ...readabilityReport.warnings],
+    },
+  });
+  printScoreSummary(pkg, scoreReport);
 
   const logoPath = path.join(ROOT, OFFICIAL_LOGO);
   if (!(await fileExists(logoPath))) {
@@ -295,6 +312,8 @@ async function renderPackage(inputPath, options) {
 
   await writeFile(path.join(outDir, "caption.txt"), `${captionText(pkg)}\n`, "utf8");
   await writeFile(path.join(outDir, "preview.html"), previewHtml(pkg, sceneSvgs, preset), "utf8");
+  await writeFile(path.join(outDir, "readability_report.json"), `${JSON.stringify(scoreReport, null, 2)}\n`, "utf8");
+  await writeFile(path.join(outDir, "readability_report.md"), `${readabilityReportMarkdown(pkg, scoreReport).trimEnd()}\n`, "utf8");
 
   const manifest = {
     topic: pkg.topic,
@@ -304,12 +323,17 @@ async function renderPackage(inputPath, options) {
     output: path.relative(ROOT, outDir).replace(/\\/g, "/"),
     format: VIDEO.format,
     mode: preset.name,
+    productionStatus: scoreReport.status,
+    readabilityScore: scoreReport.score,
+    productionReady: scoreReport.productionReady,
     totalDurationSeconds: scenes.reduce((total, scene) => total + scene.duration, 0),
     scenes: scenes.map(({ originalText, ...scene }) => scene),
     readability: {
-      errors: readabilityReport.errors,
-      warnings: readabilityReport.warnings,
+      errors: scoreReport.hardFailures,
+      warnings: scoreReport.warnings,
       designTokens: "video_engine/design_tokens.json",
+      reportJson: "readability_report.json",
+      reportMarkdown: "readability_report.md",
     },
     renderer: "ffmpeg",
     socialApisConnected: false,

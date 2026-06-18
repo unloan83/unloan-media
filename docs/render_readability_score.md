@@ -102,3 +102,39 @@ The rendering engine automatically enforces:
 - No visible scene numbers in production mode
 
 The score complements these hard gates by providing a consistent quality benchmark for future render automation and reporting.
+
+## Automated Reports
+
+Every render creates:
+
+- `readability_report.json`
+- `readability_report.md`
+
+Reports include the overall score, rating band, production status, category scores, failed checks, hard failures, warnings, recommended fixes, and scene metrics.
+
+Production mode returns **Production Ready** only when the score is at least 90 and there are no hard failures. A lower score still permits preview and media generation, but the status becomes **Not Production Ready**.
+
+Debug mode always reports **Preview Only**, regardless of numeric score.
+
+## Batch Reports
+
+Batch rendering creates:
+
+- `batch_summary.json`
+- `batch_summary.md`
+
+The summary contains total videos, production-ready and not-ready counts, preview-only count, average score, lowest score, failed topics, common failure reasons, and individual report paths.
+
+## Hard-Failure Overrides
+
+Hard failures include:
+
+- Scene or category labels visible in production
+- Incorrect official logo path
+- Key-message font below minimum
+- Absolute key, support, or total word limits exceeded
+- Text density beyond readable pacing
+- Stock recommendations
+- Guaranteed-return or profit claims
+- Missing disclaimer
+- Text outside safe zones or overlapping branding

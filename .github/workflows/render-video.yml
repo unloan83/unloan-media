@@ -54,6 +54,8 @@ jobs:
           test -f "publish_ready/${{ inputs.output_name }}/video.mp4"
           test -f "publish_ready/${{ inputs.output_name }}/thumbnail.png"
           test -f "publish_ready/${{ inputs.output_name }}/caption.txt"
+          test -f "publish_ready/${{ inputs.output_name }}/readability_report.json"
+          test -f "publish_ready/${{ inputs.output_name }}/readability_report.md"
 
       - name: Upload rendered video artifact
         uses: actions/upload-artifact@v4

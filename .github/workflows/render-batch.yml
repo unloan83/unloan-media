@@ -58,6 +58,9 @@ jobs:
           find publish_ready -name video.mp4 -print -quit | grep -q video.mp4
           find publish_ready -name thumbnail.png -print -quit | grep -q thumbnail.png
           find publish_ready -name caption.txt -print -quit | grep -q caption.txt
+          find publish_ready -name readability_report.json -print -quit | grep -q readability_report.json
+          test -f publish_ready/batch_summary.json
+          test -f publish_ready/batch_summary.md
 
       - name: Upload rendered batch artifact
         uses: actions/upload-artifact@v4

@@ -48,3 +48,14 @@ All production content remains inside the configured mobile-safe margins:
 - Bottom: 120px minimum
 
 Logo placement uses `preserveAspectRatio` and never crops the official asset.
+
+## Scoring Integration
+
+All renders are scored before production readiness is assigned.
+
+- Score 90 or above with no hard failure: Production Ready
+- Score below 90: Not Production Ready
+- Any hard failure: Not Production Ready regardless of score
+- Debug mode: Preview Only
+
+Use `readability_report.json` for automation and `readability_report.md` for editorial review.

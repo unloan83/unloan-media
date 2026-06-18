@@ -23,6 +23,7 @@ Shared rules live in:
 - `presets/production.json`
 - `presets/debug.json`
 - `validation/readability.mjs`
+- `validation/readability_score.mjs`
 - `utils/text_hierarchy.mjs`
 
 Minimum font sizes:
@@ -79,6 +80,8 @@ Weekly production:
 node video_engine/render_batch.mjs --source production/week_01 --out-root publish_ready --mode production
 ```
 
+Batch output also includes `batch_summary.json` and `batch_summary.md`.
+
 ## Output
 
 Each output folder contains:
@@ -86,27 +89,52 @@ Each output folder contains:
 - `video.mp4`
 - `thumbnail.png`
 - `caption.txt`
+- `readability_report.json`
+- `readability_report.md`
 - `render_manifest.json`
 - scene SVG and PNG files
 - `preview.html`
 
-The manifest records the preset, total duration, simplified scene copy, readability warnings, and design-token source.
+The manifest records the preset, total duration, production status, readability score, simplified scene copy, warnings, and design-token source.
+
+## Readability Scoring
+
+Every render receives a score from 0 to 100:
+
+- Text hierarchy: 25 points
+- Content density: 25 points
+- Typography: 15 points
+- Layout and safe zones: 15 points
+- Pacing: 10 points
+- Brand and compliance: 10 points
+
+Production requires at least 90 points and no hard failures.
+
+- Passing production render: `Production Ready`
+- Production render below 90 or with a hard failure: `Not Production Ready`
+- Debug render: `Preview Only`
+
+Hard failures override the score. They include incorrect logo usage, missing disclaimers, stock recommendations, guaranteed-profit claims, unsafe text placement, visible production diagnostics, undersized key text, and absolute density-limit violations.
+
+Not-ready renders still generate preview output and score reports. The console and reports show failed categories and recommended fixes.
 
 ## Validation
 
-Rendering fails for:
+Malformed packages still stop rendering when required scenes, categories, or scene text are missing.
+
+Quality failures still generate preview and report output, but mark the render Not Production Ready:
 
 - Incorrect logo path
-- Missing or duplicate scenes
-- Unsupported categories
-- Empty required scene text
 - Font sizes below minimums
-- Insufficient contrast
-- Unsafe margins
+- Unsafe margins or overlap
 - More than two text blocks
-- Production mode configured to show scene numbers
+- Absolute word-limit violations
+- Visible production diagnostics
+- Missing disclaimer
+- Stock recommendations
+- Guaranteed-return or profit claims
 
-Long source copy is simplified before layout. Density near the comfortable reading limit produces a console warning.
+The report records all scoring deductions and hard-failure overrides.
 
 ## GitHub Rendering
 

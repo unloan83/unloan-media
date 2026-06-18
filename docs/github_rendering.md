@@ -26,7 +26,7 @@ The workflow will:
 - Install FFmpeg.
 - Validate the production package.
 - Apply the production readability preset by default.
-- Render `video.mp4`, `thumbnail.png`, and `caption.txt`.
+- Render `video.mp4`, `thumbnail.png`, `caption.txt`, and readability reports.
 - Upload the output folder as an artifact.
 
 ## Download Artifacts
@@ -44,6 +44,8 @@ unloan-render-single_render
 - `video.mp4`
 - `thumbnail.png`
 - `caption.txt`
+- `readability_report.json`
+- `readability_report.md`
 - `render_manifest.json`
 - scene PNG/SVG files
 - `preview.html`
@@ -67,6 +69,8 @@ pilot_launch
 
 The downloadable artifact will contain one folder per package under `/publish_ready`, including all MP4s, thumbnails, captions, and manifests.
 
+The batch artifact also contains `batch_summary.json` and `batch_summary.md`.
+
 ## Render Another Batch
 
 Set `source_dir` to any folder that contains nested `production_package.json` files, such as:
@@ -81,14 +85,15 @@ Use `limit` for a smaller test run.
 
 ## Validation Rules
 
-Rendering fails if:
+The workflow stops for structural or rendering failures:
 
-- `logo` is not exactly `assets/logos/logo.png`.
 - The package category is not supported.
 - Any required scene is missing.
 - A required scene has no text.
 - The official logo asset is missing.
 - FFmpeg cannot render the video.
+
+Quality failures such as an incorrect package logo path, score below 90, missing disclaimer, unsafe density, stock recommendations, or guaranteed-profit claims still generate artifacts. Their reports mark them **Not Production Ready**.
 
 Supported categories:
 
@@ -128,6 +133,10 @@ Open the workflow logs and check the **Verify rendered outputs** step. The workf
 - `video.mp4`
 - `thumbnail.png`
 - `caption.txt`
+- `readability_report.json`
+- `readability_report.md`
+
+Batch runs also require `batch_summary.json` and `batch_summary.md`.
 
 ### Batch Render Is Too Large
 
