@@ -45,12 +45,13 @@ async function main() {
   const limitInput = argValue("--limit", "");
   const limit = limitInput ? Number(limitInput) : packages.length;
   const dryRun = hasFlag("--dry-run");
+  const mode = argValue("--mode", "production");
 
   for (const packagePath of packages.slice(0, limit)) {
     const relative = path.relative(ROOT, packagePath);
     const packageFolder = path.basename(path.dirname(packagePath));
     const outDir = path.join(outRoot, packageFolder);
-    const args = ["video_engine/render.mjs", "--input", relative, "--out", path.relative(ROOT, outDir)];
+    const args = ["video_engine/render.mjs", "--input", relative, "--out", path.relative(ROOT, outDir), "--mode", mode];
     if (dryRun) args.push("--dry-run");
     await runNode(args);
   }

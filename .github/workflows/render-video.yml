@@ -11,14 +11,14 @@ on:
         description: "Output folder name inside publish_ready"
         required: false
         default: "single_render"
-      duration:
-        description: "Seconds per scene"
-        required: false
-        default: "3.5"
       fps:
         description: "Frames per second"
         required: false
         default: "30"
+      mode:
+        description: "Render preset: production or debug"
+        required: true
+        default: "production"
 
 jobs:
   render:
@@ -46,8 +46,8 @@ jobs:
           node video_engine/render.mjs \
             --input "${{ inputs.package_path }}" \
             --out "publish_ready/${{ inputs.output_name }}" \
-            --duration "${{ inputs.duration }}" \
-            --fps "${{ inputs.fps }}"
+            --fps "${{ inputs.fps }}" \
+            --mode "${{ inputs.mode }}"
 
       - name: Verify rendered outputs
         run: |

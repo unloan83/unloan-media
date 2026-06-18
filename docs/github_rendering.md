@@ -16,7 +16,7 @@ Rendered files are staged in `/publish_ready` during the workflow and uploaded a
 production/topics/2026-01-06-02-rule-of-72/production_package.json
 ```
 
-6. Optionally set `output_name`, `duration`, and `fps`.
+6. Optionally set `output_name`, `fps`, and render `mode`.
 7. Run the workflow.
 
 The workflow will:
@@ -25,6 +25,7 @@ The workflow will:
 - Install Node.js.
 - Install FFmpeg.
 - Validate the production package.
+- Apply the production readability preset by default.
 - Render `video.mp4`, `thumbnail.png`, and `caption.txt`.
 - Upload the output folder as an artifact.
 
@@ -61,7 +62,8 @@ pilot_launch
 ```
 
 5. Leave `limit` blank to render all pilot launch packages.
-6. Run the workflow.
+6. Keep `mode` set to `production`.
+7. Run the workflow.
 
 The downloadable artifact will contain one folder per package under `/publish_ready`, including all MP4s, thumbnails, captions, and manifests.
 

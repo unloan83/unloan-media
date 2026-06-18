@@ -1,0 +1,8 @@
+{
+  "name": "production",
+  "show_scene_numbers": false,
+  "show_debug_boundaries": false,
+  "simplify_text": true,
+  "fail_on_readability_error": true,
+  "clean_layout": true
+}

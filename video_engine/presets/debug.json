@@ -1,0 +1,8 @@
+{
+  "name": "debug",
+  "show_scene_numbers": true,
+  "show_debug_boundaries": true,
+  "simplify_text": true,
+  "fail_on_readability_error": true,
+  "clean_layout": false
+}

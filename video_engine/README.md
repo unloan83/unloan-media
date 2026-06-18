@@ -1,84 +1,116 @@
 # UNLOAN Automated Video Rendering Engine
 
-Phase 6.5 converts `production_package.json` files into short-form video assets for Instagram Reels and YouTube Shorts.
+The engine converts `production_package.json` files into 1080x1920 videos for Instagram Reels and YouTube Shorts.
 
-## Input
+Production mode is the default for single, batch, pilot, weekly, local, and GitHub Actions rendering.
 
-Any production package shaped like:
+## Default Production Behavior
 
-```json
-{
-  "topic": "",
-  "category": "",
-  "hook": "",
-  "thumbnail": "",
-  "slides": [],
-  "cta": "",
-  "logo": "assets/logos/logo.png"
-}
-```
+- Uses the original `assets/logos/logo.png` asset only.
+- Hides scene numbers and debug boundaries.
+- Simplifies long source text into one headline and one support statement.
+- Preserves minimum mobile-readable font sizes.
+- Uses the shared premium finance palette in `design_tokens.json`.
+- Applies per-scene timing of 5, 5, 6, 6, 5, and 5 seconds.
+- Produces a default 32-second video.
+- Validates structure, logo path, contrast, density, safe zones, and typography before rendering.
 
-Supported categories:
+## Design System
 
-- Wealth Building
-- Trading Basics
-- Investor Toolkit
-- Investor Terminology
-- Behavioral Finance
+Shared rules live in:
 
-## Output
+- `design_tokens.json`
+- `presets/production.json`
+- `presets/debug.json`
+- `validation/readability.mjs`
 
-Each render creates:
+Minimum font sizes:
 
-- `video.mp4`
-- `thumbnail.png`
-- `caption.txt`
-- `render_manifest.json`
-- `scenes/scene_01.svg` through `scenes/scene_06.svg`
-- `scenes/scene_01.png` through `scenes/scene_06.png`
-- `preview.html`
+- Headline: 72px
+- Secondary text: 40px
+- Supporting text: 30px
+- CTA: 42px
+- Disclaimer: 22px
 
-Generated media is written to `video_engine/outputs/<topic-slug>/`.
+Content limits:
 
-## Render Commands
+- Maximum two text blocks per scene
+- Maximum 12 headline words
+- Maximum 18 support words
+- One main idea per scene
 
-Dry run, useful when FFmpeg is not installed:
+## Render One Video
 
-```bash
-node video_engine/render.mjs --input production/topics/2026-01-06-02-rule-of-72/production_package.json --dry-run
-```
-
-Render one package:
+Production mode:
 
 ```bash
 node video_engine/render.mjs --input production/topics/2026-01-06-02-rule-of-72/production_package.json
 ```
 
-Render a pilot package:
+Production dry run without FFmpeg:
 
 ```bash
-node video_engine/render.mjs --input pilot_launch/rule_of_72/production_package.json --out video_engine/outputs/pilot_rule_of_72
+node video_engine/render.mjs --input pilot_launch/rule_of_72/production_package.json --out publish_ready/rule_of_72 --mode production --dry-run
 ```
 
-Batch render packages:
+Debug mode:
 
 ```bash
-node video_engine/render_batch.mjs --source production/week_01
+node video_engine/render.mjs --input pilot_launch/rule_of_72/production_package.json --mode debug --dry-run
 ```
 
-## Renderer
+Debug mode may display scene numbers and safe boundaries. Never use debug output for publishing.
 
-The engine uses FFmpeg for:
+## Batch Rendering
 
-- SVG scene card rasterization to PNG
-- PNG scene sequencing to 1080x1920 MP4
-- `yuv420p` output for broad mobile-platform compatibility
+Pilot launch:
 
-Install FFmpeg before full rendering. Without FFmpeg, use `--dry-run` to generate captions, SVG scene templates, preview HTML, and manifests.
+```bash
+node video_engine/render_batch.mjs --source pilot_launch --out-root publish_ready --mode production
+```
 
-## Brand Rules
+Weekly production:
 
-- The official logo is always referenced as `assets/logos/logo.png`.
-- The renderer validates that the production package uses this exact logo path.
-- No social media APIs are connected.
-- No Canva APIs are connected.
+```bash
+node video_engine/render_batch.mjs --source production/week_01 --out-root publish_ready --mode production
+```
+
+## Output
+
+Each output folder contains:
+
+- `video.mp4`
+- `thumbnail.png`
+- `caption.txt`
+- `render_manifest.json`
+- scene SVG and PNG files
+- `preview.html`
+
+The manifest records the preset, total duration, simplified scene copy, readability warnings, and design-token source.
+
+## Validation
+
+Rendering fails for:
+
+- Incorrect logo path
+- Missing or duplicate scenes
+- Unsupported categories
+- Empty required scene text
+- Font sizes below minimums
+- Insufficient contrast
+- Unsafe margins
+- More than two text blocks
+- Production mode configured to show scene numbers
+
+Long source copy is simplified before layout. Density near the comfortable reading limit produces a console warning.
+
+## GitHub Rendering
+
+GitHub Actions installs FFmpeg and renders into `/publish_ready`.
+
+- **Render Single Video** renders one package.
+- **Render Batch Videos** renders pilot, weekly, or topic folders.
+
+Both workflows default to production mode and upload rendered files as downloadable artifacts.
+
+No social media or Canva APIs are connected.

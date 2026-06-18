@@ -4,14 +4,19 @@ import { spawn } from "node:child_process";
 import { pathToFileURL } from "node:url";
 import {
   BRAND,
-  ENGINE_ROOT,
+  DESIGN_TOKENS,
   OFFICIAL_LOGO,
   OUTPUT_ROOT,
   ROOT,
   SCENE_PLAN,
-  SUPPORTED_CATEGORIES,
   VIDEO,
+  loadPreset,
 } from "./config.mjs";
+import {
+  printValidationReport,
+  validatePackageStructure,
+  validateReadableScenes,
+} from "./validation/readability.mjs";
 
 function argValue(name, fallback = "") {
   const index = process.argv.indexOf(name);
@@ -64,7 +69,74 @@ function wrapText(text, maxChars) {
   }
 
   if (line) lines.push(line);
-  return lines.slice(0, 9);
+  return lines.slice(0, 4);
+}
+
+function words(value) {
+  return normalizeText(value).split(" ").filter(Boolean);
+}
+
+function takeWords(value, limit) {
+  const tokens = words(value);
+  return {
+    text: tokens.slice(0, limit).join(" "),
+    remaining: tokens.slice(limit),
+    trimmed: tokens.length > limit,
+  };
+}
+
+function sentenceParts(value) {
+  return normalizeText(value)
+    .split(/(?<=[.!?])\s+|;\s+|:\s+/u)
+    .map((part) => part.trim())
+    .filter(Boolean);
+}
+
+function rebalanceBlocks(headlineText, supportText, supportLimit) {
+  const weakEndings = new Set(["a", "an", "and", "as", "at", "between", "but", "for", "from", "if", "in", "it", "of", "or", "the", "to", "with", "your"]);
+  const headline = words(headlineText);
+  const support = words(supportText);
+
+  while (headline.length > 6 && weakEndings.has(headline.at(-1).toLowerCase())) {
+    support.unshift(headline.pop());
+  }
+
+  while (support.length > 4 && weakEndings.has(support.at(-1).toLowerCase())) {
+    support.pop();
+  }
+
+  return {
+    headline: headline.join(" "),
+    support: support.slice(0, supportLimit).join(" "),
+  };
+}
+
+function simplifySceneText(text, sceneNumber, duration) {
+  const density = DESIGN_TOKENS.density;
+  const parts = sentenceParts(text);
+  const first = takeWords(parts[0] ?? text, density.headline_max_words);
+  const supportSource = [...first.remaining, ...words(parts.slice(1).join(" "))].join(" ");
+  const readableWordBudget = Math.max(density.headline_max_words, Math.floor(duration * 4));
+  const initialBalance = rebalanceBlocks(first.text, supportSource, density.support_max_words);
+  const supportLimit = Math.max(0, Math.min(density.support_max_words, readableWordBudget - words(initialBalance.headline).length));
+  const balanced = {
+    headline: initialBalance.headline,
+    support: words(initialBalance.support).slice(0, supportLimit).join(" "),
+  };
+
+  if (sceneNumber === 6) {
+    return {
+      headline: takeWords(text, density.headline_max_words).text,
+      support: BRAND.tagline,
+      simplified: words(text).length > density.headline_max_words,
+    };
+  }
+
+  return {
+    headline: balanced.headline,
+    support: balanced.support,
+    simplified: first.trimmed || words(supportSource).length > supportLimit || parts.length > 1,
+  };
 }
 
 async function ensureDir(dirPath) {
@@ -106,62 +178,64 @@ async function requireFfmpeg() {
   }
 }
 
-function validatePackage(pkg) {
-  const errors = [];
-
-  if (!pkg.topic) errors.push("Missing topic");
-  if (!SUPPORTED_CATEGORIES.has(pkg.category)) errors.push(`Unsupported category: ${pkg.category}`);
-  if (pkg.logo !== OFFICIAL_LOGO) errors.push(`Logo must be ${OFFICIAL_LOGO}`);
-  if (!Array.isArray(pkg.slides) || pkg.slides.length < 6) errors.push("Package must include at least 6 slides");
-
-  for (const plan of SCENE_PLAN) {
-    const slide = pkg.slides?.find((item) => Number(item.scene) === plan.scene);
-    if (!slide?.text) errors.push(`Missing text for Scene ${plan.scene}: ${plan.label}`);
-  }
-
-  if (errors.length > 0) {
-    throw new Error(`Invalid production package:\n- ${errors.join("\n- ")}`);
-  }
-}
-
 function slideFor(pkg, sceneNumber) {
   return pkg.slides.find((slide) => Number(slide.scene) === sceneNumber);
 }
 
-function sceneSvg(pkg, sceneNumber) {
-  const slide = slideFor(pkg, sceneNumber);
-  const plan = SCENE_PLAN[sceneNumber - 1];
-  const isOutro = sceneNumber === 6;
-  const title = sceneNumber === 1 ? pkg.thumbnail || pkg.topic : plan.label;
-  const bodyLines = wrapText(slide.text, sceneNumber === 1 ? 22 : 30);
-  const bodyFontSize = sceneNumber === 1 ? 74 : 58;
-  const logoHref = pathToFileURL(path.join(ROOT, OFFICIAL_LOGO)).href;
-  const sceneNumberText = String(sceneNumber).padStart(2, "0");
+function buildScenes(pkg, durationOverride = 0) {
+  return SCENE_PLAN.map((plan) => {
+    const slide = slideFor(pkg, plan.scene);
+    const duration = durationOverride > 0 ? durationOverride : plan.duration;
+    const simplified = simplifySceneText(slide.text, plan.scene, duration);
+    return {
+      ...plan,
+      ...simplified,
+      duration,
+      originalText: normalizeText(slide.text),
+    };
+  });
+}
 
-  const body = bodyLines
-    .map((line, index) => `<text x="90" y="${650 + index * (bodyFontSize + 18)}" class="body">${escapeXml(line)}</text>`)
+function sceneSvg(pkg, scene, preset) {
+  const isOutro = scene.scene === 6;
+  const headlineLines = wrapText(scene.headline, 20);
+  const supportLines = wrapText(scene.support, 30);
+  const type = DESIGN_TOKENS.typography;
+  const logoHref = pathToFileURL(path.join(ROOT, OFFICIAL_LOGO)).href;
+  const headline = headlineLines
+    .map((line, index) => `<text x="110" y="${560 + index * 108}" class="headline">${escapeXml(line)}</text>`)
     .join("\n");
+  const support = supportLines
+    .map((line, index) => `<text x="110" y="${1000 + index * 68}" class="support">${escapeXml(line)}</text>`)
+    .join("\n");
+  const debugLabel = preset.show_scene_numbers
+    ? `<text x="110" y="210" class="debug">SCENE ${scene.scene} / ${escapeXml(scene.label.toUpperCase())}</text>`
+    : "";
+  const debugBorder = preset.show_debug_boundaries
+    ? `<rect x="90" y="120" width="900" height="1680" fill="none" stroke="${BRAND.negative}" stroke-width="3" stroke-dasharray="16 12"/>`
+    : "";
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${VIDEO.width}" height="${VIDEO.height}" viewBox="0 0 ${VIDEO.width} ${VIDEO.height}">
   <style>
-    .headline { font-family: ${BRAND.headlineFont}; font-size: 76px; font-weight: 800; fill: ${BRAND.secondary}; }
-    .body { font-family: ${BRAND.bodyFont}; font-size: ${bodyFontSize}px; font-weight: 600; fill: ${BRAND.secondary}; }
-    .meta { font-family: ${BRAND.bodyFont}; font-size: 34px; font-weight: 700; fill: ${BRAND.accent}; letter-spacing: 2px; }
-    .small { font-family: ${BRAND.bodyFont}; font-size: 28px; font-weight: 500; fill: ${BRAND.secondary}; opacity: 0.82; }
-    .disclaimer { font-family: ${BRAND.bodyFont}; font-size: 25px; font-weight: 500; fill: ${BRAND.secondary}; opacity: 0.74; }
+    .headline { font-family: ${BRAND.headlineFont}; font-size: ${isOutro ? type.cta_preferred : type.headline_preferred}px; font-weight: 800; fill: ${BRAND.secondary}; }
+    .support { font-family: ${BRAND.bodyFont}; font-size: ${type.secondary_preferred}px; font-weight: 500; fill: ${isOutro ? BRAND.accent : BRAND.secondary}; opacity: 0.94; }
+    .category { font-family: ${BRAND.bodyFont}; font-size: ${type.supporting_preferred}px; font-weight: 700; fill: ${BRAND.accent}; }
+    .tagline { font-family: ${BRAND.bodyFont}; font-size: ${type.supporting_preferred}px; font-weight: 700; fill: ${BRAND.secondary}; }
+    .disclaimer { font-family: ${BRAND.bodyFont}; font-size: ${type.disclaimer_preferred}px; font-weight: 500; fill: ${BRAND.secondary}; opacity: 0.78; }
+    .debug { font-family: Arial, sans-serif; font-size: 28px; font-weight: 700; fill: ${BRAND.negative}; }
   </style>
   <rect width="1080" height="1920" fill="${BRAND.primary}"/>
-  <rect x="54" y="54" width="972" height="1812" rx="38" fill="none" stroke="${BRAND.accent}" stroke-width="4" opacity="0.88"/>
-  <rect x="90" y="170" width="220" height="6" fill="${BRAND.accent}"/>
-  <text x="90" y="245" class="meta">SCENE ${sceneNumberText} / ${escapeXml(plan.label.toUpperCase())}</text>
-  <text x="90" y="390" class="headline">${escapeXml(title)}</text>
-  <text x="90" y="475" class="small">${escapeXml(pkg.category)} | ${VIDEO.format}</text>
-  ${body}
-  ${isOutro ? `<text x="90" y="1510" class="small">${escapeXml(BRAND.tagline)}</text>` : ""}
-  ${isOutro ? `<text x="90" y="1572" class="disclaimer">${escapeXml(pkg.compliance?.disclaimer || "Educational content only. This is not financial advice.")}</text>` : ""}
-  <image href="${logoHref}" x="720" y="1640" width="260" height="120" preserveAspectRatio="xMidYMid meet"/>
-  <text x="90" y="1768" class="small">${escapeXml(BRAND.name)} | ${escapeXml(BRAND.tagline)}</text>
+  <rect x="70" y="100" width="940" height="1720" rx="22" fill="${BRAND.panel}" stroke="${BRAND.accent}" stroke-width="2" opacity="0.98"/>
+  <rect x="110" y="300" width="150" height="7" fill="${BRAND.accent}"/>
+  <text x="110" y="390" class="category">${escapeXml(scene.label.toUpperCase())}</text>
+  ${headline}
+  ${support}
+  <text x="110" y="1580" class="tagline">${escapeXml(BRAND.tagline)}</text>
+  <text x="110" y="1640" class="disclaimer">${escapeXml(pkg.compliance?.disclaimer || "Educational content only. This is not financial advice.")}</text>
+  <image href="${logoHref}" x="700" y="1570" width="260" height="130" preserveAspectRatio="xMidYMid meet"/>
+  ${debugLabel}
+  ${debugBorder}
 </svg>`;
 }
 
@@ -175,7 +249,7 @@ function captionText(pkg) {
   ].join("\n");
 }
 
-function previewHtml(pkg, sceneFiles) {
+function previewHtml(pkg, sceneFiles, preset) {
   const cards = sceneFiles
     .map((file, index) => `<article class="scene-card"><img src="scenes/${escapeXml(path.basename(file))}" alt="Scene ${index + 1}"><p>Scene ${index + 1}</p></article>`)
     .join("\n");
@@ -186,12 +260,18 @@ function previewHtml(pkg, sceneFiles) {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>${escapeXml(pkg.topic)} Video Preview</title>
-  <link rel="stylesheet" href="../../templates/styles.css">
+  <style>
+    body { margin: 0; padding: 32px; background: ${BRAND.primary}; color: ${BRAND.secondary}; font-family: Arial, sans-serif; }
+    main { max-width: 1180px; margin: 0 auto; }
+    .scene-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; }
+    .scene-card { border: 1px solid ${BRAND.accent}; padding: 12px; }
+    .scene-card img { display: block; width: 100%; aspect-ratio: 9 / 16; object-fit: cover; }
+  </style>
 </head>
 <body>
   <main>
     <h1>${escapeXml(pkg.topic)}</h1>
-    <p>${escapeXml(pkg.category)} | ${escapeXml(BRAND.tagline)}</p>
+    <p>${escapeXml(pkg.category)} | ${escapeXml(BRAND.tagline)} | ${escapeXml(preset.name)} mode</p>
     <section class="scene-grid">
       ${cards}
     </section>
@@ -204,13 +284,14 @@ async function svgToPng(svgPath, pngPath) {
   await run("ffmpeg", ["-y", "-hide_banner", "-loglevel", "error", "-i", svgPath, "-frames:v", "1", pngPath]);
 }
 
-async function renderVideoFromPngs(scenePngs, outPath, duration, fps) {
+async function renderVideoFromPngs(scenePngs, scenes, outPath, fps) {
   const concatPath = path.join(path.dirname(outPath), "concat.txt");
   const concatLines = [];
-  for (const png of scenePngs) {
+  for (let index = 0; index < scenePngs.length; index += 1) {
+    const png = scenePngs[index];
     const ffmpegPath = path.resolve(png).replace(/\\/g, "/").replace(/'/g, "'\\''");
     concatLines.push(`file '${ffmpegPath}'`);
-    concatLines.push(`duration ${duration}`);
+    concatLines.push(`duration ${scenes[index].duration}`);
   }
   concatLines.push(`file '${path.resolve(scenePngs.at(-1)).replace(/\\/g, "/").replace(/'/g, "'\\''")}'`);
   await writeFile(concatPath, `${concatLines.join("\n")}\n`, "utf8");
@@ -237,7 +318,12 @@ async function renderVideoFromPngs(scenePngs, outPath, duration, fps) {
 async function renderPackage(inputPath, options) {
   const packagePath = path.resolve(ROOT, inputPath);
   const pkg = JSON.parse(await readFile(packagePath, "utf8"));
-  validatePackage(pkg);
+  const preset = loadPreset(options.mode);
+  const structureReport = validatePackageStructure(pkg);
+  printValidationReport(structureReport);
+  const scenes = buildScenes(pkg, options.duration);
+  const readabilityReport = validateReadableScenes(scenes, DESIGN_TOKENS, preset);
+  printValidationReport(readabilityReport);
 
   const logoPath = path.join(ROOT, OFFICIAL_LOGO);
   if (!(await fileExists(logoPath))) {
@@ -250,16 +336,16 @@ async function renderPackage(inputPath, options) {
 
   const sceneSvgs = [];
   const scenePngs = [];
-  for (const plan of SCENE_PLAN) {
-    const svgPath = path.join(scenesDir, `scene_${String(plan.scene).padStart(2, "0")}.svg`);
-    const pngPath = path.join(scenesDir, `scene_${String(plan.scene).padStart(2, "0")}.png`);
-    await writeFile(svgPath, sceneSvg(pkg, plan.scene), "utf8");
+  for (const scene of scenes) {
+    const svgPath = path.join(scenesDir, `scene_${String(scene.scene).padStart(2, "0")}.svg`);
+    const pngPath = path.join(scenesDir, `scene_${String(scene.scene).padStart(2, "0")}.png`);
+    await writeFile(svgPath, sceneSvg(pkg, scene, preset), "utf8");
     sceneSvgs.push(svgPath);
     scenePngs.push(pngPath);
   }
 
   await writeFile(path.join(outDir, "caption.txt"), `${captionText(pkg)}\n`, "utf8");
-  await writeFile(path.join(outDir, "preview.html"), previewHtml(pkg, sceneSvgs), "utf8");
+  await writeFile(path.join(outDir, "preview.html"), previewHtml(pkg, sceneSvgs, preset), "utf8");
 
   const manifest = {
     topic: pkg.topic,
@@ -268,7 +354,14 @@ async function renderPackage(inputPath, options) {
     logo: OFFICIAL_LOGO,
     output: path.relative(ROOT, outDir).replace(/\\/g, "/"),
     format: VIDEO.format,
-    scenes: SCENE_PLAN,
+    mode: preset.name,
+    totalDurationSeconds: scenes.reduce((total, scene) => total + scene.duration, 0),
+    scenes: scenes.map(({ originalText, ...scene }) => scene),
+    readability: {
+      errors: readabilityReport.errors,
+      warnings: readabilityReport.warnings,
+      designTokens: "video_engine/design_tokens.json",
+    },
     renderer: "ffmpeg",
     socialApisConnected: false,
   };
@@ -283,7 +376,7 @@ async function renderPackage(inputPath, options) {
     await svgToPng(sceneSvgs[index], scenePngs[index]);
   }
   await copyFile(scenePngs[0], path.join(outDir, "thumbnail.png"));
-  await renderVideoFromPngs(scenePngs, path.join(outDir, "video.mp4"), options.duration, options.fps);
+  await renderVideoFromPngs(scenePngs, scenes, path.join(outDir, "video.mp4"), options.fps);
 
   return { outDir, rendered: true };
 }
@@ -297,6 +390,7 @@ async function main() {
       "Usage:",
       "  node video_engine/render.mjs --input production/topics/2026-01-06-02-rule-of-72/production_package.json",
       "  node video_engine/render.mjs --input pilot_launch/rule_of_72/production_package.json --out video_engine/outputs/rule_of_72",
+      "  node video_engine/render.mjs --input pilot_launch/rule_of_72/production_package.json --mode debug --dry-run",
       "  node video_engine/render.mjs --input production/topics/2026-01-06-02-rule-of-72/production_package.json --dry-run",
     ].join("\n"));
     return;
@@ -304,8 +398,9 @@ async function main() {
 
   const result = await renderPackage(input, {
     out: argValue("--out"),
-    duration: Number(argValue("--duration", VIDEO.sceneDurationSeconds)),
+    duration: Number(argValue("--duration", "0")),
     fps: Number(argValue("--fps", VIDEO.fps)),
+    mode: argValue("--mode", "production"),
     dryRun: hasFlag("--dry-run"),
   });
 

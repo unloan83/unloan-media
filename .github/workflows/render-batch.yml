@@ -11,6 +11,10 @@ on:
         description: "Optional max package count"
         required: false
         default: ""
+      mode:
+        description: "Render preset: production or debug"
+        required: true
+        default: "production"
 
 jobs:
   render-batch:
@@ -39,11 +43,13 @@ jobs:
             node video_engine/render_batch.mjs \
               --source "${{ inputs.source_dir }}" \
               --out-root publish_ready \
+              --mode "${{ inputs.mode }}" \
               --limit "${{ inputs.limit }}"
           else
             node video_engine/render_batch.mjs \
               --source "${{ inputs.source_dir }}" \
-              --out-root publish_ready
+              --out-root publish_ready \
+              --mode "${{ inputs.mode }}"
           fi
 
       - name: Verify rendered batch outputs
