@@ -8,7 +8,7 @@ Production mode is the default for single, batch, pilot, weekly, local, and GitH
 
 - Uses the original `assets/logos/logo.png` asset only.
 - Hides scene numbers and debug boundaries.
-- Simplifies long source text into one headline and one support statement.
+- Converts long source text into one dominant key phrase and one support statement.
 - Preserves minimum mobile-readable font sizes.
 - Uses the shared premium finance palette in `design_tokens.json`.
 - Applies per-scene timing of 5, 5, 6, 6, 5, and 5 seconds.
@@ -23,21 +23,25 @@ Shared rules live in:
 - `presets/production.json`
 - `presets/debug.json`
 - `validation/readability.mjs`
+- `utils/text_hierarchy.mjs`
 
 Minimum font sizes:
 
-- Headline: 72px
-- Secondary text: 40px
-- Supporting text: 30px
-- CTA: 42px
-- Disclaimer: 22px
+- Key message: 78px minimum, 94px preferred
+- Supporting message: 34px minimum, 42px preferred
+- CTA: 40px
+- Disclaimer: 20px
 
 Content limits:
 
 - Maximum two text blocks per scene
-- Maximum 12 headline words
-- Maximum 18 support words
+- Maximum 8 key-message words
+- Maximum 14 support words
+- Maximum 20 total words
+- Maximum two lines per layer
 - One main idea per scene
+
+Production alignment is consistently left aligned. Category and scene labels are hidden, and footer branding is reserved for the final CTA scene.
 
 ## Render One Video
 

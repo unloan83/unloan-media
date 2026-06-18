@@ -4,5 +4,8 @@
   "show_debug_boundaries": false,
   "simplify_text": true,
   "fail_on_readability_error": true,
-  "clean_layout": true
+  "clean_layout": true,
+  "alignment": "left",
+  "show_category_label": false,
+  "show_footer_branding_on_every_scene": false
 }

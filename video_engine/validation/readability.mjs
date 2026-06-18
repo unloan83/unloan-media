@@ -29,6 +29,11 @@ function contrastRatio(first, second) {
   return (lighter + 0.05) / (darker + 0.05);
 }
 
+function lineCount(value, wordsPerLine) {
+  const words = wordCount(value);
+  return words === 0 ? 0 : Math.ceil(words / wordsPerLine);
+}
+
 export function validatePackageStructure(pkg) {
   const errors = [];
   const warnings = [];
@@ -73,18 +78,37 @@ export function validateReadableScenes(scenes, tokens, preset) {
   }
 
   for (const scene of scenes) {
-    const headlineWords = wordCount(scene.headline);
-    const supportWords = wordCount(scene.support);
-    const blocks = [scene.headline, scene.support].filter((value) => String(value ?? "").trim()).length;
+    const headlineWords = wordCount(scene.keyMessage);
+    const supportWords = wordCount(scene.supportMessage);
+    const totalWords = headlineWords + supportWords;
+    const blocks = [scene.keyMessage, scene.supportMessage].filter((value) => String(value ?? "").trim()).length;
     const duration = Number(scene.duration);
     const readableWords = Math.floor(duration * 4);
+    const headlineLines = lineCount(scene.keyMessage, density.headline_words_per_line);
+    const supportLines = lineCount(scene.supportMessage, density.support_words_per_line);
 
-    if (headlineWords > density.headline_max_words) errors.push(`Scene ${scene.scene} headline exceeds ${density.headline_max_words} words.`);
-    if (supportWords > density.support_max_words) errors.push(`Scene ${scene.scene} support exceeds ${density.support_max_words} words.`);
+    if (headlineWords > density.headline_max_words) errors.push(`Scene ${scene.scene} key message exceeds ${density.headline_max_words} words.`);
+    if (supportWords > density.support_max_words) errors.push(`Scene ${scene.scene} support message exceeds ${density.support_max_words} words.`);
+    if (totalWords > density.total_max_words) errors.push(`Scene ${scene.scene} exceeds ${density.total_max_words} total words.`);
     if (blocks > density.max_text_blocks) errors.push(`Scene ${scene.scene} exceeds ${density.max_text_blocks} text blocks.`);
-    if (headlineWords + supportWords > readableWords) warnings.push(`Scene ${scene.scene} is dense for ${duration}s (${headlineWords + supportWords} words).`);
+    if (headlineLines > density.headline_max_lines) errors.push(`Scene ${scene.scene} key message exceeds ${density.headline_max_lines} lines.`);
+    if (supportLines > density.support_max_lines) errors.push(`Scene ${scene.scene} support message exceeds ${density.support_max_lines} lines.`);
+    if (totalWords > readableWords) warnings.push(`Scene ${scene.scene} is dense for ${duration}s (${totalWords} words).`);
     if (preset.name === "production" && preset.show_scene_numbers) errors.push("Production mode cannot show scene numbers.");
   }
+
+  if (type.headline_preferred < type.secondary_preferred * 1.75) errors.push("Key message is not visually dominant over support text.");
+  if (preset.alignment !== tokens.layout.alignment) errors.push("Preset alignment is inconsistent with the design tokens.");
+  if (tokens.layout.key_x < tokens.canvas.safe_margin_x) errors.push("Key text overlaps the horizontal safe margin.");
+  if (tokens.layout.key_y < tokens.canvas.safe_margin_top) errors.push("Key text overlaps the top safe margin.");
+  const maximumSupportBottom =
+    tokens.layout.key_y +
+    tokens.density.headline_max_lines * tokens.layout.key_line_gap +
+    tokens.layout.support_gap +
+    (tokens.density.support_max_lines - 1) * tokens.layout.support_line_gap +
+    tokens.typography.secondary_preferred;
+  const footerSafeStart = tokens.canvas.height - tokens.canvas.safe_margin_bottom - 280;
+  if (maximumSupportBottom >= footerSafeStart) errors.push("Text hierarchy can overlap the final-scene branding safe zone.");
 
   return { errors, warnings };
 }

@@ -17,6 +17,12 @@ import {
   validatePackageStructure,
   validateReadableScenes,
 } from "./validation/readability.mjs";
+import {
+  buildTextHierarchy,
+  normalizeText,
+  textWords,
+  wrapByWordCount,
+} from "./utils/text_hierarchy.mjs";
 
 function argValue(name, fallback = "") {
   const index = process.argv.indexOf(name);
@@ -45,97 +51,31 @@ function escapeXml(value) {
     .replace(/"/g, "&quot;");
 }
 
-function normalizeText(value) {
-  return String(value ?? "")
-    .replace(/\u20b9/g, "Rs ")
-    .replace(/\u00e2\u201a\u00b9/g, "Rs ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function wrapText(text, maxChars) {
-  const words = normalizeText(text).split(" ").filter(Boolean);
-  const lines = [];
-  let line = "";
-
-  for (const word of words) {
-    const candidate = line ? `${line} ${word}` : word;
-    if (candidate.length > maxChars && line) {
-      lines.push(line);
-      line = word;
-    } else {
-      line = candidate;
-    }
-  }
-
-  if (line) lines.push(line);
-  return lines.slice(0, 4);
-}
-
-function words(value) {
-  return normalizeText(value).split(" ").filter(Boolean);
-}
-
-function takeWords(value, limit) {
-  const tokens = words(value);
-  return {
-    text: tokens.slice(0, limit).join(" "),
-    remaining: tokens.slice(limit),
-    trimmed: tokens.length > limit,
-  };
-}
-
-function sentenceParts(value) {
-  return normalizeText(value)
-    .split(/(?<=[.!?])\s+|;\s+|:\s+/u)
-    .map((part) => part.trim())
-    .filter(Boolean);
-}
-
-function rebalanceBlocks(headlineText, supportText, supportLimit) {
-  const weakEndings = new Set(["a", "an", "and", "as", "at", "between", "but", "for", "from", "if", "in", "it", "of", "or", "the", "to", "with", "your"]);
-  const headline = words(headlineText);
-  const support = words(supportText);
-
-  while (headline.length > 6 && weakEndings.has(headline.at(-1).toLowerCase())) {
-    support.unshift(headline.pop());
-  }
-
-  while (support.length > 4 && weakEndings.has(support.at(-1).toLowerCase())) {
-    support.pop();
-  }
-
-  return {
-    headline: headline.join(" "),
-    support: support.slice(0, supportLimit).join(" "),
-  };
-}
-
-function simplifySceneText(text, sceneNumber, duration) {
+function simplifySceneText(text, sceneNumber, duration, pkg) {
   const density = DESIGN_TOKENS.density;
-  const parts = sentenceParts(text);
-  const first = takeWords(parts[0] ?? text, density.headline_max_words);
-  const supportSource = [...first.remaining, ...words(parts.slice(1).join(" "))].join(" ");
-  const readableWordBudget = Math.max(density.headline_max_words, Math.floor(duration * 4));
-  const initialBalance = rebalanceBlocks(first.text, supportSource, density.support_max_words);
-  const supportLimit = Math.max(0, Math.min(density.support_max_words, readableWordBudget - words(initialBalance.headline).length));
-  const balanced = {
-    headline: initialBalance.headline,
-    support: words(initialBalance.support).slice(0, supportLimit).join(" "),
-  };
+  const hierarchy = buildTextHierarchy(text, {
+    keyMaxWords: density.headline_max_words,
+    supportMaxWords: density.support_max_words,
+    totalMaxWords: Math.min(density.total_max_words, Math.floor(duration * 4)),
+    topic: pkg.topic,
+    category: pkg.category,
+    scene: sceneNumber,
+  });
 
   if (sceneNumber === 6) {
     return {
-      headline: takeWords(text, density.headline_max_words).text,
-      support: BRAND.tagline,
-      simplified: words(text).length > density.headline_max_words,
+      keyMessage: hierarchy.keyMessage,
+      supportMessage: BRAND.tagline,
+      simplified: hierarchy.simplified,
+      hierarchySource: hierarchy.source,
     };
   }
 
   return {
-    headline: balanced.headline,
-    support: balanced.support,
-    simplified: first.trimmed || words(supportSource).length > supportLimit || parts.length > 1,
+    keyMessage: hierarchy.keyMessage,
+    supportMessage: hierarchy.supportMessage,
+    simplified: hierarchy.simplified,
+    hierarchySource: hierarchy.source,
   };
 }
 
@@ -186,7 +126,7 @@ function buildScenes(pkg, durationOverride = 0) {
   return SCENE_PLAN.map((plan) => {
     const slide = slideFor(pkg, plan.scene);
     const duration = durationOverride > 0 ? durationOverride : plan.duration;
-    const simplified = simplifySceneText(slide.text, plan.scene, duration);
+    const simplified = simplifySceneText(slide.text, plan.scene, duration, pkg);
     return {
       ...plan,
       ...simplified,
@@ -198,42 +138,51 @@ function buildScenes(pkg, durationOverride = 0) {
 
 function sceneSvg(pkg, scene, preset) {
   const isOutro = scene.scene === 6;
-  const headlineLines = wrapText(scene.headline, 20);
-  const supportLines = wrapText(scene.support, 30);
+  const density = DESIGN_TOKENS.density;
+  const layout = DESIGN_TOKENS.layout;
+  const keyLines = wrapByWordCount(scene.keyMessage, density.headline_words_per_line, density.headline_max_lines);
+  const supportLines = wrapByWordCount(scene.supportMessage, density.support_words_per_line, density.support_max_lines);
   const type = DESIGN_TOKENS.typography;
   const logoHref = pathToFileURL(path.join(ROOT, OFFICIAL_LOGO)).href;
-  const headline = headlineLines
-    .map((line, index) => `<text x="110" y="${560 + index * 108}" class="headline">${escapeXml(line)}</text>`)
+  const supportY = layout.key_y + keyLines.length * layout.key_line_gap + layout.support_gap;
+  const keyMessage = keyLines
+    .map((line, index) => `<text x="${layout.key_x}" y="${layout.key_y + index * layout.key_line_gap}" class="key-message">${escapeXml(line)}</text>`)
     .join("\n");
-  const support = supportLines
-    .map((line, index) => `<text x="110" y="${1000 + index * 68}" class="support">${escapeXml(line)}</text>`)
+  const supportMessage = supportLines
+    .map((line, index) => `<text x="${layout.key_x}" y="${supportY + index * layout.support_line_gap}" class="support-message">${escapeXml(line)}</text>`)
     .join("\n");
   const debugLabel = preset.show_scene_numbers
     ? `<text x="110" y="210" class="debug">SCENE ${scene.scene} / ${escapeXml(scene.label.toUpperCase())}</text>`
     : "";
+  const categoryLabel = preset.show_category_label
+    ? `<text x="110" y="390" class="category">${escapeXml(scene.label.toUpperCase())}</text>`
+    : "";
   const debugBorder = preset.show_debug_boundaries
     ? `<rect x="90" y="120" width="900" height="1680" fill="none" stroke="${BRAND.negative}" stroke-width="3" stroke-dasharray="16 12"/>`
+    : "";
+  const footerBranding = isOutro || preset.show_footer_branding_on_every_scene
+    ? `<text x="110" y="1540" class="tagline">${escapeXml(BRAND.tagline)}</text>
+  <text x="110" y="1600" class="disclaimer">${escapeXml(pkg.compliance?.disclaimer || "Educational content only. This is not financial advice.")}</text>
+  <image href="${logoHref}" x="700" y="1515" width="260" height="140" preserveAspectRatio="xMidYMid meet"/>`
     : "";
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${VIDEO.width}" height="${VIDEO.height}" viewBox="0 0 ${VIDEO.width} ${VIDEO.height}">
   <style>
-    .headline { font-family: ${BRAND.headlineFont}; font-size: ${isOutro ? type.cta_preferred : type.headline_preferred}px; font-weight: 800; fill: ${BRAND.secondary}; }
-    .support { font-family: ${BRAND.bodyFont}; font-size: ${type.secondary_preferred}px; font-weight: 500; fill: ${isOutro ? BRAND.accent : BRAND.secondary}; opacity: 0.94; }
+    .key-message { font-family: ${BRAND.headlineFont}; font-size: ${isOutro ? type.cta_preferred : type.headline_preferred}px; font-weight: 800; fill: ${BRAND.secondary}; text-anchor: start; }
+    .support-message { font-family: ${BRAND.bodyFont}; font-size: ${type.secondary_preferred}px; font-weight: 500; fill: ${isOutro ? BRAND.accent : BRAND.secondary}; opacity: 0.92; text-anchor: start; }
     .category { font-family: ${BRAND.bodyFont}; font-size: ${type.supporting_preferred}px; font-weight: 700; fill: ${BRAND.accent}; }
     .tagline { font-family: ${BRAND.bodyFont}; font-size: ${type.supporting_preferred}px; font-weight: 700; fill: ${BRAND.secondary}; }
     .disclaimer { font-family: ${BRAND.bodyFont}; font-size: ${type.disclaimer_preferred}px; font-weight: 500; fill: ${BRAND.secondary}; opacity: 0.78; }
     .debug { font-family: Arial, sans-serif; font-size: 28px; font-weight: 700; fill: ${BRAND.negative}; }
   </style>
   <rect width="1080" height="1920" fill="${BRAND.primary}"/>
-  <rect x="70" y="100" width="940" height="1720" rx="22" fill="${BRAND.panel}" stroke="${BRAND.accent}" stroke-width="2" opacity="0.98"/>
-  <rect x="110" y="300" width="150" height="7" fill="${BRAND.accent}"/>
-  <text x="110" y="390" class="category">${escapeXml(scene.label.toUpperCase())}</text>
-  ${headline}
-  ${support}
-  <text x="110" y="1580" class="tagline">${escapeXml(BRAND.tagline)}</text>
-  <text x="110" y="1640" class="disclaimer">${escapeXml(pkg.compliance?.disclaimer || "Educational content only. This is not financial advice.")}</text>
-  <image href="${logoHref}" x="700" y="1570" width="260" height="130" preserveAspectRatio="xMidYMid meet"/>
+  <rect x="${layout.panel_x}" y="${layout.panel_y}" width="${layout.panel_width}" height="${layout.panel_height}" rx="22" fill="${BRAND.panel}" stroke="${BRAND.accent}" stroke-width="2" opacity="0.98"/>
+  <rect x="${layout.key_x}" y="390" width="150" height="7" fill="${BRAND.accent}"/>
+  ${categoryLabel}
+  ${keyMessage}
+  ${supportMessage}
+  ${footerBranding}
   ${debugLabel}
   ${debugBorder}
 </svg>`;

@@ -2,13 +2,14 @@
 
 ## Density Limits
 
-- Maximum headline length: 12 words
-- Maximum support length: 18 words
+- Maximum key-message length: 8 words
+- Maximum support length: 14 words
+- Maximum total length: 20 words
 - Maximum text blocks: 2
 - Preferred line length: 3-7 words
 - Maximum main ideas per scene: 1
 
-The renderer extracts a concise headline and support statement from long source copy. The full educational copy remains available in `caption.txt`.
+The renderer extracts a concise key message and support statement from long source copy. The full educational copy remains available in `caption.txt`.
 
 ## Validation Severity
 
@@ -31,8 +32,8 @@ Warnings:
 ## Auto-Fit Policy
 
 1. Normalize text and encoding.
-2. Select one headline of no more than 12 words.
-3. Select one support statement of no more than 18 words.
+2. Select one key message of no more than 8 words.
+3. Select one support statement of no more than 14 words.
 4. Wrap text using short mobile-readable lines.
 5. Preserve minimum font sizes.
 6. Discard excess on-screen detail rather than shrinking text.

@@ -26,12 +26,15 @@ Default total duration is 32 seconds.
 
 - Production is the default render mode.
 - Scene numbers are hidden.
-- Source paragraphs are simplified before layout.
+- Source paragraphs are converted into a key message and supporting message before layout.
 - Text is never reduced below the configured minimum sizes.
 - Every scene communicates one primary idea.
-- Every scene contains at most two text blocks.
+- Key messages contain no more than 8 words.
+- Support messages contain no more than 14 words.
+- Total scene text contains no more than 20 words.
+- Every scene contains at most two primary text blocks.
 - The official logo path must be exactly `assets/logos/logo.png`.
-- The standard financial-education disclaimer appears on every scene.
+- The standard financial-education disclaimer appears on the final CTA scene.
 - The output remains educational and avoids recommendations, guarantees, or profit claims.
 
 ## Render Commands

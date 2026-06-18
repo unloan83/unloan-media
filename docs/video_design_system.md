@@ -24,11 +24,11 @@ The original logo must not be recolored, redesigned, recreated, cropped, substit
 
 ## Typography
 
-- Headline: Montserrat Bold, preferred 88px, minimum 72px
-- Explanation: Poppins Medium, preferred 48px, minimum 40px
+- Key message: Montserrat Bold, preferred 94px, minimum 78px
+- Supporting message: Poppins Medium, preferred 42px, minimum 34px
 - Supporting text: Poppins, preferred 34px, minimum 30px
-- CTA: Montserrat Bold, preferred 52px, minimum 42px
-- Disclaimer: Poppins, preferred 24px, minimum 22px
+- CTA: Montserrat Bold, preferred 48px, minimum 40px
+- Disclaimer: Poppins, preferred 22px, minimum 20px
 
 The engine does not shrink text below these minimums to force content into a scene.
 
@@ -36,10 +36,10 @@ The engine does not shrink text below these minimums to force content into a sce
 
 - Safe horizontal margin: 90px minimum
 - Safe top and bottom margin: 120px minimum
-- One headline
+- One key message
 - One supporting statement
 - One focal panel
-- Official logo in its original proportions
+- Official logo in its original proportions on the final scene
 - No visible scene numbers in production mode
 - No decorative clutter or excessive labels
 
